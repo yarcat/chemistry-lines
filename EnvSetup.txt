@@ -1,0 +1,31 @@
+Git
+* Clone
+* Configure
+  
+  * Check user name and email
+    $ git config -l | grep -F user.
+    user.name=Full Name
+    user.email=email@example.com
+
+  * If its not so alter 
+    * either local reposotory config
+      $ git config --replace-all user.name "Full Name"
+      $ git config --replace-all user.email put.your@email.here
+    * or global
+      $ git config --global --replace-all user.name "Full Name"
+      $ git config --global --replace-all user.email put.your@email.here
+
+
+Eclipse Plugins
+* Git
+  Plugin Url:
+    http://www.vogella.com/articles/EGit/article.html#eclipseinstallation
+  Required Plugins
+  * Eclipse EGit
+  ? * EGit Project Set Support
+  http://www.vogella.com/articles/EGit/article.html#eclipseinstallation
+
+  Open Window → Show View → Other → Git → Git Staging.
+
+
+vim: set et sts=2 sw=2 :
