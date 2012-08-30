@@ -1,0 +1,48 @@
+View/Presentation
+=================
+
+GameView
+--------
+ - knows everything about the View
+ - yields field coordinates rather than screen coordinates
+
+PresentationController
+----------------------
+ - knows about selected cells
+ - provides animations
+ 
+MotionLogic
+-----------
+ - knows about selected cells
+ - Listens all motion notifications (in field coordinates)
+ - Knows state related to a move. E.g. selected source and destination cells
+ - Notifies PresentationController
+ - Asks GameLogic whether this particular move is possible
+ - Commands GameLogic to make a move
+
+
+Game Rules
+==========
+
+Field (model)
+-------------
+ - integer indexed cell storage
+ - provides connections between cells
+  
+Path
+----
+ - performs reach-ability tests
+   - one cell to another (implemented)
+   - one cell to all others (planned)
+ - builds path from one cell to another (planned)
+
+ChemistryLogic
+--------------
+ - implements chemistry compounds and reaction rules
+ 
+GameLogic
+---------
+ - Checks if a move is possible -- reach-ability and reactions
+ - Make a move.  E.g. updates the field and interacts to PresentationController.
+ - Adds new items to the field.
+  
