@@ -1,19 +1,27 @@
 View/Presentation
 =================
 
+FieldPresentation
+-----------------
+ - Knows field structure -- sizes and cell locations.
+ - Converts screen coordinates to cell index and vice versa.
+ - Displays the field.
+
 GameView
---------
- - knows everything about the View
- - yields field coordinates rather than screen coordinates
+----------------------------------
+ - It is supposed to be an android's View.
+ - Uses FieldPresentation for handling View.onDraw().
+ - Transfers android's MotionEvents to Motion CellTouchEvents.
+   In android's terms it is View.OnTouchListener.
 
 PresentationController
 ----------------------
- - knows about selected cells
- - provides animations
+ - Field-User Interaction *State*.  E.g. knows about selected cells.
+   - Provides cell highlighting information to FieldPresentation.
+ - Provides animations.
  
-MotionLogic
------------
- - knows about selected cells
+MotionLogic e.g. field-user interaction.
+----------------------------------------
  - Listens all motion notifications (in field coordinates)
  - Knows state related to a move. E.g. selected source and destination cells
  - Notifies PresentationController
@@ -45,4 +53,3 @@ GameLogic
  - Checks if a move is possible -- reach-ability and reactions
  - Make a move.  E.g. updates the field and interacts to PresentationController.
  - Adds new items to the field.
-  
