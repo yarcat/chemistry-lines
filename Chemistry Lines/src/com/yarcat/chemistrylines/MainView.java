@@ -48,9 +48,11 @@ public class MainView extends View implements FieldView {
     @Override
     protected void onDraw(Canvas canvas) {
         for (int i = 0; i < mSelected; ++i) {
-            int left = mField.left + mSelectionIndices[i] * mStep;
+            int col = mSelectionIndices[i] % mCols;
+            int row = mSelectionIndices[i] / mRows;
+            int left = mField.left + col * mStep;
             int right = left + mStep;
-            int top = mField.top + mSelectionIndices[i] * mStep;
+            int top = mField.top + row * mStep;
             int bottom = top + mStep;
             canvas.drawRect(left, top, right, bottom,
                     i == 0 ? mFirstSelectionPaint : mSelectionPaint);
@@ -80,8 +82,8 @@ public class MainView extends View implements FieldView {
     }
 
     public int getIndex(float x, float y) {
-        int col = (int) (y - mField.top) / mStep;
-        int row = (int) (x - mField.left) / mStep;
+        int row = (int) (y - mField.top) / mStep;
+        int col = (int) (x - mField.left) / mStep;
         return row * mCols + col;
     }
 
