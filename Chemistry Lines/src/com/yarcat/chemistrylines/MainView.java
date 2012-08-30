@@ -16,8 +16,6 @@ public class MainView extends View implements View.OnTouchListener {
     private static final int COLS = 9;
     private static final int BORDER = 20;
     private Paint mPaint = new Paint();
-    private int mWidth;
-    private int mHeight;
     private int mStep;
     private Rect mField = new Rect();
     private Point mSelection;
@@ -60,9 +58,6 @@ public class MainView extends View implements View.OnTouchListener {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
-        mWidth = w;
-        mHeight = h;
 
         mStep = Math.min((w - BORDER) / COLS, (h - BORDER) / ROWS);
 
