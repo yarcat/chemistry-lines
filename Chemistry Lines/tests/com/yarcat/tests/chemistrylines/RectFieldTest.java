@@ -25,16 +25,16 @@ public class RectFieldTest {
     @Test
     public void visitCenter() throws Exception {
         int[] visited = getVisited(3, 3, 4);
-        assertArrayEquals(new int[] { 1, 1, 1,
+        assertArrayEquals(new int[] { 0, 1, 0,
                                       1, 0, 1,
-                                      1, 1, 1 }, visited);
+                                      0, 1, 0 }, visited);
     }
 
     @Test
     public void visitLeftTop() throws Exception {
         int[] visited = getVisited(3, 3, 0);
         assertArrayEquals(new int[] { 0, 1, 0,
-                                      1, 1, 0,
+                                      1, 0, 0,
                                       0, 0, 0 }, visited);
     }
 
@@ -42,7 +42,7 @@ public class RectFieldTest {
     public void visitRightTop() throws Exception {
         int[] visited = getVisited(3, 3, 2);
         assertArrayEquals(new int[] { 0, 1, 0,
-                                      0, 1, 1,
+                                      0, 0, 1,
                                       0, 0, 0 }, visited);
     }
 
@@ -50,14 +50,14 @@ public class RectFieldTest {
     public void visitRightBottom() throws Exception {
         int[] visited = getVisited(3, 3, 8);
         assertArrayEquals(new int[] { 0, 0, 0,
-                                      0, 1, 1,
+                                      0, 0, 1,
                                       0, 1, 0 }, visited);
     }
     @Test
     public void visitLeftBottom() throws Exception {
         int[] visited = getVisited(3, 3, 6);
         assertArrayEquals(new int[] { 0, 0, 0,
-                                      1, 1, 0,
+                                      1, 0, 0,
                                       0, 1, 0 }, visited);
     }
 }

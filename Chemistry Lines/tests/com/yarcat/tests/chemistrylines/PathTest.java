@@ -1,6 +1,7 @@
 package com.yarcat.tests.chemistrylines;
 
 import static com.yarcat.chemistrylines.Path.isReachable;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -24,5 +25,13 @@ public class PathTest {
     @Test
     public void emptyIsReachable() throws Exception {
         assertTrue(isReachable(mField, 0, 8));
+    }
+
+    @Test
+    public void notReachable() throws Exception {
+        mField.at(2).setEmpty(false);
+        mField.at(4).setEmpty(false);
+        mField.at(6).setEmpty(false);
+        assertFalse(isReachable(mField, 0, 8));
     }
 }

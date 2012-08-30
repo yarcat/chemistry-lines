@@ -7,10 +7,13 @@ public class RectField implements Field {
     private final int mCols;
     private final int mRows;
 
-    /** Create a field.
+    /**
+     * Create a field.
      * 
-     * @param cols Amount of columns.
-     * @param rows Amount of rows.
+     * @param cols
+     *            Amount of columns.
+     * @param rows
+     *            Amount of rows.
      */
     public RectField(int cols, int rows) {
         mCols = cols;
@@ -45,18 +48,18 @@ public class RectField implements Field {
         return (0 <= n && n < getLength()) ? mCells[n] : null;
     }
 
+    private static final int[][] siblingShifts = new int[][] { { -1, 0 },
+            { 0, -1 }, { +1, 0 }, { 0, +1 } };
+
     public void visitSiblings(int n, CellVisitor visitor) {
         int col = cellCol(n);
         int row = cellRow(n);
-        for (int c = col - 1; c <= col + 1; ++c) {
-            for (int r = row - 1; r <= row + 1; ++r) {
-                int m = cellNo(c, r);
-                if (m != n) {
-                    Cell cell = at(m);
-                    if (cell != null) {
-                        visitor.visit(m, cell);
-                    }
-                }
+
+        for (int i = 0; i < siblingShifts.length; ++i) {
+            int m = cellNo(col + siblingShifts[i][0], row + siblingShifts[i][1]);
+            Cell cell = at(m);
+            if (cell != null) {
+                visitor.visit(m, cell);
             }
         }
     }
