@@ -9,16 +9,35 @@ public interface Field {
     /** Returns amount of cells. */
     public int getLength();
 
-    /** Allows to visit siblings of a given cell. */
+    /** Allows to visit _all_ siblings of a given cell. */
     public interface CellVisitor {
-        /** Called by a field for a cell.
-         * 
-         * @param n Index of the cell.
-         * @param cell Cell value.
+        /**
+         * Called by a field for a cell.
+         *
+         * @param n
+         *            Index of the cell.
+         * @param cell
+         *            Cell value.
          */
         public void visit(int n, Cell cell);
     }
 
-    /** Calls CellVisitor.visit for the surrounding cells. */
+    /** Calls CellVisitor.visit() for the surrounding cells. */
     public void visitSiblings(int n, CellVisitor visitor);
+
+    /** Allows to find a sibling of a given cell */
+    public interface CellMatcher {
+        /**
+         * Called by a field for a cell.
+         *
+         * @param n
+         *            Index of the cell.
+         * @param cell
+         *            Cell value.
+         */
+        public boolean match(int n, Cell cell);
+    }
+
+    /** Index of a matching cell within surrounding cells or -1 if none */
+    public int matchSibling(int n, CellMatcher matcher);
 }

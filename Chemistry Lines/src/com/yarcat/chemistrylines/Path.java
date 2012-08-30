@@ -3,6 +3,7 @@ package com.yarcat.chemistrylines;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.yarcat.chemistrylines.Field.CellMatcher;
 import com.yarcat.chemistrylines.Field.CellVisitor;
 
 /** Shorted path algorithm */
@@ -18,6 +19,13 @@ public class Path {
     /** Check whether there is a path between 2 cells on the field */
     public static boolean isReachable(Field field, int origin, int fin) {
         return distance(field, origin, fin) >= 0;
+    }
+
+    /** Return a path from the origin to the fin or null when unreachable */
+    public static int[] path(Field field, int origin, int fin) {
+        final Path path = new Path(field, origin);
+        path.evaluate();
+        return path.pathTo(fin);
     }
 
     private final Field mField;
@@ -65,5 +73,28 @@ public class Path {
     /** Check whether a cell is reachable from the origin */
     public boolean isReachable(int n) {
         return distanceTo(n) >= 0;
+    }
+
+    /** Return a shorted path from the origin to a cell or null when unreachable */
+    public int[] pathTo(int fin) {
+        if (mStep[mOrigin] != 1 || mStep[fin] == 0) {
+            return null;
+        }
+
+        int step = mStep[fin];
+        final int[] rv = new int[step];
+
+        rv[step - 1] = fin;
+        for (; step > 1; --step) {
+            final int prevStep = step - 1;
+            rv[prevStep - 1] = mField.matchSibling(rv[step - 1],
+                    new CellMatcher() {
+                        public boolean match(int n, Cell cell) {
+                            return mStep[n] == prevStep;
+                        }
+                    });
+        }
+
+        return rv;
     }
 }

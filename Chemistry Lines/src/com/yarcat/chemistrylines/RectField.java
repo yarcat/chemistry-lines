@@ -64,4 +64,18 @@ public class RectField implements Field {
         }
     }
 
+    public int matchSibling(int n, CellMatcher matcher) {
+        int col = cellCol(n);
+        int row = cellRow(n);
+
+        for (int i = 0; i < siblingShifts.length; ++i) {
+            int m = cellNo(col + siblingShifts[i][0], row + siblingShifts[i][1]);
+            Cell cell = at(m);
+            boolean found = cell != null && matcher.match(m, cell);
+            if (found) {
+                return m;
+            }
+        }
+        return -1;
+    }
 }
