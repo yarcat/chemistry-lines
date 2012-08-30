@@ -26,6 +26,10 @@ public class Path {
     }
 
     public void evaluate() {
+        if (!mField.at(mFrom).isEmpty()) {
+            return;
+        }
+
         mStep[mFrom] = 1;
         if (mTo == mFrom) {
             return;
