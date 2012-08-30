@@ -1,21 +1,43 @@
 package com.yarcat.chemistrylines;
 
-/** Game rules and related stuff
+/**
+ * Game rules.
  * 
- * - Checks if a move is possible -- reach-ability and reactions
- * - Make a move. E.g. updates the field and interacts to PresentationController.
- * - Adds new items to the field.
+ * It looks like all Lines-like puzzles share lots of common functionality. The
+ * main idea of this interface is encapsulation of rules of a particular game.
+ * It knows about possible moves, verifies the logic, sends back notifications
+ * to the presenter, etc.
  */
 public interface GameLogic {
-	public class InvalidMove extends Exception {
-	}
 
-	/** Check whether a move from origin cell to fin is a valid one */
+	public static class InvalidMove extends Exception {
+		private static final long serialVersionUID = 1761471468300304095L;
+	}
+	
+	/** Interface for callback invocation on a game actions. */
+	public interface Listener {
+		/** Called when game is finished.
+		 * TODO(yarcat): provide information about type of the end.
+		 */
+		public void onFinished();
+	}
+	
+	/** Check whether a move from origin cell to fin is a valid one.
+	 * 
+	 * @param origin Index of the origin cell.
+	 * @param fin Index of the final cell.
+	 * @return True if this move is valid, false otherwise.
+	 */
 	public boolean isMoveValid(int origin, int fin);
 
-	/** Make a move actually */
+	/** Make an actual move.
+	 * 
+	 * @param origin Index of the origin cell.
+	 * @param fin Index of the final cell.
+	 * @throws InvalidMove If there is no valid move(s) from origin to fin.
+	 */
 	public void makeMove(int origin, int fin) throws InvalidMove;
 
-	/** Add three more items to the board */
+	/** Populates field with new elements. */
 	public void addRandomItems();
 }
