@@ -1,18 +1,13 @@
 package com.yarcat.chemistrylines.touchlogic;
 
-import android.content.Context;
-import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 
 public class SlideTouchLogic extends SimpleOnGestureListener {
 
-    @SuppressWarnings("unused")
-    private GestureDetector mGestureDetector;
     private FieldView mFieldView;
 
-    public SlideTouchLogic(Context context, FieldView fieldHelper) {
-        mGestureDetector = new GestureDetector(context, this);
+    public SlideTouchLogic(FieldView fieldHelper) {
         mFieldView = fieldHelper;
     }
 
