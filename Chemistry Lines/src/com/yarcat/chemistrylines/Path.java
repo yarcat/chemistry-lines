@@ -7,21 +7,24 @@ import com.yarcat.chemistrylines.Field.CellVisitor;
 
 public class Path {
 
-    public static boolean isReachable(Field field, int a, int b) {
-        final Path path = new Path(field, a, b);
+    public static int distance(Field field, int origin, int fin) {
+        final Path path = new Path(field, origin);
         path.evaluate();
-        return path.isReachable();
+        return path.distanceTo(fin);
+    }
+
+    public static boolean isReachable(Field field, int origin, int fin) {
+        return distance(field, origin, fin) >= 0;
     }
 
     private final Field mField;
-    private final int mFrom, mTo;
+    private final int mFrom;
     private final int[] mStep;
 
-    public Path(Field field, int from, int to) {
+    public Path(Field field, int from) {
         super();
         mField = field;
         mFrom = from;
-        mTo = to;
         mStep = new int[field.getLength()];
     }
 
@@ -30,13 +33,9 @@ public class Path {
             return;
         }
 
-        mStep[mFrom] = 1;
-        if (mTo == mFrom) {
-            return;
-        }
-
         final Queue<Integer> queue = new LinkedList<Integer>();
 
+        mStep[mFrom] = 1;
         queue.add(mFrom);
         do {
             final int cur = queue.poll();
@@ -50,12 +49,14 @@ public class Path {
                     }
                 }
             });
-
-        } while (mStep[mTo] == 0 && !queue.isEmpty());
-
+        } while (!queue.isEmpty());
     }
 
-    public boolean isReachable() {
-        return mStep[mFrom] == 1 && mStep[mTo] > 0;
+    public int distanceTo(int n) {
+        return mStep[mFrom] == 1 ? mStep[n] - 1 : -1;
+    }
+
+    public boolean isReachable(int n) {
+        return distanceTo(n) >= 0;
     }
 }
