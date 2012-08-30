@@ -14,11 +14,14 @@ GameView
  - Transfers android's MotionEvents to Motion CellTouchEvents.
    In android's terms it is View.OnTouchListener.
 
-PresentationController
+FieldPresentationState
 ----------------------
  - Field-User Interaction *State*.  E.g. knows about selected cells.
    - Provides cell highlighting information to FieldPresentation.
- - Provides animations.
+
+MoveAnimation
+-------------
+ - Provides move animation.
  
 MotionLogic e.g. field-user interaction.
 ----------------------------------------

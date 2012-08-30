@@ -1,16 +1,7 @@
 package com.yarcat.chemistrylines;
 
-/** Presentation controller having a state */
-public interface PresentationController {
-	
-	/** Return cell highlighting */
-	public int getHighlight(int cell_index);
-
-	/** Highlight a cell */
-	public int highlightCell(int cell_index);
-	
-	/** Reset all highlight marks */
-	public void clearHighlights();
+/** Move animation stuff */
+public interface MoveAnimation {
 	
 	/** Visual move callback*/
 	public interface MoveCallback {
