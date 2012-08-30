@@ -23,13 +23,13 @@ public class MainView extends View implements View.OnTouchListener {
 
     public MainView(Context context) {
         super(context);
-        
+
         mPaint.setColor(Color.WHITE);
         mPaint.setStrokeWidth(LINE_WIDTH);
-        
+
         mSelectionPaint.setColor(Color.GRAY);
         mSelectionPaint.setStyle(Paint.Style.FILL);
-        
+
         setOnTouchListener(this);
     }
 

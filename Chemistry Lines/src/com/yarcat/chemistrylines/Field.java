@@ -11,10 +11,13 @@ public interface Field {
 
     /** Allows to visit siblings of a given cell. */
     public interface CellVisitor {
-        /** Called by a field for a cell.
+        /**
+         * Called by a field for a cell.
          * 
-         * @param n Index of the cell.
-         * @param cell Cell value.
+         * @param n
+         *            Index of the cell.
+         * @param cell
+         *            Cell value.
          */
         public void visit(int n, Cell cell);
     }
