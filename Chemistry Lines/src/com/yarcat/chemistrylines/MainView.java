@@ -4,22 +4,26 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
-import android.view.MotionEvent;
 import android.view.View;
 
-public class MainView extends View implements View.OnTouchListener {
+import com.yarcat.chemistrylines.touchlogic.FieldView;
+
+public class MainView extends View implements FieldView {
 
     private static final int LINE_WIDTH = 5;
-    private static final int ROWS = 8;
-    private static final int COLS = 9;
     private static final int BORDER = 20;
-    private Paint mPaint = new Paint();
+
+    private int mCols;
+    private int mRows;
     private int mStep;
+    private Paint mPaint = new Paint();
     private Rect mField = new Rect();
-    private Point mSelection;
+    private Paint mFirstSelectionPaint = new Paint();
     private Paint mSelectionPaint = new Paint();
+
+    private int mSelected = 0;
+    private int[] mSelectionIndices = new int[] { -1, -1 };
 
     public MainView(Context context) {
         super(context);
@@ -27,29 +31,37 @@ public class MainView extends View implements View.OnTouchListener {
         mPaint.setColor(Color.WHITE);
         mPaint.setStrokeWidth(LINE_WIDTH);
 
+        mFirstSelectionPaint.setColor(Color.LTGRAY);
+        mFirstSelectionPaint.setStyle(Paint.Style.FILL);
         mSelectionPaint.setColor(Color.GRAY);
         mSelectionPaint.setStyle(Paint.Style.FILL);
 
-        setOnTouchListener(this);
+        mCols = mRows = 4; // Just something for the visual tool.
+    }
+
+    public MainView(Context context, int cols, int rows) {
+        this(context);
+        mCols = cols;
+        mRows = rows;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-
-        if (mSelection != null) {
-            int left = mField.left + mSelection.x * mStep;
+        for (int i = 0; i < mSelected; ++i) {
+            int left = mField.left + mSelectionIndices[i] * mStep;
             int right = left + mStep;
-            int top = mField.top + mSelection.y * mStep;
+            int top = mField.top + mSelectionIndices[i] * mStep;
             int bottom = top + mStep;
-            canvas.drawRect(left, top, right, bottom, mSelectionPaint);
+            canvas.drawRect(left, top, right, bottom,
+                    i == 0 ? mFirstSelectionPaint : mSelectionPaint);
         }
 
-        for (int col = 0; col <= COLS; ++col) {
+        for (int col = 0; col <= mCols; ++col) {
             int x = mField.left + mStep * col;
             canvas.drawLine(x, mField.top, x, mField.bottom, mPaint);
         }
 
-        for (int row = 0; row <= ROWS; ++row) {
+        for (int row = 0; row <= mRows; ++row) {
             int y = mField.top + mStep * row;
             canvas.drawLine(mField.left, y, mField.right, y, mPaint);
         }
@@ -59,30 +71,30 @@ public class MainView extends View implements View.OnTouchListener {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        mStep = Math.min((w - BORDER) / COLS, (h - BORDER) / ROWS);
+        mStep = Math.min((w - BORDER) / mCols, (h - BORDER) / mRows);
 
         mField.left = BORDER / 2;
         mField.top = BORDER / 2;
-        mField.right = mField.left + mStep * COLS;
-        mField.bottom = mField.top + mStep * ROWS;
+        mField.right = mField.left + mStep * mCols;
+        mField.bottom = mField.top + mStep * mRows;
     }
 
-    public boolean onTouch(View v, MotionEvent event) {
-        if (true /* event.getAction() == MotionEvent.ACTION_DOWN */) {
+    public int getIndex(float x, float y) {
+        int col = (int) (y - mField.top) / mStep;
+        int row = (int) (x - mField.left) / mStep;
+        return row * mCols + col;
+    }
 
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-            if (mField.contains(x, y)) {
-                touchCell((x - mField.left) / mStep, (y - mField.top) / mStep);
-                return true;
-            }
+    public void select(int n, boolean isSource) {
+        if (isSource) {
+            mSelected = 0;
         }
-        mSelection = null;
-        return false;
+        mSelectionIndices[mSelected] = n;
+        mSelected = ++mSelected % 2;
+        invalidate();
     }
 
-    protected void touchCell(int col, int row) {
-        mSelection = new Point(col, row);
-        invalidate();
+    public void clean() {
+        mSelected = 0;
     }
 }
