@@ -34,6 +34,7 @@ public interface Field {
          *            Index of the cell.
          * @param cell
          *            Cell value.
+         * @return Whether a cell matches requirements.
          */
         public boolean match(int n, Cell cell);
     }
