@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 
-import com.yarcat.chemistrylines.touchlogic.FieldView;
 
 public class MainView extends View implements FieldView {
 

@@ -1,4 +1,4 @@
-package com.yarcat.chemistrylines.touchlogic;
+package com.yarcat.chemistrylines.view;
 
 /** Game field visual interface. */
 public interface FieldView {

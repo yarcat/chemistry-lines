@@ -1,5 +1,7 @@
 package com.yarcat.chemistrylines.touchlogic;
 
+import com.yarcat.chemistrylines.view.FieldView;
+
 import android.view.MotionEvent;
 import android.view.View;
 
