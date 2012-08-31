@@ -9,7 +9,7 @@ public class RectField implements Field {
 
     /**
      * Create a field.
-     * 
+     *
      * @param cols
      *            Amount of columns.
      * @param rows
@@ -42,6 +42,10 @@ public class RectField implements Field {
         } else {
             return -1;
         }
+    }
+
+    protected final boolean cellExists(int col, int row) {
+        return (0 <= col && col < mCols && 0 <= row && row < mRows);
     }
 
     public Cell at(int n) {
@@ -77,5 +81,40 @@ public class RectField implements Field {
             }
         }
         return -1;
+    }
+
+    public void linearScan(SequenceVisitor visitor) {
+        for (int origin = 0; origin < getLength(); ++origin) {
+            if (at(origin).isEmpty()) {
+                continue;
+            }
+            for (int i = 0; i < siblingShifts.length; ++i) {
+                int[] shift = siblingShifts[i];
+                int col = cellCol(origin);
+                int row = cellRow(origin);
+
+                if (!cellExists(col + shift[0], row + shift[1])
+                        ||at(cellNo(col + shift[0], row + shift[1])).isEmpty()) {
+                    continue;
+                }
+
+                visitor.reset();
+                visitor.visit(origin, at(origin));
+
+                boolean stop;
+                do {
+                    col += shift[0];
+                    row += shift[1];
+
+                    final int m = cellNo(col, row);
+                    final Cell cell = at(m);
+
+                    stop = cell == null || cell.isEmpty();
+                    if (!stop) {
+                        visitor.visit(m, cell);
+                    }
+                } while (!stop);
+            }
+        }
     }
 }
