@@ -18,10 +18,8 @@ public interface FieldView {
      * 
      * @param n
      *            Index in the field.
-     * @param isSource
-     *            True if this is a first cell, false if last.
      */
-    public void select(int n, boolean isSource);
+    public void select(int n);
 
     /** Called to clean any selection. */
     public void clean();
