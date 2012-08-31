@@ -1,7 +1,6 @@
 package com.yarcat.chemistrylines.field;
 
-
-/** Rectangle game field. */
+/** Rectangular game field. */
 public class RectField implements Field {
 
     private final Cell[] mCells;
@@ -95,12 +94,16 @@ public class RectField implements Field {
                 int row = cellRow(origin);
 
                 if (!cellExists(col + shift[0], row + shift[1])
-                        ||at(cellNo(col + shift[0], row + shift[1])).isEmpty()) {
+                        || at(cellNo(col + shift[0], row + shift[1])).isEmpty()) {
                     continue;
                 }
 
                 visitor.reset();
                 visitor.visit(origin, at(origin));
+
+                if (visitor.stopScan()) {
+                    continue;
+                }
 
                 boolean stop;
                 do {
@@ -110,7 +113,7 @@ public class RectField implements Field {
                     final int m = cellNo(col, row);
                     final Cell cell = at(m);
 
-                    stop = cell == null || cell.isEmpty();
+                    stop = cell == null || cell.isEmpty() || visitor.stopScan();
                     if (!stop) {
                         visitor.visit(m, cell);
                     }
