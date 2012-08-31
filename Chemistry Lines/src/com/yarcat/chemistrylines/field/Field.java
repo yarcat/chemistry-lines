@@ -44,9 +44,9 @@ public interface Field {
     public int matchSibling(int n, CellMatcher matcher);
 
     /** Allows to scan sequence of cells */
-    public abstract class SequenceVisitor {
+    public interface SequenceVisitor {
         /** Called before processing a sequence */
-        public abstract void reset();
+        public void reset();
 
         /**
          * Called by a field for a cell.
@@ -56,12 +56,10 @@ public interface Field {
          * @param cell
          *            Cell value.
          */
-        public abstract void visit(int n, Cell cell);
+        public void visit(int n, Cell cell);
 
         /** Check whether the sequence scan should be stopped. */
-        public boolean stopScan() {
-            return false;
-        }
+        public boolean stopScan();
     }
 
     /** Scan all linear sequences of non-empty cells.

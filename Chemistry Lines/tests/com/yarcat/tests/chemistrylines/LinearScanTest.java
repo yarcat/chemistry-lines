@@ -12,7 +12,7 @@ import com.yarcat.chemistrylines.field.RectField;
 
 public class LinearScanTest {
 
-    private class ScanResults extends SequenceVisitor {
+    private class ScanResults implements SequenceVisitor {
         public int mResets = 0;
         public int[] mVisited;
 
@@ -20,14 +20,16 @@ public class LinearScanTest {
             mVisited = new int[field.getLength()];
         }
 
-        @Override
         public void reset() {
             ++mResets;
         }
 
-        @Override
         public void visit(int n, Cell cell) {
             ++mVisited[n];
+        }
+
+        public boolean stopScan() {
+            return false;
         }
     }
 
