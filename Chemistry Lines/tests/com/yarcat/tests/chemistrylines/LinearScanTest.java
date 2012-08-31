@@ -1,5 +1,6 @@
 package com.yarcat.tests.chemistrylines;
 
+import static com.yarcat.tests.chemistrylines.utils.markEmpty;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -37,18 +38,6 @@ public class LinearScanTest {
         ScanResults r = new ScanResults(field);
         field.linearScan(r);
         return r;
-    }
-
-    private Field markEmpty(Field field, int[] cells) {
-        for (int i = 0; i < field.getLength(); ++i) {
-            field.at(i).setEmpty(false);
-        }
-        if (cells != null) {
-            for (int i : cells) {
-                field.at(i).setEmpty(true);
-            }
-        }
-        return field;
     }
 
     @Test
