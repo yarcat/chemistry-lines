@@ -1,7 +1,6 @@
 package com.yarcat.chemistrylines.gamelogic;
 
 import com.yarcat.chemistrylines.Field;
-import com.yarcat.chemistrylines.GameLogic;
 
 public class ChemistryLinesGame implements GameLogic {
     

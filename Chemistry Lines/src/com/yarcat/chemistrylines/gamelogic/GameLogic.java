@@ -1,4 +1,4 @@
-package com.yarcat.chemistrylines;
+package com.yarcat.chemistrylines.gamelogic;
 
 /**
  * Game rules.
