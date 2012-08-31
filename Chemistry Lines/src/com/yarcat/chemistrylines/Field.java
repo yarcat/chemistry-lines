@@ -41,4 +41,26 @@ public interface Field {
 
     /** Index of a matching cell within surrounding cells or -1 if none */
     public int matchSibling(int n, CellMatcher matcher);
+
+    /** Allows to scan sequence of cells */
+    public interface SequenceVisitor {
+        /** Called before processing a sequence */
+        public void reset();
+
+        /**
+         * Called by a field for a cell.
+         *
+         * @param n
+         *            Index of the cell.
+         * @param cell
+         *            Cell value.
+         */
+        public void visit(int n, Cell cell);
+    }
+
+    /** Scan all linear sequences of non-empty cells.
+     *
+     * Sequences must be of 2 cells at least.
+     */
+    public void linearScan(SequenceVisitor visitor);
 }
