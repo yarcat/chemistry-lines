@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.yarcat.chemistrylines.field.Celld;
+import com.yarcat.chemistrylines.field.Cell;
+import com.yarcat.chemistrylines.field.Field.SequenceVisitor;
 import com.yarcat.chemistrylines.field.RectField;
-import com.yarcat.chemistrylines.field.Field.Cell;
-import com.yarcat.ccom.yarcat.chemistrylines.field.RectFieldisitor;
+import com.yarcat.chemistrylines.field.Field;
 
 public class LinearScanTest {
 

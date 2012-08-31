@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.yarcat.chemistrylines.field.Fieldield;
 import com.yarcat.chemistrylines.field.Field;
+import com.yarcat.chemistrylines.field.RectField;
 
 public class PathTest {
 
