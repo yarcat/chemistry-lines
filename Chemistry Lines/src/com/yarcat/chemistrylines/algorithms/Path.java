@@ -3,10 +3,10 @@ package com.yarcat.chemistrylines.algorithms;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.yarcat.chemistrylines.Cell;
-import com.yarcat.chemistrylines.Field;
-import com.yarcat.chemistrylines.Field.CellMatcher;
-import com.yarcat.chemistrylines.Field.CellVisitor;
+import com.yarcat.chemistrylines.field.Cell;
+import com.yarcat.chemistrylines.field.Field;
+import com.yarcat.chemistrylines.field.Field.CellMatcher;
+import com.yarcat.chemistrylines.field.Field.CellVisitor;
 
 /** Shorted path algorithm */
 public class Path {

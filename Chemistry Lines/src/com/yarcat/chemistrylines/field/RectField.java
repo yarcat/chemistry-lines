@@ -1,4 +1,5 @@
-package com.yarcat.chemistrylines;
+package com.yarcat.chemistrylines.field;
+
 
 /** Rectangle game field. */
 public class RectField implements Field {

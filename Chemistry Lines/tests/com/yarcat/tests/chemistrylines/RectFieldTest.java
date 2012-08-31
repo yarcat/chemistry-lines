@@ -4,9 +4,9 @@ import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Test;
 
-import com.yarcat.chemistrylines.Cell;
-import com.yarcat.chemistrylines.Field.CellVisitor;
-import com.yarcat.chemistrylines.RectField;
+import com.yarcat.chemistrylines.field.Celld.CellVisitor;
+import com.yarcat.chemistrylines.field.Cell;
+import com.yarcat.chemistrylines.field.RectFieldtField;
 
 public class RectFieldTest {
 

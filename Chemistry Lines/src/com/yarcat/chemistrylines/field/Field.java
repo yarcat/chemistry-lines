@@ -1,4 +1,5 @@
-package com.yarcat.chemistrylines;
+package com.yarcat.chemistrylines.field;
+
 
 /** Game field (model) interface. */
 public interface Field {

@@ -1,4 +1,4 @@
-package com.yarcat.chemistrylines;
+package com.yarcat.chemistrylines.field;
 
 /** Represents a cell in a game field. */
 public final class Cell {
