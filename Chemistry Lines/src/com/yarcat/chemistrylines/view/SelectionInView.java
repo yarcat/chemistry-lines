@@ -1,4 +1,4 @@
-package com.yarcat.chemistrylines;
+package com.yarcat.chemistrylines.view;
 
 public class SelectionInView {
     private int[] mSelection = new int[] { -1, -1 };

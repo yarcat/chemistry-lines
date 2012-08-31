@@ -1,4 +1,4 @@
-package com.yarcat.chemistrylines;
+package com.yarcat.chemistrylines.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
