@@ -22,8 +22,7 @@ public class MainView extends View implements FieldView {
     private Paint mFirstSelectionPaint = new Paint();
     private Paint mSelectionPaint = new Paint();
 
-    private int mSelected = 0;
-    private int[] mSelectionIndices = new int[] { -1, -1 };
+    private final SelectionInView mSelection = new SelectionInView();
 
     public MainView(Context context) {
         super(context);
@@ -47,15 +46,11 @@ public class MainView extends View implements FieldView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        for (int i = 0; i < mSelected; ++i) {
-            int col = mSelectionIndices[i] % mCols;
-            int row = mSelectionIndices[i] / mRows;
-            int left = mField.left + col * mStep;
-            int right = left + mStep;
-            int top = mField.top + row * mStep;
-            int bottom = top + mStep;
-            canvas.drawRect(left, top, right, bottom,
-                    i == 0 ? mFirstSelectionPaint : mSelectionPaint);
+        if (mSelection.hasSource()) {
+            drawSourceSelection(mSelection.getSource(), canvas);
+            if (mSelection.hasDestination()) {
+                drawDestinationSelection(mSelection.getDestination(), canvas);
+            }
         }
 
         for (int col = 0; col <= mCols; ++col) {
@@ -67,6 +62,25 @@ public class MainView extends View implements FieldView {
             int y = mField.top + mStep * row;
             canvas.drawLine(mField.left, y, mField.right, y, mPaint);
         }
+    }
+
+    private void drawSelection(int n, Canvas canvas, Paint paint) {
+        int col = n % mCols;
+        int row = n / mRows;
+        int left = mField.left + col * mStep;
+        int right = left + mStep;
+        int top = mField.top + row * mStep;
+        int bottom = top + mStep;
+        canvas.drawRect(left, top, right, bottom, paint);
+    }
+
+    private void drawDestinationSelection(int n, Canvas canvas) {
+        drawSelection(n, canvas, mFirstSelectionPaint);
+    }
+
+    private void drawSourceSelection(int n, Canvas canvas) {
+        drawSelection(n, canvas, mSelectionPaint);
+
     }
 
     @Override
@@ -87,16 +101,13 @@ public class MainView extends View implements FieldView {
         return row * mCols + col;
     }
 
-    public void select(int n, boolean isSource) {
-        if (isSource) {
-            mSelected = 0;
-        }
-        mSelectionIndices[mSelected] = n;
-        mSelected = ++mSelected % 2;
+    public void select(int n) {
+        mSelection.select(n);
         invalidate();
     }
 
     public void clean() {
-        mSelected = 0;
+        mSelection.clear();
+        invalidate();
     }
 }
