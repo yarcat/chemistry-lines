@@ -1,4 +1,4 @@
-package com.yarcat.chemistrylines.gamelogic;
+package com.yarcat.chemistrylines.game;
 
 import com.yarcat.chemistrylines.field.Field;
 

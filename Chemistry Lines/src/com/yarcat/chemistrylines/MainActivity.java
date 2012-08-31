@@ -3,7 +3,7 @@ package com.yarcat.chemistrylines;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.yarcat.chemistrylines.touchlogic.SlideTouchLogic;
+import com.yarcat.chemistrylines.touch.SlideTouchLogic;
 import com.yarcat.chemistrylines.view.MainView;
 
 public class MainActivity extends Activity {

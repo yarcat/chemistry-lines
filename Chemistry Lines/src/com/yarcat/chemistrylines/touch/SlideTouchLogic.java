@@ -1,4 +1,4 @@
-package com.yarcat.chemistrylines.touchlogic;
+package com.yarcat.chemistrylines.touch;
 
 import com.yarcat.chemistrylines.view.FieldView;
 
