@@ -1,8 +1,10 @@
-package com.yarcat.chemistrylines;
+package com.yarcat.chemistrylines.algorithms;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.yarcat.chemistrylines.Cell;
+import com.yarcat.chemistrylines.Field;
 import com.yarcat.chemistrylines.Field.CellMatcher;
 import com.yarcat.chemistrylines.Field.CellVisitor;
 

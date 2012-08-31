@@ -1,8 +1,8 @@
 package com.yarcat.tests.chemistrylines;
 
-import static com.yarcat.chemistrylines.Path.distance;
-import static com.yarcat.chemistrylines.Path.isReachable;
-import static com.yarcat.chemistrylines.Path.path;
+import static com.yarcat.chemistrylines.algorithms.Path.distance;
+import static com.yarcat.chemistrylines.algorithms.Path.isReachable;
+import static com.yarcat.chemistrylines.algorithms.Path.path;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
