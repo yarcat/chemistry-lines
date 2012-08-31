@@ -13,11 +13,18 @@ import com.yarcat.chemistrylines.field.ElementRegistry;
 
 public class ElementDefinitionParserTest {
 
-    private final static String PAYLOAD = "// Define known elements.\n"
-            + "O{2-} One atom\n" + "O2{0} One molecula\n"
-            + "O3{0} One super molecula\n" + "\n"
-            + "// Define known productions.\n" + "\n" + "O{2-} O{2-} O2{0}\n"
-            + "\n" + "// Random comment." + "\n" + "O{2-} O2{0} O3{0}\n";
+    private final static String PAYLOAD =
+            "// Define known elements.\n" +
+            "O{2-} One atom\n" + "O2{0} One molecula\n" +
+            "O3{0} One super molecula\n" +
+            "\n" +
+            "// Define known productions.\n" +
+            "\n" +
+            "O{2-} O{2-} O2{0}\n" +
+            "\n" +
+            "// Random comment." +
+            "\n" +
+            "O{2-} O2{0} O3{0}\n";
 
     @Test
     public void testLoad() throws IOException {
