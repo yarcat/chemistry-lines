@@ -43,10 +43,6 @@ public class Path {
 
     /** Execute the algorithm */
     public void evaluate() {
-        if (!mField.at(mOrigin).isEmpty()) {
-            return;
-        }
-
         final Queue<Integer> queue = new LinkedList<Integer>();
 
         mStep[mOrigin] = 1;

@@ -30,13 +30,9 @@ public class PathTest {
     public void filledOrigin() throws Exception {
         Field field = getRectField(2, 2, new int[] { 0 });
 
-        assertFalse(isReachable(field, 0, 0));
-        assertEquals(-1, distance(field, 0, 0));
-        assertNull(path(field, 0, 0));
-
-        assertFalse(isReachable(field, 0, 3));
-        assertEquals(-1, distance(field, 0, 3));
-        assertNull(path(field, 0, 3));
+        assertTrue(isReachable(field, 0, 0));
+        assertEquals(0, distance(field, 0, 0));
+        assertArrayEquals(new int[] { 0 }, path(field, 0, 0));
     }
 
     @Test
