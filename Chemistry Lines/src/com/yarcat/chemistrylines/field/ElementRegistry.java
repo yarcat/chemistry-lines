@@ -1,56 +1,45 @@
 package com.yarcat.chemistrylines.field;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.Collection;
 import java.util.HashMap;
 
-/** Knows all possible (pseudo)ions, theirs possible productions, etc. */
+/** Knows about elements and possible productions. */
 public class ElementRegistry {
+
     private final HashMap<String, Element> mElements = new HashMap<String, Element>();
-    private final HashMap<SimpleImmutableEntry<String, String>, Element[]> mProductions = new HashMap<SimpleImmutableEntry<String, String>, Element[]>();
+    private final HashMap<Object, Element[]> mProductions = new HashMap<Object, Element[]>();
 
-    /** Adds element to the list of known elements. */
-    public final void addElement(String id, String name) {
-        assert !mElements.containsKey(id);
-        mElements.put(id, new Element(id, name));
+    /** Registers element. */
+    public void register(Element e) {
+        mElements.put(e.getId(), e);
     }
 
-    /** Returns all known elements. */
-    public final Collection<Element> getKnownElements() {
-        return mElements.values();
+    /** Registers production. */
+    public void register(String id1, String id2, Element[] p) {
+        mProductions.put(getProductionKey(id1, id2), p);
     }
 
-    /**
-     * Adds element to the list of known productions.
-     * 
-     * @param ids
-     *            Array of ids. First two elements are keys, and the rest is
-     *            production.
-     */
-    public final void addProduction(String[] ids) {
-        assert ids.length > 2;
-        assert mElements.containsKey(ids[0]);
-        assert mElements.containsKey(ids[1]);
-        SimpleImmutableEntry<String, String> key = new SimpleImmutableEntry<String, String>(
-                ids[0], ids[1]);
-        assert !mElements.containsKey(key);
-        Element[] production = new Element[ids.length - 2];
-        for (int i = 2; i < ids.length; ++i) {
-            assert mElements.containsKey(ids[i]);
-            production[i - 2] = get(ids[i]);
-        }
-        mProductions.put(key, production);
+    /** Returns true if registry contains element. */
+    public boolean contains(String id) {
+        return mElements.containsKey(id);
     }
 
-    /** Returns element by a given id. */
+    /** Returns true if registry contains production. */
+    public boolean contains(String id1, String id2) {
+        return mProductions.containsKey(getProductionKey(id1, id2));
+    }
+
+    /** Returns element. */
     public Element get(String id) {
         return mElements.get(id);
     }
 
-    /** Returns list of possible productions. */
-    public Element[] getProductions(Element e1, Element e2) {
-        SimpleImmutableEntry<String, String> key = new SimpleImmutableEntry<String, String>(
-                e1.getId(), e2.getId());
-        return mProductions.get(key);
+    /** Returns production for given elements. */
+    public Element[] get(String id1, String id2) {
+        return mProductions.get(getProductionKey(id1, id2));
+    }
+
+    /** Returns key for the production map. */
+    private Object getProductionKey(String id1, String id2) {
+        return id1 + "|" + id2;
     }
 }

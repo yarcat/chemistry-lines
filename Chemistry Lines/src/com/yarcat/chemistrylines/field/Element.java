@@ -4,6 +4,8 @@ package com.yarcat.chemistrylines.field;
 public class Element {
     private final String mId;
     private final String mName;
+    private boolean mStartsCompound;
+    private boolean mIsFinal;
 
     public Element(String id, String name) {
         mId = id;
@@ -16,5 +18,23 @@ public class Element {
 
     public final String getName() {
         return mName;
+    }
+
+    public final boolean startsCompound() {
+        return mStartsCompound;
+    }
+
+    public final boolean isFinal() {
+        return mIsFinal;
+    }
+    
+    public Element startsCompound(boolean flag) {
+        mStartsCompound = flag;
+        return this;
+    }
+    
+    public Element isFinal(boolean flag) {
+        mIsFinal = flag;
+        return this;
     }
 }

@@ -2,6 +2,7 @@ package com.yarcat.tests.chemistrylines;
 
 import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.yarcat.chemistrylines.field.Element;
@@ -9,51 +10,48 @@ import com.yarcat.chemistrylines.field.ElementRegistry;
 
 public class ElementRegistryTest {
 
-    private ElementRegistry createElementRegistry() {
-        ElementRegistry registry = new ElementRegistry();
-        registry.addElement("H{1+}", "One atom");
-        registry.addElement("H2{0}", "One molecula");
-        return registry;
+    private ElementRegistry mRegistry;
+    private Element e1;
+    private Element e2;
+    private Element e3;
+
+    @Before
+    public void setUp() {
+        mRegistry = new ElementRegistry();
+        e1 = new Element("O{-2}", "Compound1")
+            .startsCompound(true)
+            .isFinal(false);
+        e2 = new Element("O2{0}", "Compound2")
+            .startsCompound(true)
+            .isFinal(true);
+        e3 = new Element("O3{0}", "Compound2")
+            .startsCompound(false)
+            .isFinal(true);
     }
 
     @Test
-    public void testPositiveLookup() {
-        ElementRegistry registry = createElementRegistry();
+    public void element() {
+        assertFalse(mRegistry.contains(e1.getId()));
+        assertNull(mRegistry.get(e1.getId()));
 
-        Element element = registry.get("H{1+}");
-        assertEquals("H{1+}", element.getId());
-        assertEquals("One atom", element.getName());
+        mRegistry.register(e1);
 
-        element = registry.get("H2{0}");
-        assertEquals("H2{0}", element.getId());
-        assertEquals("One molecula", element.getName());
+        assertTrue(mRegistry.contains(e1.getId()));
+        assertEquals(e1, mRegistry.get(e1.getId()));
     }
 
     @Test
-    public void testNegativeLookup() {
-        ElementRegistry registry = new ElementRegistry();
-        assertNull(registry.get("?"));
-    }
+    public void production() {
+        assertFalse(mRegistry.contains(e1.getId(), e2.getId()));
+        assertNull(mRegistry.get(e1.getId(), e1.getId()));
 
-    @Test
-    public void testProduction() {
-        ElementRegistry registry = createElementRegistry();
-        registry.addElement("H3{0}", "One super molecula");
-        registry.addElement("H4{-1}", "One freaking ion");
-        registry.addProduction(new String[] { "H{1+}", "H{1+}", "H2{0}" });
-        registry.addProduction(new String[] { "H{1+}", "H2{0}", "H3{0}" });
-        registry.addProduction(new String[] { "H2{0}", "H{1+}", "H3{0}",
-                "H4{-1}" });
+        mRegistry.register(e1);
+        mRegistry.register(e2);
+        mRegistry.register(e3);
+        Element[] production = new Element[] {e3};
+        mRegistry.register(e1.getId(), e2.getId(), production);
 
-        Element h = registry.get("H{1+}");
-        Element h2 = registry.get("H2{0}");
-        Element h3 = registry.get("H3{0}");
-        Element h4 = registry.get("H4{-1}");
-
-        assertArrayEquals(new Element[] { h2 }, registry.getProductions(h, h));
-        assertArrayEquals(new Element[] { h3 }, registry.getProductions(h, h2));
-        assertArrayEquals(new Element[] { h3, h4 },
-                registry.getProductions(h2, h));
-        assertNull(registry.getProductions(h2, h3));
+        assertTrue(mRegistry.contains(e1.getId(), e2.getId()));
+        assertArrayEquals(production, mRegistry.get(e1.getId(), e2.getId()));
     }
 }
