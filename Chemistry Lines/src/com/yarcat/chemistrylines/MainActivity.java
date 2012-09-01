@@ -7,7 +7,7 @@ import com.yarcat.chemistrylines.field.RectField;
 import com.yarcat.chemistrylines.game.ChemistryLinesGame;
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.touch.SlideTouchLogic;
-import com.yarcat.chemistrylines.view.MainView;
+import com.yarcat.chemistrylines.view.RectFieldView;
 
 public class MainActivity extends Activity {
 
@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
         RectField field = new RectField(6, 6);
         GameLogic logic = new ChemistryLinesGame(field);
         logic.addItems();
-        MainView mainView = new MainView(this, field, 6, 6, logic);
+        RectFieldView mainView = new RectFieldView(this, field, 6, 6, logic);
         mTouchListener = new SlideTouchLogic();
         mainView.setOnTouchListener(mTouchListener);
         setContentView(mainView);

@@ -13,7 +13,7 @@ import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
 
-public class MainView extends View implements FieldView {
+public class RectFieldView extends View implements FieldView {
 
     private static final int LINE_WIDTH = 5;
     private static final int BORDER = 20;
@@ -30,7 +30,7 @@ public class MainView extends View implements FieldView {
     private Field mField;
     private GameLogic mLogic;
 
-    public MainView(Context context) {
+    public RectFieldView(Context context) {
         super(context);
 
         mPaint.setColor(Color.WHITE);
@@ -44,7 +44,7 @@ public class MainView extends View implements FieldView {
         mCols = mRows = 4; // Just something for the visual tool.
     }
 
-    public MainView(Context context, Field field, int cols, int rows,
+    public RectFieldView(Context context, Field field, int cols, int rows,
             GameLogic logic) {
         this(context);
         mField = field;
