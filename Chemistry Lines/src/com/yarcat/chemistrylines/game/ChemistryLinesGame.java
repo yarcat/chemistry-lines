@@ -1,7 +1,7 @@
 package com.yarcat.chemistrylines.game;
+import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
 
 import com.yarcat.chemistrylines.algorithms.Path;
-import com.yarcat.chemistrylines.field.Cell;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.KnownElements;
@@ -30,24 +30,15 @@ public class ChemistryLinesGame implements GameLogic {
 
     public void addItems() {
         for (int i = 0; i < 3; ++i) {
-            getRandomCell().setElement(getRandomElement());
+            int n = getRandomEmptyCell(mField);
+            if (n < 0)
+                break;
+            mField.at(n).setElement(getRandomElement());
         }
     }
 
     // Fixed logic for the beginning.
     private int mElementIdx = 0;
-
-    private Cell getRandomCell() {
-        switch (mElementIdx) {
-        case 0:
-            return mField.at(0);
-        case 1:
-            return mField.at(35);
-        case 2:
-            return mField.at(21);
-        }
-        throw new RuntimeException();
-    }
 
     private Element getRandomElement() {
         Element e;
