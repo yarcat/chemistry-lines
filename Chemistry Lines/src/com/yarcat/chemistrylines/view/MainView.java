@@ -84,15 +84,17 @@ public class MainView extends View implements FieldView {
                 int col = n % mCols;
                 int row = n / mRows;
                 int left = mFieldRect.left + col * mStep;
-                // int right = left + mStep;
                 int top = mFieldRect.top + row * mStep;
-                // int bottom = top + mStep;
                 Paint p = new Paint();
                 p.setColor(Color.MAGENTA);
                 p.setStyle(Paint.Style.FILL);
                 p.setTextAlign(Paint.Align.CENTER);
                 p.setTextSize(50);
-                canvas.drawText(e.getId(), top + mStep / 2, left + mStep / 2, p);
+                Rect bounds = new Rect();
+                String text = e.getId();
+                p.getTextBounds(text, 0, text.length(), bounds);
+                int d = (mStep + bounds.top + bounds.bottom) / 2;
+                canvas.drawText(text, left + mStep / 2, top + mStep - d, p);
             }
         }
     }
