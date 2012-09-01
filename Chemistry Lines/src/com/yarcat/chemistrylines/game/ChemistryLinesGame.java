@@ -41,6 +41,11 @@ public class ChemistryLinesGame implements GameLogic {
     }
 
     private Element getRandomElement() {
-        return knownElements.getByIndex(random.nextInt(knownElements.size()));
+        Element e;
+        do {
+            // TODO(yarcat): Find better way of skipping final elements.
+            e = knownElements.getByIndex(random.nextInt(knownElements.size()));
+        } while (e.isFinal());
+        return e;
     }
 }
