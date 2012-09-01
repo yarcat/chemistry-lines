@@ -155,10 +155,13 @@ public class RectFieldView extends View implements FieldView {
     }
 
     public void apply() {
-        try {
-            mLogic.makeMove(mSelection.getSource(), mSelection.getDestination());
-        } catch (InvalidMove e) {
-            // TODO(yarcat): Notify the player.
+        if (mSelection.hasDestination()) {
+            try {
+                mLogic.makeMove(mSelection.getSource(),
+                        mSelection.getDestination());
+            } catch (InvalidMove e) {
+                // TODO(yarcat): Notify the player.
+            }
         }
         mSelection.clear();
         invalidate();
