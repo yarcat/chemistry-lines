@@ -8,6 +8,10 @@ public class RandomCell {
     // TODO(before_release) make random generator application wide
     private static Random random = new Random(0);
 
+    public static int randomInt(int range) {
+        return (int) (random.nextFloat() * range);
+    }
+
     public static int getRandomEmptyCell(Field field) {
         int range = countEmptyCells(field);
         int rv;
@@ -15,7 +19,7 @@ public class RandomCell {
         if (range == 0) {
             rv = -1;
         } else {
-            int x = (int) (random.nextFloat() * range);
+            int x = randomInt(range);
             rv = 0;
             while (!field.at(rv).isEmpty() || x > 0) {
                 if (field.at(rv).isEmpty()) {

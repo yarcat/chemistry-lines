@@ -1,10 +1,11 @@
 package com.yarcat.chemistrylines.game;
 import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
+import static com.yarcat.chemistrylines.algorithms.RandomCell.randomInt;
+import static com.yarcat.chemistrylines.field.KnownElements.knownElements;
 
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
-import com.yarcat.chemistrylines.field.KnownElements;
 
 public class ChemistryLinesGame implements GameLogic {
 
@@ -37,25 +38,7 @@ public class ChemistryLinesGame implements GameLogic {
         }
     }
 
-    // Fixed logic for the beginning.
-    private int mElementIdx = 0;
-
     private Element getRandomElement() {
-        Element e;
-        switch (mElementIdx) {
-        case 0:
-            e = KnownElements.get("H{+}");
-            break;
-        case 1:
-            e = KnownElements.get("H{+}");
-            break;
-        case 2:
-            e = KnownElements.get("Cl{-}");
-            break;
-        default:
-            throw new RuntimeException();
-        }
-        ++mElementIdx;
-        return e;
+        return knownElements.getByIndex(randomInt(knownElements.size()));
     }
 }
