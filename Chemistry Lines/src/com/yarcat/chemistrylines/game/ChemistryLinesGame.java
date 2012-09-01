@@ -22,8 +22,10 @@ public class ChemistryLinesGame implements GameLogic {
         if (!isMoveValid(origin, fin)) {
             throw new InvalidMove();
         }
-        mField.at(fin).setElement(mField.at(origin).getElement());
-        mField.at(origin).setElement(null);
+        if (origin != fin) {
+            mField.at(fin).setElement(mField.at(origin).getElement());
+            mField.at(origin).setElement(null);
+        }
     }
 
     public void addItems() {
