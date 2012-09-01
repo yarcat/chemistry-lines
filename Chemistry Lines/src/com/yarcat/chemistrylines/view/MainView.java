@@ -1,12 +1,15 @@
 package com.yarcat.chemistrylines.view;
 
+import com.yarcat.chemistrylines.field.Cell;
+import com.yarcat.chemistrylines.field.Element;
+import com.yarcat.chemistrylines.field.Field;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
-
 
 public class MainView extends View implements FieldView {
 
@@ -17,11 +20,12 @@ public class MainView extends View implements FieldView {
     private int mRows;
     private int mStep;
     private Paint mPaint = new Paint();
-    private Rect mField = new Rect();
+    private Rect mFieldRect = new Rect();
     private Paint mFirstSelectionPaint = new Paint();
     private Paint mSelectionPaint = new Paint();
 
     private final SelectionInView mSelection = new SelectionInView();
+    private Field mField;
 
     public MainView(Context context) {
         super(context);
@@ -37,38 +41,68 @@ public class MainView extends View implements FieldView {
         mCols = mRows = 4; // Just something for the visual tool.
     }
 
-    public MainView(Context context, int cols, int rows) {
+    public MainView(Context context, Field field, int cols, int rows) {
         this(context);
+        mField = field;
         mCols = cols;
         mRows = rows;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        drawSelection(canvas);
+        drawGrid(canvas);
+        drawElements(canvas);
+    }
+
+    private void drawSelection(Canvas canvas) {
         if (mSelection.hasSource()) {
             drawSourceSelection(mSelection.getSource(), canvas);
             if (mSelection.hasDestination()) {
                 drawDestinationSelection(mSelection.getDestination(), canvas);
             }
         }
+    }
 
+    private void drawGrid(Canvas canvas) {
         for (int col = 0; col <= mCols; ++col) {
-            int x = mField.left + mStep * col;
-            canvas.drawLine(x, mField.top, x, mField.bottom, mPaint);
+            int x = mFieldRect.left + mStep * col;
+            canvas.drawLine(x, mFieldRect.top, x, mFieldRect.bottom, mPaint);
         }
 
         for (int row = 0; row <= mRows; ++row) {
-            int y = mField.top + mStep * row;
-            canvas.drawLine(mField.left, y, mField.right, y, mPaint);
+            int y = mFieldRect.top + mStep * row;
+            canvas.drawLine(mFieldRect.left, y, mFieldRect.right, y, mPaint);
+        }
+    }
+
+    private void drawElements(Canvas canvas) {
+        for (int n = 0; n < mField.getLength(); ++n) {
+            Cell cell = mField.at(n);
+            if (!cell.isEmpty()) {
+                Element e = cell.getElement();
+                int col = n % mCols;
+                int row = n / mRows;
+                int left = mFieldRect.left + col * mStep;
+                // int right = left + mStep;
+                int top = mFieldRect.top + row * mStep;
+                // int bottom = top + mStep;
+                Paint p = new Paint();
+                p.setColor(Color.MAGENTA);
+                p.setStyle(Paint.Style.FILL);
+                p.setTextAlign(Paint.Align.CENTER);
+                p.setTextSize(50);
+                canvas.drawText(e.getId(), top + mStep / 2, left + mStep / 2, p);
+            }
         }
     }
 
     private void drawSelection(int n, Canvas canvas, Paint paint) {
         int col = n % mCols;
         int row = n / mRows;
-        int left = mField.left + col * mStep;
+        int left = mFieldRect.left + col * mStep;
         int right = left + mStep;
-        int top = mField.top + row * mStep;
+        int top = mFieldRect.top + row * mStep;
         int bottom = top + mStep;
         canvas.drawRect(left, top, right, bottom, paint);
     }
@@ -88,15 +122,15 @@ public class MainView extends View implements FieldView {
 
         mStep = Math.min((w - BORDER) / mCols, (h - BORDER) / mRows);
 
-        mField.left = BORDER / 2;
-        mField.top = BORDER / 2;
-        mField.right = mField.left + mStep * mCols;
-        mField.bottom = mField.top + mStep * mRows;
+        mFieldRect.left = BORDER / 2;
+        mFieldRect.top = BORDER / 2;
+        mFieldRect.right = mFieldRect.left + mStep * mCols;
+        mFieldRect.bottom = mFieldRect.top + mStep * mRows;
     }
 
     public int getIndex(float x, float y) {
-        int row = (int) (y - mField.top) / mStep;
-        int col = (int) (x - mField.left) / mStep;
+        int row = (int) (y - mFieldRect.top) / mStep;
+        int col = (int) (x - mFieldRect.left) / mStep;
         return row * mCols + col;
     }
 

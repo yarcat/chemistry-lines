@@ -3,7 +3,11 @@ package com.yarcat.chemistrylines.field;
 /** Static definition of all known elements and their productions. */
 public final class KnownElements {
 
-    public final static ElementRegistry elements = new ElementRegistry();
+    public final static Element get(String id) {
+        return elements.get(id);
+    }
+
+    private final static ElementRegistry elements = new ElementRegistry();
     static {
         E("H{+}")
           .startsCompound(true);

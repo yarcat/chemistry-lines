@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.RectField;
 
@@ -66,7 +67,7 @@ public class PathTest {
             int[] filledCells) {
         RectField field = new RectField(cols, rows);
         for (int n : filledCells) {
-            field.at(n).setEmpty(false);
+            field.at(n).setElement(new Element("id", "name"));
         }
         return field;
     }

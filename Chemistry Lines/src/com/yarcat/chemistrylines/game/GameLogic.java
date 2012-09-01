@@ -47,5 +47,5 @@ public interface GameLogic {
     public void makeMove(int origin, int fin) throws InvalidMove;
 
     /** Populates field with new elements. */
-    public void addRandomItems();
+    public void addItems();
 }

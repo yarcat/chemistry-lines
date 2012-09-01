@@ -3,13 +3,17 @@ package com.yarcat.chemistrylines.field;
 /** Represents a cell in a game field. */
 public final class Cell {
 
-    private boolean mEmpty = true;
+    private Element mElement = null;
 
     public boolean isEmpty() {
-        return mEmpty;
+        return getElement() == null;
     }
 
-    public void setEmpty(boolean empty) {
-        mEmpty = empty;
+    public void setElement(Element element) {
+        mElement = element;
+    }
+
+    public Element getElement() {
+        return mElement;
     }
 }
