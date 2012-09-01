@@ -12,15 +12,8 @@ public interface Field {
 
     /** Allows to visit _all_ siblings of a given cell. */
     public interface CellVisitor {
-        /**
-         * Called by a field for a cell.
-         *
-         * @param n
-         *            Index of the cell.
-         * @param cell
-         *            Cell value.
-         */
-        public void visit(int n, Cell cell);
+        /** Called by a field for a cell. */
+        public void visit(int n, Field field);
     }
 
     /** Calls CellVisitor.visit() for the surrounding cells. */
@@ -28,16 +21,11 @@ public interface Field {
 
     /** Allows to find a sibling of a given cell */
     public interface CellMatcher {
-        /**
-         * Called by a field for a cell.
+        /** Called by a field for a cell.
          *
-         * @param n
-         *            Index of the cell.
-         * @param cell
-         *            Cell value.
          * @return Whether a cell matches requirements.
          */
-        public boolean match(int n, Cell cell);
+        public boolean match(int n, Field field);
     }
 
     /** Index of a matching cell within surrounding cells or -1 if none */
@@ -48,19 +36,11 @@ public interface Field {
         /** Called before processing a sequence */
         public void reset();
 
-        /**
-         * Called by a field for a cell.
-         *
-         * @param n
-         *            Index of the cell.
-         * @param cell
-         *            Cell value.
-         */
-        public void visit(int n, Cell cell);
+        /** Called by a field for a cell. */
+        public void visit(int n, Field field);
 
         /** Check whether the sequence scan should be stopped. */
-        // TODO(luch) add a field parameter
-        public boolean stopScan();
+        public boolean stopScan(Field field);
     }
 
     /** Scan all linear sequences of non-empty cells.

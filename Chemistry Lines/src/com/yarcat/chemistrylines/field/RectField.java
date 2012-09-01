@@ -61,9 +61,8 @@ public class RectField implements Field {
 
         for (int i = 0; i < siblingShifts.length; ++i) {
             int m = cellNo(col + siblingShifts[i][0], row + siblingShifts[i][1]);
-            Cell cell = at(m);
-            if (cell != null) {
-                visitor.visit(m, cell);
+            if (at(m) != null) {
+                visitor.visit(m, this);
             }
         }
     }
@@ -74,9 +73,7 @@ public class RectField implements Field {
 
         for (int i = 0; i < siblingShifts.length; ++i) {
             int m = cellNo(col + siblingShifts[i][0], row + siblingShifts[i][1]);
-            Cell cell = at(m);
-            boolean found = cell != null && matcher.match(m, cell);
-            if (found) {
+            if (at(m) != null && matcher.match(m, this)) {
                 return m;
             }
         }
@@ -99,9 +96,9 @@ public class RectField implements Field {
                 }
 
                 visitor.reset();
-                visitor.visit(origin, at(origin));
+                visitor.visit(origin, this);
 
-                if (visitor.stopScan()) {
+                if (visitor.stopScan(this)) {
                     continue;
                 }
 
@@ -113,9 +110,10 @@ public class RectField implements Field {
                     final int m = cellNo(col, row);
                     final Cell cell = at(m);
 
-                    stop = cell == null || cell.isEmpty() || visitor.stopScan();
+                    stop = cell == null || cell.isEmpty()
+                            || visitor.stopScan(this);
                     if (!stop) {
-                        visitor.visit(m, cell);
+                        visitor.visit(m, this);
                     }
                 } while (!stop);
             }

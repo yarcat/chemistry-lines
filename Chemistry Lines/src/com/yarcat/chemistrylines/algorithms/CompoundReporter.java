@@ -2,7 +2,6 @@ package com.yarcat.chemistrylines.algorithms;
 
 import java.util.ArrayList;
 
-import com.yarcat.chemistrylines.field.Cell;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.Field.SequenceVisitor;
 
@@ -15,8 +14,6 @@ public abstract class CompoundReporter {
         /**
          * Callback on a compound found.
          *
-         * @param field
-         *            is a field.
          * @param cells
          *            sequence of indexes of cells forming a compound.
          */
@@ -49,21 +46,18 @@ public abstract class CompoundReporter {
     /** Scan the field and report compounds to the listener */
     public void scan(Field field, CompoundDetector detector,
             CompoundListener listener) {
-        // TODO(luch) move field to the SequenceVisitor calls
-        startScan(field, new ReportingVisitor(field, detector, listener));
+        startScan(field, new ReportingVisitor(detector, listener));
     }
 
     /** Actual compound reporting is performed here */
     private final class ReportingVisitor implements SequenceVisitor {
 
-        final Field mField;
         final CompoundDetector mDetector;
         final CompoundListener mListener;
         final ArrayList<Integer> mPath = new ArrayList<Integer>(8);
 
-        public ReportingVisitor(Field field, CompoundDetector detector,
+        public ReportingVisitor(CompoundDetector detector,
                 CompoundListener listener) {
-            mField = field;
             mDetector = detector;
             mListener = listener;
         }
@@ -72,15 +66,15 @@ public abstract class CompoundReporter {
             mPath.clear();
         }
 
-        public void visit(int n, Cell cell) {
+        public void visit(int n, Field field) {
             mPath.add(n);
-            if (mDetector.isCompound(mField, clonePath())) {
-                mListener.foundCompound(mField, clonePath());
+            if (mDetector.isCompound(field, clonePath())) {
+                mListener.foundCompound(field, clonePath());
             }
         }
 
-        public boolean stopScan() {
-            return !mDetector.startsCompound(mField, clonePath());
+        public boolean stopScan(Field field) {
+            return !mDetector.startsCompound(field, clonePath());
         }
 
         int[] clonePath() {

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.yarcat.chemistrylines.field.Cell;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.Field.SequenceVisitor;
 import com.yarcat.chemistrylines.field.RectField;
@@ -25,11 +24,11 @@ public class LinearScanTest {
             ++mResets;
         }
 
-        public void visit(int n, Cell cell) {
+        public void visit(int n, Field field) {
             ++mVisited[n];
         }
 
-        public boolean stopScan() {
+        public boolean stopScan(Field field) {
             return false;
         }
     }
@@ -75,7 +74,7 @@ public class LinearScanTest {
         }
 
         @Override
-        public boolean stopScan() {
+        public boolean stopScan(Field field) {
             return true;
         }
     }

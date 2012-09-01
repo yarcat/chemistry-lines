@@ -4,7 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Test;
 
-import com.yarcat.chemistrylines.field.Cell;
+import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.Field.CellVisitor;
 import com.yarcat.chemistrylines.field.RectField;
 
@@ -15,7 +15,7 @@ public class RectFieldTest {
         final int[] visited = new int[field.getLength()];
         field.visitSiblings(n, new CellVisitor() {
             @Override
-            public void visit(int n, Cell cell) {
+            public void visit(int n, Field field) {
                 visited[n] = 1;
             }
         });
