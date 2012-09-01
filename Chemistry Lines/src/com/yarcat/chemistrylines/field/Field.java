@@ -59,7 +59,7 @@ public interface Field {
         public void visit(int n, Cell cell);
 
         /** Check whether the sequence scan should be stopped. */
-        // TODO add a field parameter
+        // TODO(luch) add a field parameter
         public boolean stopScan();
     }
 

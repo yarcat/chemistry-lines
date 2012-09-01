@@ -18,7 +18,7 @@ public class LinearCompoundReporterTest {
     class FakeDetector implements CompoundDetector {
 
         @Override
-        public boolean isStart(Field field, int[] cells) {
+        public boolean startsCompound(Field field, int[] cells) {
             return cells.length <= MAX_LEN;
         }
 
