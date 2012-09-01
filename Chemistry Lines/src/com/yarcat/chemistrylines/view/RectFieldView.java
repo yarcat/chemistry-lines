@@ -136,9 +136,12 @@ public class RectFieldView extends View implements FieldView {
     }
 
     public int getIndex(float x, float y) {
-        int row = (int) (y - mFieldRect.top) / mStep;
-        int col = (int) (x - mFieldRect.left) / mStep;
-        return row * mCols + col;
+        if (mFieldRect.contains((int) x, (int) y)) {
+            int row = (int) (y - mFieldRect.top) / mStep;
+            int col = (int) (x - mFieldRect.left) / mStep;
+            return row * mCols + col;
+        }
+        return -1;
     }
 
     public void select(int n) {

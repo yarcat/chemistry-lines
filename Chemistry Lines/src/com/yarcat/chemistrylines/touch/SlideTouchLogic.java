@@ -13,7 +13,9 @@ public class SlideTouchLogic implements View.OnTouchListener {
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
             fv.cancel();
-            fv.select(n);
+            if (n != -1) {
+                fv.select(n);
+            }
             break;
         case MotionEvent.ACTION_UP:
             fv.apply();
@@ -22,7 +24,9 @@ public class SlideTouchLogic implements View.OnTouchListener {
             fv.cancel();
             break;
         case MotionEvent.ACTION_MOVE:
-            fv.select(n);
+            if (n != -1) {
+                fv.select(n);
+            }
             break;
         }
         return true;
