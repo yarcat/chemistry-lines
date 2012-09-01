@@ -1,5 +1,6 @@
 package com.yarcat.chemistrylines.game;
 
+import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Cell;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
@@ -14,11 +15,15 @@ public class ChemistryLinesGame implements GameLogic {
     }
 
     public boolean isMoveValid(int origin, int fin) {
-        return false;
+        return Path.isReachable(mField, origin, fin);
     }
 
     public void makeMove(int origin, int fin) throws InvalidMove {
-        throw new InvalidMove();
+        if (!isMoveValid(origin, fin)) {
+            throw new InvalidMove();
+        }
+        mField.at(fin).setElement(mField.at(origin).getElement());
+        mField.at(origin).setElement(null);
     }
 
     public void addItems() {
