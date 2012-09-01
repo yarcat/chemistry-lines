@@ -1,15 +1,17 @@
 package com.yarcat.chemistrylines.view;
 
-import com.yarcat.chemistrylines.field.Cell;
-import com.yarcat.chemistrylines.field.Element;
-import com.yarcat.chemistrylines.field.Field;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
+
+import com.yarcat.chemistrylines.field.Cell;
+import com.yarcat.chemistrylines.field.Element;
+import com.yarcat.chemistrylines.field.Field;
+import com.yarcat.chemistrylines.game.GameLogic;
+import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
 
 public class MainView extends View implements FieldView {
 
@@ -26,6 +28,7 @@ public class MainView extends View implements FieldView {
 
     private final SelectionInView mSelection = new SelectionInView();
     private Field mField;
+    private GameLogic mLogic;
 
     public MainView(Context context) {
         super(context);
@@ -41,11 +44,13 @@ public class MainView extends View implements FieldView {
         mCols = mRows = 4; // Just something for the visual tool.
     }
 
-    public MainView(Context context, Field field, int cols, int rows) {
+    public MainView(Context context, Field field, int cols, int rows,
+            GameLogic logic) {
         this(context);
         mField = field;
         mCols = cols;
         mRows = rows;
+        mLogic = logic;
     }
 
     @Override
@@ -141,7 +146,17 @@ public class MainView extends View implements FieldView {
         invalidate();
     }
 
-    public void clean() {
+    public void cancel() {
+        mSelection.clear();
+        invalidate();
+    }
+
+    public void apply() {
+        try {
+            mLogic.makeMove(mSelection.getSource(), mSelection.getDestination());
+        } catch (InvalidMove e) {
+            // TODO(yarcat): Notify the player.
+        }
         mSelection.clear();
         invalidate();
     }

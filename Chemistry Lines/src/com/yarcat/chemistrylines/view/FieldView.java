@@ -21,6 +21,9 @@ public interface FieldView {
      */
     public void select(int n);
 
-    /** Called to clean any selection. */
-    public void clean();
+    /** Called to cancel any selections. */
+    public void cancel();
+
+    /** Apply current selection. */
+    public void apply();
 }

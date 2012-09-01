@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
         RectField field = new RectField(6, 6);
         GameLogic logic = new ChemistryLinesGame(field);
         logic.addItems();
-        MainView mainView = new MainView(this, field, 6, 6);
+        MainView mainView = new MainView(this, field, 6, 6, logic);
         mTouchListener = new SlideTouchLogic();
         mainView.setOnTouchListener(mTouchListener);
         setContentView(mainView);

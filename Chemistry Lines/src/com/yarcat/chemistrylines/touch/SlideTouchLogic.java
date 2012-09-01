@@ -12,13 +12,14 @@ public class SlideTouchLogic implements View.OnTouchListener {
         int n = fv.getIndex(event.getX(), event.getY());
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
-            fv.clean();
+            fv.cancel();
             fv.select(n);
             break;
         case MotionEvent.ACTION_UP:
+            fv.apply();
+            break;
         case MotionEvent.ACTION_CANCEL:
-            fv.clean();
-            fv.clean();
+            fv.cancel();
             break;
         case MotionEvent.ACTION_MOVE:
             fv.select(n);
