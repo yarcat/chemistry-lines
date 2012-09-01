@@ -48,10 +48,23 @@ public class ElementRegistryTest {
         mRegistry.register(e1);
         mRegistry.register(e2);
         mRegistry.register(e3);
-        Element[] production = new Element[] {e3};
+        Element[] production = new Element[] { e3 };
         mRegistry.register(e1.getId(), e2.getId(), production);
 
         assertTrue(mRegistry.contains(e1.getId(), e2.getId()));
         assertArrayEquals(production, mRegistry.get(e1.getId(), e2.getId()));
+    }
+
+    @Test
+    public void enumeration() {
+        assertEquals(0, mRegistry.size());
+        assertNull(mRegistry.getByIndex(0));
+
+        mRegistry.register(e1);
+
+        assertEquals(1, mRegistry.size());
+        assertEquals(e1, mRegistry.getByIndex(0));
+        assertNull(mRegistry.getByIndex(-1));
+        assertNull(mRegistry.getByIndex(mRegistry.size()));
     }
 }
