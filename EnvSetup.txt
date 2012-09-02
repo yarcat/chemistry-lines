@@ -15,6 +15,9 @@ Git
       $ git config --global --replace-all user.name "Full Name"
       $ git config --global --replace-all user.email put.your@email.here
 
+Eclipse Environment Settings
+* Eclipse/code-cleanup.xml
+          java-conventions.xml
 
 Eclipse Plugins
 * Git
