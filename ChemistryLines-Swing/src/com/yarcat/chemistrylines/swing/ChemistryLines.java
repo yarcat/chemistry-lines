@@ -1,30 +1,35 @@
 package com.yarcat.chemistrylines.swing;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.JButton;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.RectField;
 import com.yarcat.chemistrylines.game.ChemistryLinesGame;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
+import com.yarcat.chemistrylines.view.SelectionInView;
 
-public class ChemistryLines implements Runnable, ActionListener {
+public class ChemistryLines implements Runnable, MouseListener {
 
     private static final int COLS = 8;
     private static final int ROWS = 8;
 
-    private int mSelectedIdx = -1;
     private final Button[] mButtons = new Button[COLS * ROWS];
 
     private final Field mField = new RectField(COLS, ROWS);
     private final ChemistryLinesGame mGame = new ChemistryLinesGame(mField);
 
-    private class Button extends JButton {
+    private final SelectionInView mSelection = new SelectionInView();
+
+    private class Button extends JLabel {
         private int mId;
 
         public Button(int id) {
@@ -40,8 +45,13 @@ public class ChemistryLines implements Runnable, ActionListener {
         f.setLayout(l);
         for (int i = 0; i < COLS * ROWS; ++i) {
             Button b = new Button(i);
+            b.setPreferredSize(new Dimension(60, 60));
+            b.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            b.setForeground(Color.WHITE);
+            b.setHorizontalAlignment(JLabel.CENTER);
+            b.setOpaque(true);
             mButtons[i] = b;
-            b.addActionListener(this);
+            b.addMouseListener(this);
             f.getContentPane().add(b);
         }
         f.pack();
@@ -56,33 +66,56 @@ public class ChemistryLines implements Runnable, ActionListener {
         SwingUtilities.invokeLater(cl);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Button b = (Button) e.getSource();
-        if (mSelectedIdx == -1) {
-            if (!mField.at(b.mId).isEmpty()) {
-                mSelectedIdx = b.mId;
-            }
-        } else if (mSelectedIdx == b.mId) {
-            mSelectedIdx = -1;
-        } else {
-            try {
-                mGame.makeMove(mSelectedIdx, b.mId);
-            } catch (InvalidMove e1) {
-            }
-            mSelectedIdx = -1;
-        }
-        refreshField();
-    }
-
     private void refreshField() {
         for (int i = 0; i < mButtons.length; ++i) {
+            if (mSelection.hasSource() && mSelection.getSource() == i) {
+                mButtons[i].setBackground(Color.DARK_GRAY);
+            } else if (mSelection.hasDestination()
+                    && mSelection.getDestination() == i) {
+                mButtons[i].setBackground(Color.GRAY);
+            } else {
+                mButtons[i].setBackground(Color.BLACK);
+            }
             mButtons[i].setText(getTitle(i));
         }
     }
 
     private String getTitle(int i) {
         return mField.at(i).isEmpty() ? "" : mField.at(i).getElement().getId();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (mSelection.hasSource()) {
+            Button b = (Button) e.getSource();
+            mSelection.select(b.mId);
+            refreshField();
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Button b = (Button) e.getSource();
+        mSelection.select(b.mId);
+        refreshField();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        try {
+            mGame.makeMove(mSelection.getSource(), mSelection.getDestination());
+        } catch (InvalidMove e1) {
+        }
+        mSelection.clear();
+        refreshField();
     }
 
 }
