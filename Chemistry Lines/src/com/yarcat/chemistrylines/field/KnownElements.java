@@ -50,12 +50,6 @@ public final class KnownElements {
 
     /** Registers production. */
     private final static void P(String id1, String id2, String... ids) {
-        Element[] productions = new Element[ids.length];
-        for (int i = 0; i < ids.length; ++i) {
-            Element e = knownElements.get(ids[i]);
-            assert e != null;
-            productions[i] = e;
-        }
-        knownElements.register(id1, id2, productions);
+        knownElements.register(id1, id2, ids);
     }
 }

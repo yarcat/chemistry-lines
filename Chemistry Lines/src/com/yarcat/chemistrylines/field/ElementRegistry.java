@@ -7,8 +7,10 @@ import java.util.HashMap;
 public class ElementRegistry {
 
     private final ArrayList<String> mIdentifiers = new ArrayList<String>();
-    private final HashMap<String, Element> mElements = new HashMap<String, Element>();
-    private final HashMap<Object, Element[]> mProductions = new HashMap<Object, Element[]>();
+    private final HashMap<String, Element> mElements =
+        new HashMap<String, Element>();
+    private final HashMap<Object, Element[]> mProductions =
+        new HashMap<Object, Element[]>();
 
     /** Registers element. */
     public void register(Element e) {
@@ -16,9 +18,20 @@ public class ElementRegistry {
         mElements.put(e.getId(), e);
     }
 
-    /** Registers production. */
+    /** Registers productions. */
     public void register(String id1, String id2, Element[] p) {
         mProductions.put(getProductionKey(id1, id2), p);
+    }
+
+    /** Registers production. */
+    public void register(String id1, String id2, String... ids) {
+        Element[] p = new Element[ids.length];
+        for (int i = 0; i < ids.length; ++i) {
+            Element e = get(ids[i]);
+            assert e != null;
+            p[i] = e;
+        }
+        register(id1, id2, p);
     }
 
     /** Returns true if registry contains element. */
@@ -31,6 +44,11 @@ public class ElementRegistry {
         return mProductions.containsKey(getProductionKey(id1, id2));
     }
 
+    /** Returns true if registry contains production. */
+    public boolean contains(Element a, Element b) {
+        return contains(a.getId(), b.getId());
+    }
+
     /** Returns element. */
     public Element get(String id) {
         return mElements.get(id);
@@ -40,6 +58,11 @@ public class ElementRegistry {
     public Element[] get(String id1, String id2) {
         // TODO(paranoya) return a copy or read-only something.
         return mProductions.get(getProductionKey(id1, id2));
+    }
+
+    /** Returns production for given elements. */
+    public Element[] get(Element a, Element b) {
+        return get(a.getId(), b.getId());
     }
 
     /** Returns key for the production map. */
@@ -54,6 +77,7 @@ public class ElementRegistry {
 
     /** Return an element by its number in the registry */
     public Element getByIndex(int index) {
-        return 0 <= index && index < size() ? get(mIdentifiers.get(index)) : null;
+        return 0 <= index && index < size() ? get(mIdentifiers.get(index))
+            : null;
     }
 }
