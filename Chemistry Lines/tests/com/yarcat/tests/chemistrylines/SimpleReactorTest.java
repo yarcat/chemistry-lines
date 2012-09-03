@@ -10,26 +10,17 @@ import org.junit.Test;
 
 import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
-import com.yarcat.chemistrylines.field.ElementRegistry;
 
 /** Test SimpleReactor.getCompounds */
 public class SimpleReactorTest {
 
-    class TestRegistry extends ElementRegistry {
-        public Element def(String id) {
-            Element e = new Element(id, id);
-            register(e);
-            return e;
-        }
-    }
-
-    private TestRegistry mRegistry;
+    private Registry mRegistry;
     private SimpleReactor mReactor;
 
     @Before
     public void setUp() {
-        TestRegistry r;
-        r = mRegistry = new TestRegistry();
+        Registry r;
+        r = mRegistry = new Registry();
 
         r.def("Start").startsCompound(true);
         r.def("StartFin").startsCompound(true).isFinal(true);

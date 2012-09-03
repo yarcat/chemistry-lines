@@ -9,23 +9,22 @@ import com.yarcat.chemistrylines.field.ElementRegistry;
 import com.yarcat.chemistrylines.field.KnownElements;
 
 /**
- * A reactor that is capable to produce compounds only.
+ * A reactor that is capable of producing compounds only.
  *
  * Order of reactions is strictly defined by the sequence of elements.
  */
 public class SimpleReactor implements ChemicalReactor {
 
     /** Custom known elements are required by tests */
-    private ElementRegistry knownElements;
+    private ElementRegistry mKnownElements;
 
     public SimpleReactor() {
-        super();
-        knownElements = KnownElements.knownElements;
+        this(KnownElements.knownElements);
     }
 
     public SimpleReactor(ElementRegistry registry) {
         super();
-        knownElements = registry;
+        mKnownElements = registry;
     }
 
     /** Return compounds that are result of reactions involving *all* given items */
@@ -37,7 +36,6 @@ public class SimpleReactor implements ChemicalReactor {
 
     /** Return all productions of reactions involving *all* given items */
     private ArrayList<Element> getProductions(ArrayList<Element> items) {
-
         ArrayList<Element> present = new ArrayList<Element>();
         Iterator<Element> iter = items.iterator();
         if (!iter.hasNext()) {
@@ -55,10 +53,10 @@ public class SimpleReactor implements ChemicalReactor {
             ArrayList<Element> following = new ArrayList<Element>();
 
             for (Element a : present) {
-                // TODO(luch) make ElementRegistry.get(a,b) return List or
+                // TODO(luch): make ElementRegistry.get(a,b) return List or
                 // Iterable.
-                if (knownElements.contains(a, b)) {
-                    following.addAll(Arrays.asList(knownElements.get(a, b)));
+                if (mKnownElements.contains(a, b)) {
+                    following.addAll(Arrays.asList(mKnownElements.get(a, b)));
                 }
             }
 
