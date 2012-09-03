@@ -19,18 +19,6 @@ public interface Field {
     /** Calls CellVisitor.visit() for the surrounding cells. */
     public void visitSiblings(int n, CellVisitor visitor);
 
-    /** Allows to find a sibling of a given cell */
-    public interface CellMatcher {
-        /** Called by a field for a cell.
-         *
-         * @return Whether a cell matches requirements.
-         */
-        public boolean match(int n, Field field);
-    }
-
-    /** Index of a matching cell within surrounding cells or -1 if none */
-    public int matchSibling(int n, CellMatcher matcher);
-
     /** Allows to scan sequence of cells */
     public interface SequenceVisitor {
         /** Called before processing a sequence */

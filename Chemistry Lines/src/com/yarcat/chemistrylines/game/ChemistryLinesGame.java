@@ -24,7 +24,8 @@ public class ChemistryLinesGame implements GameLogic {
         if (!isMoveValid(origin, fin)) {
             throw new InvalidMove();
         }
-        if (origin != fin) {
+        if (origin != fin && !mField.at(origin).isEmpty()
+                && mField.at(fin).isEmpty()) {
             mField.at(fin).setElement(mField.at(origin).getElement());
             mField.at(origin).setElement(null);
         }

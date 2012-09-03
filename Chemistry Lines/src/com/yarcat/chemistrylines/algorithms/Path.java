@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.yarcat.chemistrylines.field.Field;
-import com.yarcat.chemistrylines.field.Field.CellMatcher;
 import com.yarcat.chemistrylines.field.Field.CellVisitor;
 
 /** Shorted path algorithm */
@@ -32,6 +31,7 @@ public class Path {
     private final Field mField;
     private final int mOrigin;
     private final int[] mStep;
+    private final int[] mParents;
 
     /** Create a Path algorithm for a field counting from the origin cell */
     public Path(Field field, int origin) {
@@ -39,6 +39,7 @@ public class Path {
         mField = field;
         mOrigin = origin;
         mStep = new int[field.getLength()];
+        mParents = new int[field.getLength()];
     }
 
     /** Execute the algorithm */
@@ -46,6 +47,7 @@ public class Path {
         final Queue<Integer> queue = new LinkedList<Integer>();
 
         mStep[mOrigin] = 1;
+        mParents[mOrigin] = -1;
         queue.add(mOrigin);
         do {
             final int cur = queue.poll();
@@ -53,9 +55,12 @@ public class Path {
 
             mField.visitSiblings(cur, new CellVisitor() {
                 public void visit(int n, Field field) {
-                    if (mStep[n] == 0 && field.at(n).isEmpty()) {
-                        queue.add(n);
+                    if (mStep[n] == 0) {
+                        if (field.at(n).isEmpty()) {
+                            queue.add(n);
+                        }
                         mStep[n] = nextStep;
+                        mParents[n] = cur;
                     }
                 }
             });
@@ -74,24 +79,18 @@ public class Path {
 
     /** Return shortest path from origin to cell or null when unreachable */
     public int[] pathTo(int fin) {
-        if (mStep[mOrigin] != 1 || mStep[fin] == 0) {
+        assert mStep[mOrigin] == 1; // Ensure evaluate() was ran.
+        if (mStep[fin] == 0) {
             return null;
         }
 
         int step = mStep[fin];
+        int parent = fin;
         final int[] rv = new int[step];
-
-        rv[step - 1] = fin;
-        for (; step > 1; --step) {
-            final int prevStep = step - 1;
-            rv[prevStep - 1] = mField.matchSibling(rv[step - 1],
-                    new CellMatcher() {
-                        public boolean match(int n, Field field) {
-                            return mStep[n] == prevStep;
-                        }
-                    });
-        }
-
+        do {
+            rv[--step] = parent;
+            parent = mParents[parent];
+        } while (parent != -1);
         return rv;
     }
 }

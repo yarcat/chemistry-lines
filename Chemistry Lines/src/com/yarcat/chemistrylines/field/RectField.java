@@ -29,11 +29,11 @@ public class RectField implements Field {
     }
 
     protected final int cellCol(int n) {
-        return (0 <= n && n < getLength()) ? (n % mCols) : -1;
+        return 0 <= n && n < getLength() ? n % mCols : -1;
     }
 
     protected final int cellRow(int n) {
-        return (0 <= n && n < getLength()) ? (n / mCols) : -1;
+        return 0 <= n && n < getLength() ? n / mCols : -1;
     }
 
     protected final int cellNo(int col, int row) {
@@ -45,11 +45,11 @@ public class RectField implements Field {
     }
 
     protected final boolean cellExists(int col, int row) {
-        return (0 <= col && col < mCols && 0 <= row && row < mRows);
+        return 0 <= col && col < mCols && 0 <= row && row < mRows;
     }
 
     public Cell at(int n) {
-        return (0 <= n && n < getLength()) ? mCells[n] : null;
+        return 0 <= n && n < getLength() ? mCells[n] : null;
     }
 
     private static final int[][] siblingShifts = new int[][] { { -1, 0 },
@@ -65,19 +65,6 @@ public class RectField implements Field {
                 visitor.visit(m, this);
             }
         }
-    }
-
-    public int matchSibling(int n, CellMatcher matcher) {
-        int col = cellCol(n);
-        int row = cellRow(n);
-
-        for (int i = 0; i < siblingShifts.length; ++i) {
-            int m = cellNo(col + siblingShifts[i][0], row + siblingShifts[i][1]);
-            if (at(m) != null && matcher.match(m, this)) {
-                return m;
-            }
-        }
-        return -1;
     }
 
     public void linearScan(SequenceVisitor visitor) {
