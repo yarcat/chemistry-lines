@@ -27,14 +27,19 @@ public class Element {
     public final boolean isFinal() {
         return mIsFinal;
     }
-    
+
     public Element startsCompound(boolean flag) {
         mStartsCompound = flag;
         return this;
     }
-    
+
     public Element isFinal(boolean flag) {
         mIsFinal = flag;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return getId();
     }
 }
