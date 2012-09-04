@@ -28,6 +28,7 @@ public class SimpleReactor implements ChemicalReactor {
     }
 
     /** Return compounds that are result of reactions involving *all* given items */
+    @Override
     public ArrayList<Element> getCompounds(ArrayList<Element> items) {
         ArrayList<Element> rv = getProductions(items);
         removeNonCompounds(rv);
@@ -63,7 +64,6 @@ public class SimpleReactor implements ChemicalReactor {
             present = following;
         }
 
-        removeNonCompounds(present);
         return present;
     }
 
