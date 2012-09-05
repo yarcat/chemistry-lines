@@ -1,5 +1,6 @@
 .DS_Store
 .metadata
+.*.swp
 bin
 Chemistry Lines/gen/
 ChemistryLines-Lib/gen/
