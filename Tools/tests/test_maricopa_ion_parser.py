@@ -8,16 +8,22 @@ RESOURCE_FILE = os.path.join(os.path.dirname(__file__),
                              "data", "polyatomicion.html")
 HTML = open(RESOURCE_FILE).read()
 
-ONE_CELL = """
+ONE_DEFINITION = """
 <table><tr>
 <td><font color = "#00008B">H<SUB>2</SUB>PO<SUB>3</SUB><SUP>-</SUP></font></td>
+<td><font color = "#00008B">dihydrogen phosphite</font></td>
+</tr></table>"""
+
+ONE_DEFINITION_COLOR_MISMATCH = """
+<table><tr>
+<td><font color = "#00008B">H<SUB>2</SUB>PO<SUB>3</SUB><SUP>-</SUP></font></td>
+<td>dihydrogen phosphite</td>
 </tr></table>"""
 
 
 class IgnoreRowLength(maricopa_ion_parser.MaricopaTableFilter):
 
-    def row_finished(self, row):
-        return True
+    EXPECTED_ROW_LENGTH = 2
 
 
 def parse_html(html=HTML, parser=None):
@@ -38,14 +44,21 @@ class TestMaricopaTableParser(unittest.TestCase):
         table = parse_html()
         rows = len(re.findall("<tr>", HTML))
         expected_rows = rows - 2 # Two header lines.
-        self.assertEquals(map(len, table), [10] * expected_rows)
+        expected_row_len = 10 / 2 # Description's merged into elements.
+        self.assertEquals(map(len, table), [expected_row_len] * expected_rows)
 
     def testExpectedFirstRow(self):
-        table = parse_html(ONE_CELL, IgnoreRowLength())
+        table = parse_html(ONE_DEFINITION, IgnoreRowLength())
+        self.assertEquals(len(table[0]), 1) # Description's merged into element.
         cell = table[0][0]
         self.assertEquals(cell.data, "H2PO3")
         self.assertEquals(cell.charge, "-")
         self.assertEquals(cell.color, "#00008B")
+        self.assertEquals(cell.description, "dihydrogen phosphite")
+
+    def testColorMismatchRaises(self):
+        self.assertRaises(AssertionError, parse_html,
+                          ONE_DEFINITION_COLOR_MISMATCH, IgnoreRowLength())
 
 
 if __name__ == "__main__":
