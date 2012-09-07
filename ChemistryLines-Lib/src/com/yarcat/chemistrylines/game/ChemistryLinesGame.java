@@ -47,6 +47,7 @@ public class ChemistryLinesGame implements GameLogic {
             }
             mField.at(n).setElement(getRandomElement());
         }
+        mCleaner.cleanField(mField);
     }
 
     private Element getRandomElement() {
