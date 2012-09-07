@@ -12,11 +12,11 @@ import com.yarcat.chemistrylines.field.Field;
 public class ChemistryLinesGame implements GameLogic {
 
     private Field mField;
-    private CompoundRemover mCleaner;
+    private CompoundRemover mRemover;
 
     public ChemistryLinesGame(Field field) {
         mField = field;
-        mCleaner = new CompoundRemover();
+        mRemover = new CompoundRemover();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ChemistryLinesGame implements GameLogic {
                 && mField.at(fin).isEmpty()) {
             mField.at(fin).setElement(mField.at(origin).getElement());
             mField.at(origin).setElement(null);
-            mCleaner.removeAllCompounds(mField);
+            mRemover.removeAllCompounds(mField);
             addItems();
         }
     }
@@ -47,7 +47,7 @@ public class ChemistryLinesGame implements GameLogic {
             }
             mField.at(n).setElement(getRandomElement());
         }
-        mCleaner.removeAllCompounds(mField);
+        mRemover.removeAllCompounds(mField);
     }
 
     private Element getRandomElement() {
