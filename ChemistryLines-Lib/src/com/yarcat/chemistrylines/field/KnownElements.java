@@ -11,6 +11,7 @@ public final class KnownElements {
           .isFinal(true);
         E("H2{2+}")
           .startsCompound(true);
+        E("OH{-}");
         E("Cl{-}");
         E("Cl{2+}")
           .startsCompound(true);
@@ -31,8 +32,8 @@ public final class KnownElements {
         P("H{+}", "Cl{-}", "HCl{0}");
         P("H{+}", "H{+}", "H2{0}", "H2{2+}");
         P("H2{2+}", "O{2-}", "H2O{0}");
-        P("H{+}", "O{2-}", "HO{-}");
-        P("HO{-}", "H{+}", "H2O{0}");
+        P("H{+}", "O{2-}", "OH{-}");
+        P("OH{-}", "H{+}", "H2O{0}");
         P("Cl{-}", "Cl{-}", "Cl2{0}");
     }
 
