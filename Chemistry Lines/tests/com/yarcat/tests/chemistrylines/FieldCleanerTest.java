@@ -5,7 +5,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.yarcat.chemistrylines.algorithms.FieldCleaner;
+import com.yarcat.chemistrylines.algorithms.CompoundRemover;
 import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
@@ -13,7 +13,7 @@ import com.yarcat.chemistrylines.field.RectField;
 
 public class FieldCleanerTest {
 
-    private FieldCleaner mCleaner;
+    private CompoundRemover mCleaner;
     private Registry mRegistry;
 
     @Before
@@ -46,7 +46,7 @@ public class FieldCleanerTest {
         // @formatter:on
 
         mRegistry = r;
-        mCleaner = new FieldCleaner(new SimpleReactor(r));
+        mCleaner = new CompoundRemover(new SimpleReactor(r));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class FieldCleanerTest {
         Field field =
             filledField(new RectField(1, 2), elementsById("Start", "A"));
         assertArrayEquals(new int[] { 0, 0 }, mapEmpties(field));
-        mCleaner.cleanField(field);
+        mCleaner.removeAllCompounds(field);
         assertArrayEquals(new int[] { 1, 1 }, mapEmpties(field));
     }
 
@@ -63,7 +63,7 @@ public class FieldCleanerTest {
         Field field =
             filledField(new RectField(1, 3), elementsById("StartFin", "A", "StartFin"));
         assertArrayEquals(new int[] { 0, 0, 0 }, mapEmpties(field));
-        mCleaner.cleanField(field);
+        mCleaner.removeAllCompounds(field);
         assertArrayEquals(new int[] { 1, 1, 1 }, mapEmpties(field));
     }
 
@@ -72,7 +72,7 @@ public class FieldCleanerTest {
         Field field =
             filledField(new RectField(1, 3), elementsById("Start", "A", "C"));
         assertArrayEquals(new int[] { 0, 0, 0 }, mapEmpties(field));
-        mCleaner.cleanField(field);
+        mCleaner.removeAllCompounds(field);
         assertArrayEquals(new int[] { 1, 1, 0 }, mapEmpties(field));
     }
 
@@ -81,7 +81,7 @@ public class FieldCleanerTest {
         Field field =
             filledField(new RectField(1, 3), elementsById("Start", "A", "Start"));
         assertArrayEquals(new int[] { 0, 0, 0 }, mapEmpties(field));
-        mCleaner.cleanField(field);
+        mCleaner.removeAllCompounds(field);
         assertArrayEquals(new int[] { 1, 1, 1 }, mapEmpties(field));
     }
 
@@ -99,7 +99,7 @@ public class FieldCleanerTest {
             0, 0, 0,
             0, 0, 0
         }, mapEmpties(field));
-        mCleaner.cleanField(field);
+        mCleaner.removeAllCompounds(field);
         assertArrayEquals(new int[] {
             1, 1, 1,
             1, 0, 0,

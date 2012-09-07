@@ -4,7 +4,7 @@ import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell
 import static com.yarcat.chemistrylines.algorithms.RandomCell.random;
 import static com.yarcat.chemistrylines.field.KnownElements.knownElements;
 
-import com.yarcat.chemistrylines.algorithms.FieldCleaner;
+import com.yarcat.chemistrylines.algorithms.CompoundRemover;
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
@@ -12,11 +12,11 @@ import com.yarcat.chemistrylines.field.Field;
 public class ChemistryLinesGame implements GameLogic {
 
     private Field mField;
-    private FieldCleaner mCleaner;
+    private CompoundRemover mCleaner;
 
     public ChemistryLinesGame(Field field) {
         mField = field;
-        mCleaner = new FieldCleaner();
+        mCleaner = new CompoundRemover();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ChemistryLinesGame implements GameLogic {
                 && mField.at(fin).isEmpty()) {
             mField.at(fin).setElement(mField.at(origin).getElement());
             mField.at(origin).setElement(null);
-            mCleaner.cleanField(mField);
+            mCleaner.removeAllCompounds(mField);
             addItems();
         }
     }
@@ -47,7 +47,7 @@ public class ChemistryLinesGame implements GameLogic {
             }
             mField.at(n).setElement(getRandomElement());
         }
-        mCleaner.cleanField(mField);
+        mCleaner.removeAllCompounds(mField);
     }
 
     private Element getRandomElement() {

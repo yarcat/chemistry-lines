@@ -13,23 +13,23 @@ import com.yarcat.chemistrylines.field.Field;
  * It should be called after each field change.
  *
  */
-public class FieldCleaner {
+public class CompoundRemover {
     private final ChemicalReactor mReactor;
     private final CompoundDetector mDetector;
     private final CompoundReporter mReporter;
 
-    public FieldCleaner() {
+    public CompoundRemover() {
         this(new SimpleReactor());
     }
 
-    public FieldCleaner(ChemicalReactor reactor) {
+    public CompoundRemover(ChemicalReactor reactor) {
         mReactor = reactor;
         mDetector = new ChemicalCompoundDetector(mReactor);
         mReporter = new LinearCompoundReporter();
     }
 
     /** Find all chemical reactions on the field and remove compounds. */
-    public void cleanField(Field field) {
+    public void removeAllCompounds(Field field) {
         for (int[] cells : scan(field)) {
             for (int n : cells) {
                 field.at(n).setElement(null);
