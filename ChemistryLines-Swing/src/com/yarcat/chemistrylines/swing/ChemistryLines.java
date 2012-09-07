@@ -71,7 +71,7 @@ public class ChemistryLines implements Runnable, MouseListener {
             if (mSelection.hasSource() && mSelection.getSource() == i) {
                 mButtons[i].setBackground(Color.DARK_GRAY);
             } else if (mSelection.hasDestination()
-                    && mSelection.getDestination() == i) {
+                && mSelection.getDestination() == i) {
                 mButtons[i].setBackground(Color.GRAY);
             } else {
                 mButtons[i].setBackground(Color.BLACK);
@@ -104,18 +104,40 @@ public class ChemistryLines implements Runnable, MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
         Button b = (Button) e.getSource();
-        mSelection.select(b.mId);
+        if (mSelection.hasSource() && mSelection.hasDestination()
+            && mSelection.getSource() == mSelection.getDestination()
+            && mSelection.getSource() == b.mId) {
+            mSelection.clear();
+            refreshField();
+        } else {
+            tryMakeMove(b.mId);
+        }
+    }
+
+    private void tryMakeMove(int id) {
+        // We need this because for the drag case mouseReleased is called for
+        // the source button, and we don't wanna overwrite the value.
+        if (!mSelection.hasDestination()) {
+            mSelection.select(id);
+        }
+        if (mSelection.hasDestination()
+            && mSelection.getSource() != mSelection.getDestination()) {
+            try {
+                mGame.makeMove(
+                    mSelection.getSource(), mSelection.getDestination());
+            } catch (InvalidMove e1) {
+            }
+            mSelection.clear();
+        }
         refreshField();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        try {
-            mGame.makeMove(mSelection.getSource(), mSelection.getDestination());
-        } catch (InvalidMove e1) {
+        if (mSelection.hasSource()) {
+            Button b = (Button) e.getSource();
+            tryMakeMove(b.mId);
         }
-        mSelection.clear();
-        refreshField();
     }
 
 }
