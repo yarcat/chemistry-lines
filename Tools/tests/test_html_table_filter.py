@@ -27,6 +27,29 @@ SIMPLE_TABLE = """
 </html>
 """
 
+SEVERAL_TABLES = """
+<html>
+ <table class="cls1">
+  <tr>
+   <td>value1</td>
+   <td>value2</td>
+  </tr>
+ </table>
+ <table class="cls2">
+  <tr>
+   <td>value3</td>
+   <td>value4</td>
+  </tr>
+ </table>
+ <table class="cls3">
+  <tr>
+   <td>value5</td>
+   <td>value6</td>
+  </tr>
+ </table>
+</html>
+"""
+
 ONE_CELL_TABLE = "<table><tr><td>value</td></tr></table>"
 
 TABLE_WITH_INNER_HTML = ("<table><tr><td>"
@@ -35,8 +58,8 @@ TABLE_WITH_INNER_HTML = ("<table><tr><td>"
                          "after"
                          "</td></tr></table>")
 
-def get_table_as_list(html):
-    return [[cell.data for cell in row] for row in get_table(html)]
+def get_table_as_list(html, parser=None):
+    return [[cell.data for cell in row] for row in get_table(html, parser)]
 
 
 def get_table(html, parser=None):
@@ -73,6 +96,12 @@ class Cell(html_table_filter.Cell):
         self.font_color = None
         self.font_closed = False
         self.font_data = None
+
+
+class OddClsFilter(html_table_filter.TableFilter):
+
+    def start_table(self, attrs):
+        return dict(attrs)["class"] != "cls2"
 
 
 class InnerHtml(html_table_filter.TableFilter):
@@ -151,6 +180,18 @@ class TestHTMLTableFilter(unittest.TestCase):
         self.assertTrue(cell.font_closed)
         self.assertEquals(cell.data, "beforeafter")
         self.assertEquals(cell.font_data, "value")
+
+    def testSeveralTablesAreJoined(self):
+        table = get_table_as_list(SEVERAL_TABLES)
+        self.assertEquals(table, [["value1", "value2"],
+                                  ["value3", "value4"],
+                                  ["value5", "value6"]])
+
+    def testTablesAreFiltered(self):
+        odd_cls_filter = OddClsFilter()
+        table = get_table_as_list(SEVERAL_TABLES, odd_cls_filter)
+        self.assertEquals(table, [["value1", "value2"],
+                                  ["value5", "value6"]])
 
 
 if __name__ == "__main__":

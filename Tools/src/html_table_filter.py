@@ -17,6 +17,7 @@ class TableFilter(HTMLParser.HTMLParser):
         self._table = None
         self._last_row = None
         self._col_added  = None
+        self._handle_table = None
 
     def row_finished(self, row):
         return True
@@ -36,9 +37,16 @@ class TableFilter(HTMLParser.HTMLParser):
     def get_table(self):
         return self._table
 
+    def start_table(self, attrs):
+        return True
+
     def handle_starttag(self, tag, attrs):
+        if self._handle_table is not None and not self._handle_table:
+            return
         if tag == "table":
-            self._table = []
+            self._handle_table = self.start_table(attrs)
+            if self._handle_table and self._table is None:
+                self._table = []
         elif tag == "tr":
             self._last_row = []
         elif tag == "td":
@@ -48,6 +56,11 @@ class TableFilter(HTMLParser.HTMLParser):
             self.starttag_in_cell(tag, attrs)
 
     def handle_endtag(self, tag):
+        if tag == "table":
+            self._handle_table = None
+            return
+        if not self._handle_table:
+            return
         if tag == "tr":
             if self.row_finished(self._last_row):
                 self._table.append(self._last_row)
