@@ -28,12 +28,14 @@ class TestWikipediaCompoundParser(unittest.TestCase):
 
     def testSimpleWikitable(self):
         table = parse_html(SIMPLE_WIKITABLE)
-        self.assertEquals(len(table), 1)
-        row = table[0]
-        self.assertEquals(len(row), 1)
-        cell = row[0]
+        self.assertEquals(len(table[0]), 1)
+        cell = table[0][0]
         self.assertEquals(cell.data, "a")
-        self.assertEquals(cell.synonyms, [("b", "c")])
+        self.assertEquals(len(cell.synonyms), 1)
+        synonym = cell.synonyms[0]
+        self.assertEquals(synonym.synonym, "b")
+        self.assertEquals(synonym.cas_number, "c")
+        self.assertEquals(synonym.link, None)
 
 
 if __name__ == "__main__":

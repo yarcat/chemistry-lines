@@ -2,7 +2,7 @@ import html_table_filter
 import collections
 
 
-Synonym = collections.namedtuple("Synonym", "synonym cas_number")
+Synonym = collections.namedtuple("Synonym", "synonym cas_number link")
 
 
 class Cell(html_table_filter.Cell):
@@ -11,8 +11,8 @@ class Cell(html_table_filter.Cell):
         html_table_filter.Cell.__init__(self)
         self.synonyms = []
 
-    def add_synonym(self, synonym, cas_number):
-        self.synonyms.append(Synonym(synonym, cas_number))
+    def add_synonym(self, synonym, cas_number, link):
+        self.synonyms.append(Synonym(synonym, cas_number, link))
 
 
 class TableFilter(html_table_filter.TableFilter):
@@ -23,6 +23,6 @@ class TableFilter(html_table_filter.TableFilter):
     def row_finished(self, row):
         cell = Cell()
         cell.add_data(row[0].data)
-        cell.add_synonym(row[1].data, row[2].data)
+        cell.add_synonym(row[1].data, row[2].data, None)
         row[:] = [cell]
         return True
