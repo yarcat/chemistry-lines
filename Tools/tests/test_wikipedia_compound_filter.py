@@ -12,6 +12,25 @@ SIMPLE_WIKITABLE = """
 <table><tr><td>1</td><td>1</td><td>1</td></tr></table>
 <table class="wikitable"><tr><td>a</td><td>b</td><td>c</td></tr></table>
 """
+WIKITABLE_WITH_LINK = """
+<table class="wikitable">
+ <tr>
+  <td>a</td>
+  <td><a href="link">b</a></td>
+  <td>c</td>
+ </tr>
+</table>
+"""
+WIKITABLE_WITH_NEW_LINK = """
+<table class="wikitable">
+ <tr>
+  <td>a</td>
+  <td><a href="link" class="new">b</a></td>
+  <td>c</td>
+ </tr>
+</table>
+"""
+
 
 def parse_html_as_list(html, parser=None):
     return [[col.data for col in row] for row in parse_html(html, parser)]
@@ -36,6 +55,16 @@ class TestWikipediaCompoundParser(unittest.TestCase):
         self.assertEquals(synonym.synonym, "b")
         self.assertEquals(synonym.cas_number, "c")
         self.assertEquals(synonym.link, None)
+
+    def testWikitableWithLink(self):
+        table = parse_html(WIKITABLE_WITH_LINK)
+        synonym = table[0][0].synonyms[0]
+        self.assertEqual(synonym.link, "link")
+
+    def testWikitableWithNewLink(self):
+        table = parse_html(WIKITABLE_WITH_NEW_LINK)
+        synonym = table[0][0].synonyms[0]
+        self.assertEqual(synonym.link, None)
 
 
 if __name__ == "__main__":
