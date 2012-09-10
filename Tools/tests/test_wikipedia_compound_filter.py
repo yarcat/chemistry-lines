@@ -30,6 +30,16 @@ WIKITABLE_WITH_NEW_LINK = """
  </tr>
 </table>
 """
+SEVERAL_SYNONYMS = """
+<table class="wikitable">
+ <tr>
+  <td>a</td>
+  <td><a href="link">b1</a><br />
+b2</td>
+  <td>c</td>
+ </tr>
+</table>
+"""
 
 
 def parse_html_as_list(html, parser=None):
@@ -65,6 +75,17 @@ class TestWikipediaCompoundParser(unittest.TestCase):
         table = parse_html(WIKITABLE_WITH_NEW_LINK)
         synonym = table[0][0].synonyms[0]
         self.assertEqual(synonym.link, None)
+
+    def testSeveralSynonyms(self):
+        table = parse_html(SEVERAL_SYNONYMS)
+        synonyms = table[0][0].synonyms
+        self.assertEquals(len(synonyms), 2)
+
+        for idx, (synonym, cas, link) in enumerate([("b1", "c", "link"),
+                                                    ("b2", "c", None)]):
+            self.assertEquals(synonyms[idx].synonym, synonym)
+            self.assertEquals(synonyms[idx].cas_number, cas)
+            self.assertEquals(synonyms[idx].link, link)
 
 
 if __name__ == "__main__":
