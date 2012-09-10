@@ -55,15 +55,16 @@ SYNONYMS_WITH_DIFFERENT_CAS = """
 """
 
 
-def parse_html_as_list(html, parser=None):
-    return [[col.data for col in row] for row in parse_html(html, parser)]
+def parse_html_as_list(html, parser=None, ions=False):
+    return [[col.data for col in row]
+            for row in parse_html(html, parser, ions)]
 
 
-def parse_html(html=HTML, parser=None):
+def parse_html(html, parser=None, ions=False):
     parser = parser or wikipedia_compound_filter.TableFilter()
     parser.feed(html)
     parser.close()
-    return parser.get_table()
+    return parser.get_ions_table() if ions else parser.get_table()
 
 
 class TestWikipediaCompoundParser(unittest.TestCase):
@@ -114,6 +115,9 @@ class TestWikipediaCompoundParser(unittest.TestCase):
             self.assertEquals(synonyms[idx].cas_number, cas)
             self.assertEquals(synonyms[idx].link, link)
 
+    def testWikipediaHtml(self):
+        table = parse_html_as_list(HTML, ions=True)
+        self.assertEquals(len(table), 49)
 
 if __name__ == "__main__":
     unittest.main()

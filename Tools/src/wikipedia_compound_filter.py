@@ -86,3 +86,7 @@ class TableFilter(html_table_filter.TableFilter):
             if self._rowspan_count:
                 self._rowspan_count -= 1
             return False
+
+    def get_ions_table(self):
+        return [row for row in self.get_table()
+                if row[0].synonyms[0].synonym.endswith(" ion")]
