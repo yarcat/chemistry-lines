@@ -40,7 +40,7 @@ class MaricopaTableFilter(html_table_filter.TableFilter):
         row[:] = result_rows
         return True
 
-    def create_cell(self):
+    def create_cell(self, args):
         self._data_handler = None
         return Cell()
 

@@ -22,7 +22,7 @@ class TableFilter(HTMLParser.HTMLParser):
     def row_finished(self, row):
         return True
 
-    def create_cell(self):
+    def create_cell(self, attrs):
         return Cell()
 
     def starttag_in_cell(self, tag, attrs):
@@ -53,7 +53,7 @@ class TableFilter(HTMLParser.HTMLParser):
         elif tag == "tr":
             self._last_row = []
         elif tag == "td":
-            col = self._col_added = self.create_cell()
+            col = self._col_added = self.create_cell(attrs)
             self._last_row.append(col)
         elif self._col_added is not None:
             self.starttag_in_cell(tag, attrs)

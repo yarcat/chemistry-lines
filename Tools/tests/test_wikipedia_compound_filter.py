@@ -30,13 +30,26 @@ WIKITABLE_WITH_NEW_LINK = """
  </tr>
 </table>
 """
-SEVERAL_SYNONYMS = """
+SYNONYMS_WITH_COMMON_CAS = """
 <table class="wikitable">
  <tr>
   <td>a</td>
   <td><a href="link">b1</a><br />
 b2</td>
   <td>c</td>
+ </tr>
+</table>
+"""
+SYNONYMS_WITH_DIFFERENT_CAS = """
+<table class="wikitable">
+ <tr>
+  <td rowspan="2">a</td>
+  <td><a href="link">b1</a></td>
+  <td>c1</td>
+ </tr>
+ <tr>
+  <td>b2</td>
+  <td>c2</td>
  </tr>
 </table>
 """
@@ -76,13 +89,27 @@ class TestWikipediaCompoundParser(unittest.TestCase):
         synonym = table[0][0].synonyms[0]
         self.assertEqual(synonym.link, None)
 
-    def testSeveralSynonyms(self):
-        table = parse_html(SEVERAL_SYNONYMS)
+    def testSynonymsWithCommonCas(self):
+        table = parse_html(SYNONYMS_WITH_COMMON_CAS)
+        self.assertEquals(table[0][0].data, "a")
         synonyms = table[0][0].synonyms
         self.assertEquals(len(synonyms), 2)
 
         for idx, (synonym, cas, link) in enumerate([("b1", "c", "link"),
                                                     ("b2", "c", None)]):
+            self.assertEquals(synonyms[idx].synonym, synonym)
+            self.assertEquals(synonyms[idx].cas_number, cas)
+            self.assertEquals(synonyms[idx].link, link)
+
+    def testSynonymsWithDifferentCas(self):
+        table = parse_html(SYNONYMS_WITH_DIFFERENT_CAS)
+        self.assertEquals(len(table), 1)
+        self.assertEquals(table[0][0].data, "a")
+        synonyms = table[0][0].synonyms
+        self.assertEquals(len(synonyms), 2)
+
+        for idx, (synonym, cas, link) in enumerate([("b1", "c1", "link"),
+                                                    ("b2", "c2", None)]):
             self.assertEquals(synonyms[idx].synonym, synonym)
             self.assertEquals(synonyms[idx].cas_number, cas)
             self.assertEquals(synonyms[idx].link, link)

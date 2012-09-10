@@ -42,10 +42,20 @@ class TempCell(html_table_filter.Cell):
 
 class TableFilter(html_table_filter.TableFilter):
 
+    def __init__(self):
+        html_table_filter.TableFilter.__init__(self)
+        self._rowspan_count = 0
+        self._rowspan_cell = None
+
     def start_table(self, attrs):
         return dict(attrs).get("class") == "wikitable"
 
-    def create_cell(self):
+    def create_cell(self, attrs):
+        if not self._last_row and self._rowspan_count == 0:
+            try:
+                self._rowspan_count = int(dict(attrs).get("rowspan"))
+            except (ValueError, TypeError):
+                pass
         return TempCell()
 
     def starttag_in_cell(self, tag, attrs):
@@ -58,10 +68,21 @@ class TableFilter(html_table_filter.TableFilter):
             self._col_added.add_synonym()
 
     def row_finished(self, row):
-        cell = Cell()
-        cell.add_data(row[0].data)
-        for synonym, link in row[1].synonyms:
-            cell.add_synonym(synonym, row[2].data, link)
-        cell.add_synonym(row[1].data, row[2].data, row[1].link)
-        row[:] = [cell]
-        return True
+        if len(row) == 3:
+            cell = Cell()
+            if self._rowspan_count:
+                self._rowspan_cell = cell
+            cell.add_data(row[0].data)
+            for synonym, link in row[1].synonyms:
+                cell.add_synonym(synonym, row[2].data, link)
+            cell.add_synonym(row[1].data, row[2].data, row[1].link)
+            row[:] = [cell]
+            if self._rowspan_count:
+                self._rowspan_count -= 1
+            return True
+        elif len(row) == 2:
+            cell = self._rowspan_cell
+            cell.add_synonym(row[0].data, row[1].data, row[0].link)
+            if self._rowspan_count:
+                self._rowspan_count -= 1
+            return False

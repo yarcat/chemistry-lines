@@ -94,9 +94,9 @@ class WithCustomCell(html_table_filter.TableFilter):
     def get_create_cell_calls(self):
         return self._create_cell_calls
 
-    def create_cell(self):
+    def create_cell(self, attrs):
         self._create_cell_calls += 1
-        return html_table_filter.TableFilter.create_cell(self)
+        return html_table_filter.TableFilter.create_cell(self, attrs)
 
 
 class Cell(html_table_filter.Cell):
@@ -120,7 +120,7 @@ class InnerHtml(html_table_filter.TableFilter):
         html_table_filter.TableFilter.__init__(self)
         self._in_font = False
 
-    def create_cell(self):
+    def create_cell(self, attrs):
         return Cell()
 
     def starttag_in_cell(self, tag, attrs):
