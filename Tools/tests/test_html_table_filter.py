@@ -58,6 +58,9 @@ TABLE_WITH_INNER_HTML = ("<table><tr><td>"
                          "after"
                          "</td></tr></table>")
 
+WITH_STARTEND_TAG = "<table><tr><td>a<br/>b</td></tr></table>"
+
+
 def get_table_as_list(html, parser=None):
     return [[cell.data for cell in row] for row in get_table(html, parser)]
 
@@ -67,6 +70,13 @@ def get_table(html, parser=None):
     parser.feed(html)
     parser.close()
     return parser.get_table()
+
+
+class BrFilter(html_table_filter.TableFilter):
+
+    def startendtag_in_cell(self, tag, attrs):
+        if tag == "br":
+            self._col_added.add_data("\n")
 
 
 class Value2Filter(html_table_filter.TableFilter):
@@ -192,6 +202,11 @@ class TestHTMLTableFilter(unittest.TestCase):
         table = get_table_as_list(SEVERAL_TABLES, odd_cls_filter)
         self.assertEquals(table, [["value1", "value2"],
                                   ["value5", "value6"]])
+
+    def testStartEndTagIsHandled(self):
+        br_filter = BrFilter()
+        table = get_table_as_list(WITH_STARTEND_TAG, br_filter)
+        self.assertEquals(table, [["a\nb"]])
 
 
 if __name__ == "__main__":
