@@ -1,5 +1,12 @@
+import html_table_filter
+import os
 import unittest
 import wikipedia_cation_filter
+
+
+RESOURCE_FILE = os.path.join(os.path.dirname(__file__),
+                             "data", "cations.html")
+HTML = open(RESOURCE_FILE).read()
 
 
 SIMPLE_TABLE = """
@@ -23,8 +30,8 @@ SIMPLE_TABLE = """
 """
 
 
-def parse_html(html):
-    parser = wikipedia_cation_filter.TableFilter()
+def parse_html(html, parser=None):
+    parser = parser or wikipedia_cation_filter.TableFilter()
     parser.feed(html)
     parser.close()
     return parser.get_table()
@@ -40,6 +47,12 @@ class TestWikipediaCationFilter(unittest.TestCase):
         self.assertEquals(cell.name, "Aluminium")
         self.assertEquals(cell.data, "Al")
         self.assertEquals(cell.charge, "3+")
+
+    def testWikitablesReadCorrectly(self):
+        table_filter = html_table_filter.InnerTableFilter(
+            wikipedia_cation_filter.TableFilter())
+        table = parse_html(HTML, table_filter)
+        self.assertEquals(len(table), 28)
 
 
 if __name__ == "__main__":

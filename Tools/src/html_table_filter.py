@@ -81,3 +81,44 @@ class TableFilter(HTMLParser.HTMLParser):
         if self._col_added is not None:
             self.data_in_cell(data)
 
+
+class InnerTableFilter(HTMLParser.HTMLParser):
+
+    def __init__(self, table_filter=None):
+        HTMLParser.HTMLParser.__init__(self)
+        self._table_filter = table_filter or TableFilter()
+        self._level = 0
+
+    def handle_startendtag(self, tag, attrs):
+        if self._level > 1:
+            attributes = " ".join('%s="%s"' % i for i in attrs)
+            if attributes:
+                tag_text = "<%s %s />" % (tag, attributes)
+            else:
+                tag_text = "<%s />" % tag
+            self._table_filter.feed(tag_text)
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "table":
+            self._level += 1
+        if self._level > 1:
+            attributes = " ".join('%s="%s"' % i for i in attrs)
+            if attributes:
+                tag_text = "<%s %s>" % (tag, attributes)
+            else:
+                tag_text = "<%s>" % tag
+            self._table_filter.feed(tag_text)
+
+    def handle_endtag(self, tag):
+        if self._level > 1:
+            self._table_filter.feed("</%s>" % tag)
+        if tag == "table":
+            self._level -= 1
+
+    def handle_data(self, data):
+        if self._level > 1:
+            self._table_filter.feed(data)
+
+    def get_table(self):
+        return self._table_filter.get_table()
+

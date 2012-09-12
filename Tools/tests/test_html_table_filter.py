@@ -60,6 +60,16 @@ TABLE_WITH_INNER_HTML = ("<table><tr><td>"
 
 WITH_STARTEND_TAG = "<table><tr><td>a<br/>b</td></tr></table>"
 
+INNER_TABLE = """
+<table>
+ <tr>
+  <td><table><tr><td>value1</td><td>value2</td></tr></table></td>
+  <td><table><tr><td>value3</td><td>value4</td></tr></table></td>
+  <td><table><tr><td>value<br />5</td></tr></table></td>
+ </tr>
+</table>
+"""
+
 
 def get_table_as_list(html, parser=None):
     return [[cell.data for cell in row] for row in get_table(html, parser)]
@@ -207,6 +217,13 @@ class TestHTMLTableFilter(unittest.TestCase):
         br_filter = BrFilter()
         table = get_table_as_list(WITH_STARTEND_TAG, br_filter)
         self.assertEquals(table, [["a\nb"]])
+
+    def testInnerTable(self):
+        inner_table_filter = html_table_filter.InnerTableFilter(BrFilter())
+        table = get_table_as_list(INNER_TABLE, inner_table_filter)
+        self.assertEquals(table, [["value1", "value2"],
+                                  ["value3", "value4"],
+                                  ["value\n5"]])
 
 
 if __name__ == "__main__":
