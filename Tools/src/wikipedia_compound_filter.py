@@ -1,6 +1,8 @@
 import html_table_filter
 import collections
 
+# Character to separate ion's charge from the ion's formula
+CHARGE_SEPARATOR = "'"
 
 Synonym = collections.namedtuple("Synonym", "synonym cas_number link")
 
@@ -62,6 +64,8 @@ class TableFilter(html_table_filter.TableFilter):
         attrs = dict(attrs)
         if attrs.get("class") != "new":
             self._col_added.set_link(attrs.get("href"))
+	if tag == "sup":
+	    self._col_added.add_data(CHARGE_SEPARATOR)
 
     def startendtag_in_cell(self, tag, attrs):
         if tag == "br":
