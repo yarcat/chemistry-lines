@@ -43,13 +43,14 @@ class TestMaricopaTableParser(unittest.TestCase):
     def testHeaderIgnored(self):
         table = parse_html()
         rows = len(re.findall("<tr>", HTML))
-        expected_rows = rows - 2 # Two header lines.
-        expected_row_len = 10 / 2 # Description's merged into elements.
+        expected_rows = rows - 2  # Two header lines.
+        expected_row_len = 10 / 2  # Description's merged into elements.
         self.assertEquals(map(len, table), [expected_row_len] * expected_rows)
 
     def testExpectedFirstRow(self):
         table = parse_html(ONE_DEFINITION, IgnoreRowLength())
-        self.assertEquals(len(table[0]), 1) # Description's merged into element.
+        self.assertEquals(
+            len(table[0]), 1)  # Description's merged into element.
         cell = table[0][0]
         self.assertEquals(cell.data, "H2PO3")
         self.assertEquals(cell.charge, "-")

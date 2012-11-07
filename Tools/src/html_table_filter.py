@@ -16,7 +16,7 @@ class TableFilter(HTMLParser.HTMLParser):
         HTMLParser.HTMLParser.__init__(self)
         self._table = None
         self._last_row = None
-        self._col_added  = None
+        self._col_added = None
         self._handle_table = None
 
     def row_finished(self, row):
@@ -121,4 +121,3 @@ class InnerTableFilter(HTMLParser.HTMLParser):
 
     def get_table(self):
         return self._table_filter.get_table()
-
