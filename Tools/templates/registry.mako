@@ -44,9 +44,13 @@ def gen_prefixes(formulas):
 
 def gen_productions(formulas):
     Prod = collections.namedtuple("Prod", "prefix term result")
+    produced = set()
     for terms in map(op.attrgetter("terms"), formulas):
-        for ii in range(1, len(terms) - 1):
-            yield Prod("".join(terms[:ii]), terms[ii], "".join(terms[:ii+1]))
+        for i in range(1, len(terms) - 1):
+            p = Prod("".join(terms[:i]), terms[i], "".join(terms[:i+1]))
+            if p not in produced:
+                yield p
+                produced.add(p)
 
 %>\
 package com.yarcat.chemistrylines.field;
