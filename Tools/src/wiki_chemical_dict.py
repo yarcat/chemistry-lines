@@ -70,8 +70,8 @@ def parse_cmdline():
 
 
 def wiki_urlopen(url):
-    return urllib2.urlopen(urllib2.Request(url,
-        headers={"User-agent": WIKI_USER_AGENT}))
+    return urllib2.urlopen(
+        urllib2.Request(url, headers={"User-agent": WIKI_USER_AGENT}))
 
 
 def parse_html(html, parser=None, ions=False):
@@ -120,9 +120,8 @@ def sanitize_formula(formula):
     return formula
 
 
-
 def parse_formula(formula,
-        term_re=re.compile(u"[A-Z][a-z]{0,2}|[0-9.+−-]+|.")):
+                  term_re=re.compile(u"[A-Z][a-z]{0,2}|[0-9.+−-]+|.")):
     """Return list of formula terminals"""
     return term_re.findall(formula)
 
