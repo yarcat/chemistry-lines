@@ -7,33 +7,23 @@ See it saved at tests/data/.
 import argparse
 import itertools
 import json
-from operator import itemgetter
+import operator as op
 import re
 import urllib2
 
 import wikipedia_compound_filter
 
-urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler,
-                                            urllib2.HTTPHandler,
-                                            urllib2.HTTPRedirectHandler,
-                                            urllib2.HTTPDefaultErrorHandler,
-                                            urllib2.UnknownHandler))
 
 DEFAULT_URL = "http://en.wikipedia.org/wiki/Dictionary_of_chemical_formulas"
+WIKI_USER_AGENT = "urllib"
 
 
 def main():
-    args = cmdline()
+    args = parse_cmdline()
     if args.saved_html:
         fh = open(args.saved_html)
     else:
-        try:
-            fh = urllib2.urlopen(DEFAULT_URL)
-        except urllib2.HTTPError, _err:
-            print _err, dir(_err)
-            print _err.geturl()
-            print _err.headers
-            return
+        fh = wiki_urlopen(DEFAULT_URL)
 
     table = parse_html(fh.read().decode("utf-8"))
 
@@ -44,7 +34,7 @@ def main():
     print output.encode("utf-8")
 
 
-def cmdline():
+def parse_cmdline():
     """Parse command line"""
     description = "Parse Wikipedia Dictionary of Chemical Formulas " + \
         DEFAULT_URL
@@ -79,6 +69,11 @@ def cmdline():
     return parser.parse_args()
 
 
+def wiki_urlopen(url):
+    return urllib2.urlopen(urllib2.Request(url,
+        headers={"User-agent": WIKI_USER_AGENT}))
+
+
 def parse_html(html, parser=None, ions=False):
     parser = wikipedia_compound_filter.TableFilter()
     parser.feed(html)
@@ -88,16 +83,16 @@ def parse_html(html, parser=None, ions=False):
 
 def dump_text(table):
     return "\n".join("%s: %s" % (formula, " ".join(parse_formula(formula)))
-                     for formula in text_formulas(table))
+                     for formula in iter_text_formulas(table))
 
 
 def dump_json(table):
     return json.dumps(dict((formula, parse_formula(formula))
-                           for formula in text_formulas(table)))
+                           for formula in iter_text_formulas(table)))
 
 
 def dump_stats(table):
-    stats = get_term_stats(text_formulas(table))
+    stats = get_term_stats(iter_text_formulas(table))
     return "\n".join("%8i %s" % (count, term) for (term, count) in stats)
 
 
@@ -108,41 +103,35 @@ def get_term_stats(formulas):
     terms.sort()
     stats = [(term, len(list(group)))
              for (term, group) in itertools.groupby(terms)]
-    stats.sort(key=itemgetter(1))
+    stats.sort(key=op.itemgetter(1))
     return stats
 
 
-def text_formulas(table):
-    """Iterate over textual formulas"""
-    return (tr_formula(row[0].data) for row in table)
+def iter_text_formulas(table):
+    return (sanitize_formula(row[0].data) for row in table)
 
 
-TR_UNICODE = {u"·": u"*", u"−": u"-"}
-
-
-def tr_formula(formula):
+def sanitize_formula(formula):
     """Remove spaces and translate unicode specials to latin-1"""
+    TR_UNICODE = {u"·": u"*", u"−": u"-"}
     formula = "".join(TR_UNICODE.get(ch, ch) for ch in formula if ch > " ")
     if formula.endswith("(benzenediols)"):
         formula = formula[:-len("(benzenediols)")]
     return formula
 
 
-term_re = re.compile(u"[A-Z][a-z]{0,2}|[0-9.+−-]+|.")
 
-
-def parse_formula(formula):
+def parse_formula(formula,
+        term_re=re.compile(u"[A-Z][a-z]{0,2}|[0-9.+−-]+|.")):
     """Return list of formula terminals"""
     return term_re.findall(formula)
 
 
 def is_compound(formula):
-    """Check whether the formula is a compound"""
     return not is_ion(formula)
 
 
 def is_ion(formula):
-    """Check whether the formula is an ion"""
     return formula[-1] in u"+−-"
 
 
