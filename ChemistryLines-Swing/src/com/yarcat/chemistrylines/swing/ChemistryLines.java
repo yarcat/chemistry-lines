@@ -13,8 +13,9 @@ import javax.swing.SwingUtilities;
 
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.RectField;
-import com.yarcat.chemistrylines.game.ChemistryLinesGame;
+import com.yarcat.chemistrylines.game.FormulaLinesGame;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
+import com.yarcat.chemistrylines.game.LinesGame;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
 public class ChemistryLines implements Runnable, MouseListener {
@@ -25,7 +26,9 @@ public class ChemistryLines implements Runnable, MouseListener {
     private final Button[] mButtons = new Button[COLS * ROWS];
 
     private final Field mField = new RectField(COLS, ROWS);
-    private final ChemistryLinesGame mGame = new ChemistryLinesGame(mField);
+    // TODO(luch): fix game creation somehow.
+    //private final LinesGame mGame = new ChemistryLinesGame(mField);
+    private final LinesGame mGame = new FormulaLinesGame(mField);
 
     private final SelectionInView mSelection = new SelectionInView();
 

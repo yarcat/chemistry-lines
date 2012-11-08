@@ -1,29 +1,29 @@
 package com.yarcat.chemistrylines.game;
 
 import static com.yarcat.chemistrylines.algorithms.RandomCell.random;
-import static com.yarcat.chemistrylines.field.KnownElements.knownElements;
 
 import com.yarcat.chemistrylines.algorithms.CompoundRemover;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
 import com.yarcat.chemistrylines.field.Field;
+import com.yarcat.chemistrylines.field.KnownFormulas;
 
-public class ChemistryLinesGame extends LinesGame implements GameLogic {
+
+public class FormulaLinesGame extends LinesGame {
 
     private ElementRegistry mRegistry;
+    private String[] mTerms;
 
-    public ChemistryLinesGame(Field field) {
+    public FormulaLinesGame(Field field) {
         super(field, new CompoundRemover());
-        mRegistry = knownElements;
+        mRegistry = KnownFormulas.contents;
+        mTerms = KnownFormulas.terms;
     }
 
     @Override
     protected Element getRandomElement() {
-        Element e;
-        do {
-            // TODO(yarcat): Find better way of skipping final elements.
-            e = mRegistry.getByIndex(random.nextInt(mRegistry.size()));
-        } while (e.isFinal());
-        return e;
+        // TODO(luch): make random weighted
+        return mRegistry.get(mTerms[random.nextInt(mTerms.length)]);
     }
+
 }
