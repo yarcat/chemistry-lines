@@ -5,16 +5,21 @@ See it saved at tests/data/.
 
 """
 import argparse
+import collections
 import itertools
 import json
 import operator as op
+import os
 import re
 import urllib2
+
+import mako.template as mt
 
 import wikipedia_compound_filter
 
 
 DEFAULT_URL = "http://en.wikipedia.org/wiki/Dictionary_of_chemical_formulas"
+TEMPLATE_REGISTRY = "templates/registry.mako"
 WIKI_USER_AGENT = "urllib"
 
 
@@ -50,6 +55,9 @@ def parse_cmdline():
     output.add_argument("-j", "--json", dest="output",
                         action="store_const", const=dump_json,
                         help="Parsed formulas")
+    output.add_argument("-c", "--class", dest="output",
+                        action="store_const", const=dump_java,
+                        help="Parsed formulas")
     output.add_argument("-s", "--stats", dest="output",
                         action="store_const", const=dump_stats,
                         help="Formula terminals frequency")
@@ -74,7 +82,7 @@ def wiki_urlopen(url):
         urllib2.Request(url, headers={"User-agent": WIKI_USER_AGENT}))
 
 
-def parse_html(html, parser=None, ions=False):
+def parse_html(html):
     parser = wikipedia_compound_filter.TableFilter()
     parser.feed(html)
     parser.close()
@@ -93,22 +101,35 @@ def dump_json(table):
 
 def dump_stats(table):
     stats = get_term_stats(iter_text_formulas(table))
+    stats.sort(key=op.itemgetter(1))
     return "\n".join("%8i %s" % (count, term) for (term, count) in stats)
 
 
+def dump_java(table):
+    Formula = collections.namedtuple("Formula", "text terms")
+    formulas = [Formula(item, parse_formula(item))
+                for item in iter_text_formulas(table)]
+    stats = get_term_stats(iter_text_formulas(table))
+    stats.sort(key=op.itemgetter(0))
+    template = mt.Template(filename=TEMPLATE_REGISTRY)
+    s = template.render(name="KnownFormulas", formulas=formulas, stats=stats)
+    s = re.sub("^\s+$", "", s, flags=re.M)
+    return s
+
+
 def get_term_stats(formulas):
+    Stat = collections.namedtuple("Stat", "term count")
     terms = []
     for item in formulas:
         terms.extend(parse_formula(item))
     terms.sort()
-    stats = [(term, len(list(group)))
+    stats = [Stat(term, len(list(group)))
              for (term, group) in itertools.groupby(terms)]
-    stats.sort(key=op.itemgetter(1))
     return stats
 
 
 def iter_text_formulas(table):
-    return (sanitize_formula(row[0].data) for row in table)
+    return filter(None, (sanitize_formula(row[0].data) for row in table))
 
 
 def sanitize_formula(formula):
