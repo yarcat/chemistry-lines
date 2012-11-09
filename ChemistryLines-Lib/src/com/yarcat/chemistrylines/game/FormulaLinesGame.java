@@ -7,12 +7,13 @@ import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.KnownFormulas;
+import com.yarcat.chemistrylines.field.WeightedArrayOfStrings;
 
 
 public class FormulaLinesGame extends LinesGame {
 
     private ElementRegistry mRegistry;
-    private String[] mTerms;
+    private WeightedArrayOfStrings mTerms;
 
     public FormulaLinesGame(Field field) {
         super(field, new CompoundRemover());
@@ -22,8 +23,7 @@ public class FormulaLinesGame extends LinesGame {
 
     @Override
     protected Element getRandomElement() {
-        // TODO(luch): make random weighted
-        return mRegistry.get(mTerms[random.nextInt(mTerms.length)]);
+        return mRegistry.get(mTerms.get(random.nextInt(mTerms.size())));
     }
 
 }

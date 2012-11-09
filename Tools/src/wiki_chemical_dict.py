@@ -117,6 +117,7 @@ def dump_java(table):
 
 
 def get_term_stats(formulas):
+    """Return terminals with/sorted by number of occurrences in formulas"""
     Stat = collections.namedtuple("Stat", "term count")
     terms = []
     for item in formulas:

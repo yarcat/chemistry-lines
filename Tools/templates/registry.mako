@@ -58,12 +58,8 @@ package com.yarcat.chemistrylines.field;
 public final class ${name} {
 
     public final static ElementRegistry contents = new ElementRegistry();
-    public final static String[] terms = {
-% for term, count in stats[:-1]:
-        "${term}",
-% endfor
-        "${stats[-1].term}"
-    };
+    public final static WeightedArrayOfStrings terms =
+            new WeightedArrayOfStrings(${len(stats)});
 \
 <% keys = [] %> \
 % for key, group in split_formula_set(formulas):
@@ -86,6 +82,10 @@ public final class ${name} {
 % endfor
 
     static {
+% for term, count in stats:
+        terms.add("${term}", ${count});
+% endfor
+
 % for key in keys:
         register${key}();
 % endfor
