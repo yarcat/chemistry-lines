@@ -6,27 +6,26 @@ Arguments:
 <%
 import collections
 import itertools
-import operator as op
 
 def split_formula_set(formulas):
-    # """Split all formulas into groups to pass java method code limit 64K
-    #
-    # Group formulas by first letter.
-    #
-    # """
+    """Split all formulas into groups to pass java method code limit 64K
+
+    Group formulas by first letter.
+
+    """
     def group_key(formula):
         s = formula.text
         return s[1] if s[0] in "([" else s[0]
 
-    formulas = sorted(formulas, key=lambda fml: (group_key(fml), fml.text))
+    formulas = sorted(formulas, key=lambda f: (group_key(f), f.text))
     for key, grp in itertools.groupby(formulas, key=group_key):
         yield key, tuple(grp)
 
 
 def iter_prefixes(formula, start=1, end=0):
     """Yield all formula prefixes as strings"""
-    for ii in range(start, len(formula.terms) + end):
-        yield "".join(formula.terms[:ii])
+    for i in range(start, len(formula.terms) + end):
+        yield "".join(formula.terms[:i])
 
 
 def gen_prefixes(formulas):
@@ -34,18 +33,18 @@ def gen_prefixes(formulas):
 
     # let's keep the sequence of formulas
     seen = set()
-    for formula in formulas:
-        for prefix in iter_prefixes(formula):
+    for f in formulas:
+        for prefix in iter_prefixes(f):
             if prefix not in seen:
                 yield Item(prefix, False)
                 seen.add(prefix)
-        yield Item(formula.text, True)
+        yield Item(f.text, True)
 
 
 def gen_productions(formulas):
     Prod = collections.namedtuple("Prod", "prefix term result")
     produced = set()
-    for terms in map(op.attrgetter("terms"), formulas):
+    for terms in (f.terms for f in formulas):
         for i in range(1, len(terms) - 1):
             p = Prod("".join(terms[:i]), terms[i], "".join(terms[:i+1]))
             if p not in produced:

@@ -113,8 +113,7 @@ def dump_java(table):
     stats.sort(key=op.itemgetter(0))
     template = mt.Template(filename=TEMPLATE_REGISTRY)
     s = template.render(name="KnownFormulas", formulas=formulas, stats=stats)
-    s = re.sub("^\s+$", "", s, flags=re.M)
-    return s
+    return re.sub("^\s+$", "", s, flags=re.M)
 
 
 def get_term_stats(formulas):
