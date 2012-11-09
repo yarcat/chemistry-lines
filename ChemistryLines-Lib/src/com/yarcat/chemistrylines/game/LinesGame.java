@@ -9,14 +9,14 @@ import com.yarcat.chemistrylines.field.Field;
 
 public abstract class LinesGame implements GameLogic {
 
-    private int newPortionSize;
+    private int mNewPortionSize;
     private Field mField;
     private CompoundRemover mRemover;
 
     public LinesGame(Field field, CompoundRemover remover) {
         mField = field;
         mRemover = remover;
-        newPortionSize = 3;
+        mNewPortionSize = 3;
     }
 
     @Override
@@ -40,7 +40,7 @@ public abstract class LinesGame implements GameLogic {
 
     @Override
     public void addItems() {
-        for (int i = 0; i < newPortionSize; ++i) {
+        for (int i = 0; i < mNewPortionSize; ++i) {
             int n = getRandomEmptyCell(mField);
             if (n < 0) {
                 break;
