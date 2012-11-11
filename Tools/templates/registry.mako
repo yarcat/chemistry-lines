@@ -29,23 +29,25 @@ def iter_prefixes(formula, start=1, end=0):
 
 
 def gen_prefixes(formulas):
-    Item = collections.namedtuple("Item", "prefix is_final")
+    Item = collections.namedtuple("Item", "prefix setters")
 
-    # let's keep the sequence of formulas
-    seen = set()
+    prefixes = collections.defaultdict(set)
     for f in formulas:
-        for prefix in iter_prefixes(f):
-            if prefix not in seen:
-                yield Item(prefix, False)
-                seen.add(prefix)
-        yield Item(f.text, True)
+        for p in iter_prefixes(f, start=2):
+            prefixes[p].add(".startsCompound(true)")
+        prefixes[f.text].add(".isFinal(true)")
+
+    prefixes = [Item(p, sorted(s)) for p, s in prefixes.iteritems()]
+    prefixes.sort(key=lambda x: x.prefix)
+
+    return prefixes
 
 
 def gen_productions(formulas):
     Prod = collections.namedtuple("Prod", "prefix term result")
     produced = set()
     for terms in (f.terms for f in formulas):
-        for i in range(1, len(terms) - 1):
+        for i in range(1, len(terms)):
             p = Prod("".join(terms[:i]), terms[i], "".join(terms[:i+1]))
             if p not in produced:
                 yield p
@@ -68,11 +70,9 @@ public final class ${name} {
     private final static void register${key}() {
     % for it in gen_prefixes(group):
         E("${it.prefix}")
-        % if it.is_final:
-            .isFinal(true);
-        % else:
-            .startsCompound(true);
-        % endif
+        % for i, s in enumerate(it.setters):
+            ${s}${";" if i == len(it.setters) - 1 else ""}
+        % endfor
     % endfor
 
     % for it in gen_productions(group):
@@ -83,6 +83,12 @@ public final class ${name} {
 
     static {
 % for term, count in stats:
+    % if "A" <= term[0] <= "Z" or term in "([":
+        E("${term}")
+            .startsCompound(true);
+    % else:
+        E("${term}");
+    % endif
         terms.add("${term}", ${count});
 % endfor
 
