@@ -3,6 +3,7 @@ package com.yarcat.chemistrylines.game;
 import static com.yarcat.chemistrylines.algorithms.RandomCell.random;
 
 import com.yarcat.chemistrylines.algorithms.CompoundRemover;
+import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
 import com.yarcat.chemistrylines.field.Field;
@@ -16,7 +17,7 @@ public class FormulaLinesGame extends LinesGame {
     private WeightedArrayOfStrings mTerms;
 
     public FormulaLinesGame(Field field) {
-        super(field, new CompoundRemover());
+        super(field, new CompoundRemover(new SimpleReactor(KnownFormulas.contents)));
         mRegistry = KnownFormulas.contents;
         mTerms = KnownFormulas.terms;
     }
