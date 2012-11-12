@@ -17,7 +17,6 @@ import mako.template as mt
 
 import wikipedia_compound_filter
 
-
 DEFAULT_URL = "http://en.wikipedia.org/wiki/Dictionary_of_chemical_formulas"
 TEMPLATE_REGISTRY = "templates/registry.mako"
 WIKI_USER_AGENT = "urllib"
@@ -31,10 +30,12 @@ def main():
         fh = wiki_urlopen(DEFAULT_URL)
 
     table = parse_html(fh.read().decode("utf-8"))
+    formulas = list(iter_formulas(table))
 
     if args.filter:
-        table = filter(lambda row: args.filter(row[0].data), table)
-    output = args.output(table)
+        formulas = filter(args.filter, formulas)
+
+    output = args.output(formulas)
 
     print output.encode("utf-8")
 
@@ -89,27 +90,22 @@ def parse_html(html):
     return parser.get_table()
 
 
-def dump_text(table):
-    return "\n".join("%s: %s" % (formula, " ".join(parse_formula(formula)))
-                     for formula in iter_text_formulas(table))
+def dump_text(formulas):
+    return "\n".join("%s: %s" % (f.text, " ".join(f.terms)) for f in formulas)
 
 
-def dump_json(table):
-    return json.dumps(dict((formula, parse_formula(formula))
-                           for formula in iter_text_formulas(table)))
+def dump_json(formulas):
+    return json.dumps(dict(formulas))
 
 
-def dump_stats(table):
-    stats = get_term_stats(iter_text_formulas(table))
+def dump_stats(formulas):
+    stats = get_term_stats(formulas)
     stats.sort(key=op.itemgetter(1))
     return "\n".join("%8i %s" % (count, term) for (term, count) in stats)
 
 
-def dump_java(table):
-    Formula = collections.namedtuple("Formula", "text terms")
-    formulas = [Formula(item, parse_formula(item))
-                for item in iter_text_formulas(table)]
-    stats = get_term_stats(iter_text_formulas(table))
+def dump_java(formulas):
+    stats = get_term_stats(formulas)
     stats.sort(key=op.itemgetter(0))
     template = mt.Template(filename=TEMPLATE_REGISTRY)
     s = template.render(name="KnownFormulas", formulas=formulas, stats=stats)
@@ -120,16 +116,18 @@ def get_term_stats(formulas):
     """Return terminals with/sorted by number of occurrences in formulas"""
     Stat = collections.namedtuple("Stat", "term count")
     terms = []
-    for item in formulas:
-        terms.extend(parse_formula(item))
+    for f in formulas:
+        terms.extend(f.terms)
     terms.sort()
     stats = [Stat(term, len(list(group)))
              for (term, group) in itertools.groupby(terms)]
     return stats
 
 
-def iter_text_formulas(table):
-    return filter(None, (sanitize_formula(row[0].data) for row in table))
+def iter_formulas(table):
+    Formula = collections.namedtuple("Formula", "text terms")
+    text_formulas = (sanitize_formula(row[0].data) for row in table)
+    return (Formula(it, parse_formula(it)) for it in text_formulas if it)
 
 
 def sanitize_formula(formula):
@@ -152,7 +150,7 @@ def is_compound(formula):
 
 
 def is_ion(formula):
-    return formula[-1] in u"+−-"
+    return formula.text[-1] in u"+−-"
 
 
 if __name__ == "__main__":
