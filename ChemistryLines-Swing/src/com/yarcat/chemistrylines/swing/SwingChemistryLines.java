@@ -9,38 +9,20 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
 
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.RectField;
-import com.yarcat.chemistrylines.game.ChemistryLinesGame;
-import com.yarcat.chemistrylines.game.FormulaLinesGame;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
 import com.yarcat.chemistrylines.game.LinesGame;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
-public class ChemistryLines implements Runnable, MouseListener {
-
-    private static final int COLS = 8;
-    private static final int ROWS = 8;
-
-    private final Button[] mButtons = new Button[COLS * ROWS];
-
-    private final Field mField = new RectField(COLS, ROWS);
-    private final LinesGame mGame;
+public class SwingChemistryLines implements MouseListener {
 
     private final SelectionInView mSelection = new SelectionInView();
-    private String mMode;
 
-    private interface GameFactory {
-        LinesGame newInstance(Field field);
-        String getModeName();
-    }
-
-    public ChemistryLines(GameFactory gameFactory) {
-        mGame = gameFactory.newInstance(mField);
-        mMode = gameFactory.getModeName();
-    }
+    private final Field mField;
+    private final LinesGame mGame;
+    private final Button[] mButtons;
 
     @SuppressWarnings("serial")
     private static class Button extends JLabel {
@@ -51,57 +33,43 @@ public class ChemistryLines implements Runnable, MouseListener {
         }
     }
 
-    @Override
-    public void run() {
-        JFrame f = new JFrame(mMode);
+    public static SwingChemistryLines newInstance(GameFactory factory,
+            int cols, int rows) {
+        Field field = new RectField(cols, rows);
+        SwingChemistryLines.Button[] buttons =
+            new SwingChemistryLines.Button[cols * rows];
+        LinesGame gameInstance = factory.newInstance(field);
+        SwingChemistryLines game =
+            new SwingChemistryLines(field, gameInstance, buttons);
+
+        JFrame f = new JFrame("Chemistry Lines - " + factory.getModeName());
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GridLayout l = new GridLayout(COLS, ROWS);
+        GridLayout l = new GridLayout(cols, rows);
         f.setLayout(l);
-        for (int i = 0; i < COLS * ROWS; ++i) {
+        for (int i = 0; i < cols * rows; ++i) {
             Button b = new Button(i);
             b.setPreferredSize(new Dimension(60, 60));
             b.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
             b.setForeground(Color.WHITE);
             b.setHorizontalAlignment(JLabel.CENTER);
             b.setOpaque(true);
-            mButtons[i] = b;
-            b.addMouseListener(this);
+            buttons[i] = b;
+            b.addMouseListener(game);
             f.getContentPane().add(b);
         }
         f.pack();
         f.setVisible(true);
 
-        mGame.addItems();
-        refreshField();
+        gameInstance.addItems();
+        game.refreshField();
+
+        return game;
     }
 
-    public static void main(String[] args) {
-        GameFactory factory;
-        if (args.length > 0 && args[0].equals("formula")) {
-            factory = new GameFactory() {
-                @Override
-                public LinesGame newInstance(Field field) {
-                    return new FormulaLinesGame(field);
-                }
-                @Override
-                public String getModeName() {
-                    return "formula mode";
-                }
-            };
-        } else {
-            factory = new GameFactory() {
-                @Override
-                public LinesGame newInstance(Field field) {
-                    return new ChemistryLinesGame(field);
-                }
-                @Override
-                public String getModeName() {
-                    return "compound mode";
-                }
-            };
-        }
-        ChemistryLines cl = new ChemistryLines(factory);
-        SwingUtilities.invokeLater(cl);
+    public SwingChemistryLines(Field field, LinesGame game, Button[] buttons) {
+        mField = field;
+        mGame = game;
+        mButtons = buttons;
     }
 
     private void refreshField() {
