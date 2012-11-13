@@ -8,13 +8,13 @@
 <stringAttribute key="com.android.ide.eclipse.adt.target" value="MANUAL"/>
 <booleanAttribute key="com.android.ide.eclipse.adt.wipedata" value="false"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/Chemistry Lines"/>
-<listEntry value="/Chemistry Lines/AndroidManifest.xml"/>
+<listEntry value="/Android"/>
+<listEntry value="/Android/AndroidManifest.xml"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="4"/>
 <listEntry value="1"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ALLOW_TERMINATE" value="true"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Chemistry Lines"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Android"/>
 </launchConfiguration>

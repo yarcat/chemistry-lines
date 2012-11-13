@@ -2,6 +2,6 @@
 .metadata
 .*.swp
 bin
-Chemistry Lines/gen/
+Android/gen/
 Lib/gen/
 Lib/src/com/yarcat/chemistrylines/field/KnownFormulas.java
