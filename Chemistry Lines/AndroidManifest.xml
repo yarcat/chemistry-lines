@@ -4,19 +4,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-<<<<<<< HEAD
         android:minSdkVersion="8"
-=======
-<<<<<<< HEAD
-        android:minSdkVersion="10"
-=======
-<<<<<<< HEAD
-        android:minSdkVersion="8"
-=======
-        android:minSdkVersion="10"
->>>>>>> 46b91f5... mininal android api level 10
->>>>>>> mininal android api level 10
->>>>>>> 2ea123c... mininal android api level 10
         android:targetSdkVersion="15" />
 
     <application
