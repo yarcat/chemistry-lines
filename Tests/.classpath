@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Chemistry Lines"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ChemistryLines-Lib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Lib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

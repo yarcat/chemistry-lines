@@ -3,5 +3,5 @@
 .*.swp
 bin
 Chemistry Lines/gen/
-ChemistryLines-Lib/gen/
-ChemistryLines-Lib/src/com/yarcat/chemistrylines/field/KnownFormulas.java
+Lib/gen/
+Lib/src/com/yarcat/chemistrylines/field/KnownFormulas.java
