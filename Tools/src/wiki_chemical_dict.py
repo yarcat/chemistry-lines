@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """A tool to parse wikipedia's dictionary of chemical formulas
 
 See it saved at tests/data/.
@@ -8,12 +7,12 @@ import argparse
 import collections
 import itertools
 import json
-import operator as op
 import re
 import urllib2
 
 import mako.template as mt
 
+import formula as F
 import chemical_elements as E
 import wikipedia_compound_filter
 
@@ -30,7 +29,8 @@ def main():
         fh = wiki_urlopen(DEFAULT_URL)
 
     table = parse_html(fh.read().decode("utf-8"))
-    formulas = list(iter_formulas(table))
+    formulas = list(F.iter_formulas(row[0].data for row in table
+                    if row[0].data != "(benzenediols)"))
 
     if args.filter:
         formulas = filter(args.filter, formulas)
@@ -74,10 +74,10 @@ def parse_cmdline():
                       action="store_const", const=None,
                       help="Only ions")
     mode.add_argument("-C", "--compounds", dest="filter",
-                      action="store_const", const=is_compound,
+                      action="store_const", const=lambda f: f.is_compound,
                       help="Only compounds")
     mode.add_argument("-I", "--ions", dest="filter",
-                      action="store_const", const=is_ion,
+                      action="store_const", const=lambda f: f.is_ion,
                       help="Only ions")
 
     parser.add_argument("-atom", default=[], action="append",
@@ -115,22 +115,22 @@ def parse_html(html):
 
 
 def dump_text(formulas):
-    return "\n".join("%s: %s" % (f.text, " ".join(f.terms)) for f in formulas)
+    return "\n".join("%s: %s" % (f.text, f.prefix(sep=" ")) for f in formulas)
 
 
 def dump_json(formulas):
-    return json.dumps(dict(formulas))
+    return json.dumps(dict((f.text, map(str, f.terms)) for f in formulas))
 
 
 def dump_stats(formulas):
     stats = get_term_stats(formulas)
-    stats.sort(key=op.itemgetter(1))
+    stats.sort(key=lambda x: x[1])
     return "\n".join("%8i %s" % (count, term) for (term, count) in stats)
 
 
 def dump_java(formulas):
     stats = get_term_stats(formulas)
-    stats.sort(key=op.itemgetter(0))
+    stats.sort(key=lambda x: x[0])
     template = mt.Template(filename=TEMPLATE_REGISTRY)
     s = template.render(name="KnownFormulas", formulas=formulas, stats=stats)
     return re.sub("^\s+$", "", s, flags=re.M)
@@ -148,56 +148,20 @@ def get_term_stats(formulas):
     return stats
 
 
-def iter_formulas(table):
-    Formula = collections.namedtuple("Formula", "text terms")
-    text_formulas = (sanitize_formula(row[0].data) for row in table)
-    return (Formula(it, parse_formula(it)) for it in text_formulas if it)
-
-
-def sanitize_formula(formula):
-    """Remove spaces and translate unicode specials to latin-1"""
-    TR_UNICODE = {u"·": u"*", u"−": u"-"}
-    formula = "".join(TR_UNICODE.get(ch, ch) for ch in formula if ch > " ")
-    if formula.endswith("(benzenediols)"):
-        formula = formula[:-len("(benzenediols)")]
-    return formula
-
-
-def parse_formula(formula,
-                  term_re=re.compile(u"[A-Z][a-z]{0,2}|[0-9.+−-]+|.")):
-    """Return list of formula terminals"""
-    return term_re.findall(formula)
-
-
 def filter_by_atoms(formulas, atoms):
     return [f for f in formulas
-            if all(not is_atom(term) or term in atoms for term in f.terms)]
+            if all(not term.is_atom or term in atoms for term in f.terms)]
 
 
 def is_simple(formula, max_atom_count=7):
-    terms = formula.terms
-    if "(" in terms or "[" in terms:
+    if "(" in formula or "[" in formula:
         return False
-    coefs = [int(t) for t in terms if is_coefficient(t)]
-    count = (len(terms) - len(coefs) * 2  # Atoms without coefficients.
-             + sum(coefs))
+
+    coefs = formula.coefficients
+
+    # Count atoms without coefficients & add all coefficients
+    count = len(formula) - 2 * len(coefs) + sum(coefs)
     return count <= max_atom_count
-
-
-def is_compound(formula):
-    return not is_ion(formula)
-
-
-def is_ion(formula):
-    return formula.text[-1] in u"+−-"
-
-
-def is_atom(term):
-    return "A" <= term[0] <= "Z"
-
-
-def is_coefficient(term):
-    return term.isdigit()
 
 
 if __name__ == "__main__":

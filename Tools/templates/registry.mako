@@ -23,9 +23,8 @@ def split_formula_set(formulas):
 
 
 def iter_prefixes(formula, start=1, end=0):
-    """Yield all formula prefixes as strings"""
-    for i in range(start, len(formula.terms) + end):
-        yield "".join(formula.terms[:i])
+    """All formula prefixes as strings"""
+    return map(formula.prefix, range(start, len(formula) + end))
 
 
 def gen_prefixes(formulas):
@@ -46,9 +45,9 @@ def gen_prefixes(formulas):
 def gen_productions(formulas):
     Prod = collections.namedtuple("Prod", "prefix term result")
     produced = set()
-    for terms in (f.terms for f in formulas):
-        for i in range(1, len(terms)):
-            p = Prod("".join(terms[:i]), terms[i], "".join(terms[:i+1]))
+    for f in formulas:
+        for i in range(1, len(f)):
+            p = Prod(f.prefix(i), f.terms[i], f.prefix(i + 1))
             if p not in produced:
                 yield p
                 produced.add(p)
@@ -83,7 +82,7 @@ public final class ${name} {
 
     static {
 % for term, count in stats:
-    % if "A" <= term[0] <= "Z" or term in "([":
+    % if term.starts_formula:
         E("${term}")
             .startsCompound(true);
     % else:
