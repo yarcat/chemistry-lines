@@ -15,6 +15,7 @@ import urllib2
 
 import mako.template as mt
 
+import chemical_elements as E
 import wikipedia_compound_filter
 
 DEFAULT_URL = "http://en.wikipedia.org/wiki/Dictionary_of_chemical_formulas"
@@ -34,6 +35,9 @@ def main():
 
     if args.filter:
         formulas = filter(args.filter, formulas)
+
+    if args.atoms:
+        formulas = filter_by_atoms(formulas, args.atoms)
 
     output = args.output(formulas)
 
@@ -74,8 +78,23 @@ def parse_cmdline():
                       action="store_const", const=is_ion,
                       help="Only ions")
 
-    parser.set_defaults(output=dump_text, filter=None)
-    return parser.parse_args()
+    parser.add_argument("-atom", default=[], action="append",
+                        choices=E.ATOMS,
+                        help="Limit formulas to those containg"
+                        " specified elements")
+
+    parser.add_argument("-group", default=[], action="append", type=int,
+                        choices=range(1, len(E.GROUPS) + 1),
+                        help="Limit formulas to those containg elements"
+                        " of specified groups")
+
+    parser.set_defaults(output=dump_text, filter=None, special=[])
+    args = parser.parse_args()
+
+    args.atoms = frozenset(itertools.chain(
+        args.atom, *(E.GROUPS[i - 1] for i in args.group)))
+
+    return args
 
 
 def wiki_urlopen(url):
@@ -145,12 +164,21 @@ def parse_formula(formula,
     return term_re.findall(formula)
 
 
+def filter_by_atoms(formulas, atoms):
+    return [f for f in formulas
+            if all(not is_atom(term) or term in atoms for term in f.terms)]
+
+
 def is_compound(formula):
     return not is_ion(formula)
 
 
 def is_ion(formula):
     return formula.text[-1] in u"+−-"
+
+
+def is_atom(term):
+    return "A" <= term[0] <= "Z"
 
 
 if __name__ == "__main__":
