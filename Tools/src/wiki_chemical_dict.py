@@ -178,13 +178,9 @@ def is_simple(formula, max_atom_count=7):
     terms = formula.terms
     if "(" in terms or "[" in terms:
         return False
-    try:
-        coefs = [int(t) for t in terms if is_coefficient(t)]
-    except ValueError:  # Coefficients can contain fraction part.
-        return False
-    # len(coefs) * 2 stands for the atoms and their indices. In the end what
-    # matters is the total amount of molecules.
-    count = len(terms) - len(coefs) * 2 + sum(coefs)
+    coefs = [int(t) for t in terms if is_coefficient(t)]
+    count = (len(terms) - len(coefs) * 2  # Atoms without coefficients.
+             + sum(coefs))
     return count <= max_atom_count
 
 
@@ -201,7 +197,7 @@ def is_atom(term):
 
 
 def is_coefficient(term):
-    return "0" <= term[0] <= "9"
+    return term.isdigit()
 
 
 if __name__ == "__main__":
