@@ -18,7 +18,7 @@
 		<link>
 			<name>tests</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Chemistry%20Lines/tests</locationURI>
+			<locationURI>$%7BWORKSPACE_LOC%7D/Lib/tests</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

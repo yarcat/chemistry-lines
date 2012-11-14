@@ -1,0 +1,2 @@
+The separate project for running tests is required, because Lib project is
+configured for Android.
