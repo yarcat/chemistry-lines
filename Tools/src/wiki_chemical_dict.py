@@ -9,7 +9,6 @@ import collections
 import itertools
 import json
 import operator as op
-import os
 import re
 import urllib2
 
@@ -179,11 +178,10 @@ def is_simple(formula, max_atom_count=7):
     terms = formula.terms
     if "(" in terms or "[" in terms:
         return False
-    try:
-        coefs = [int(t) for t in terms if is_coefficient(t)]
-    except ValueError:
-        return False
-    count = len(terms) - len(coefs) + sum(coefs)
+    coefs = [int(t) for t in terms if is_coefficient(t)]
+    # len(coefs) * 2 stands for the atoms and their indices. In the end what
+    # matters is the total amount of molecules.
+    count = len(terms) - len(coefs) * 2 + sum(coefs)
     return count <= max_atom_count
 
 
