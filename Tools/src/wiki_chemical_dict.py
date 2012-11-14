@@ -39,6 +39,9 @@ def main():
     if args.atoms:
         formulas = filter_by_atoms(formulas, args.atoms)
 
+    if args.only_simple:
+        formulas = filter(is_simple, formulas)
+
     output = args.output(formulas)
 
     print output.encode("utf-8")
@@ -87,6 +90,9 @@ def parse_cmdline():
                         choices=range(1, len(E.GROUPS) + 1),
                         help="Limit formulas to those containg elements"
                         " of specified groups")
+
+    parser.add_argument("--only-simple", default=False, action="store_true",
+                        help="Limit formula to simple ones")
 
     parser.set_defaults(output=dump_text, filter=None, special=[])
     args = parser.parse_args()
@@ -169,6 +175,18 @@ def filter_by_atoms(formulas, atoms):
             if all(not is_atom(term) or term in atoms for term in f.terms)]
 
 
+def is_simple(formula, max_atom_count=7):
+    terms = formula.terms
+    if "(" in terms or "[" in terms:
+        return False
+    try:
+        coefs = [int(t) for t in terms if is_coefficient(t)]
+    except ValueError:
+        return False
+    count = len(terms) - len(coefs) + sum(coefs)
+    return count <= max_atom_count
+
+
 def is_compound(formula):
     return not is_ion(formula)
 
@@ -179,6 +197,10 @@ def is_ion(formula):
 
 def is_atom(term):
     return "A" <= term[0] <= "Z"
+
+
+def is_coefficient(term):
+    return "0" <= term[0] <= "9"
 
 
 if __name__ == "__main__":
