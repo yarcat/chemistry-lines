@@ -1,21 +1,22 @@
 import collections
 import unittest
+
+import formula as F
 import wiki_chemical_dict
 
 
 class TestWikiChemicalDict(unittest.TestCase):
 
     def testIsSimple(self):
-        Formula = collections.namedtuple("Formula", ["terms"])
         # Using table-driven testing.
-        tests = [("H 2 O", True),
-                 ("H 2 S", True),
-                 ("H 2 S O 4", True),
-                 ("H ( O )", False),  # Contains "(".
-                 ("H [ O ]", False),  # Contains "[".
-                 ("H C 12 H 17 O N 4 S Cl 2", False)]
+        tests = [("H2O", True),
+                 ("H2S", True),
+                 ("H2SO4", True),
+                 ("H(O)", False),  # Contains "(".
+                 ("H[O]", False),  # Contains "[".
+                 ("HC12H17ON4SCl2", False)]
         for i, (compound, want) in enumerate(tests):
-            got = wiki_chemical_dict.is_simple(Formula(compound.split()))
+            got = wiki_chemical_dict.is_simple(F.Formula(compound))
             self.assertEquals(got, want,
                               "%d. is_simple(%s) got %s, want %s" %
                               (i, compound, got, want))
