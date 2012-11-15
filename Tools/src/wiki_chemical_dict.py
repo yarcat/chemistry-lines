@@ -10,14 +10,14 @@ import json
 import re
 import urllib2
 
-import mako.template as mt
+import mako.lookup
 
 import formula as F
 import chemical_elements as E
 import wikipedia_compound_filter
 
 DEFAULT_URL = "http://en.wikipedia.org/wiki/Dictionary_of_chemical_formulas"
-TEMPLATE_REGISTRY = "templates/KnownFormulas.mako"
+TEMPLATE_DIR = "templates/"
 WIKI_USER_AGENT = "urllib"
 
 
@@ -62,8 +62,11 @@ def parse_cmdline():
     output.add_argument("-j", "--json", dest="output",
                         action="store_const", const=dump_json,
                         help="Parsed formulas")
-    output.add_argument("-c", "--class", dest="output",
-                        action="store_const", const=dump_java,
+    output.add_argument("--class", dest="output",
+                        action="store_const", const=dump_java_class,
+                        help="Java class Parsed formulas")
+    output.add_argument("--test", dest="output",
+                        action="store_const", const=dump_java_test,
                         help="Parsed formulas")
     output.add_argument("-s", "--stats", dest="output",
                         action="store_const", const=dump_stats,
@@ -128,11 +131,22 @@ def dump_stats(formulas):
     return "\n".join("%8i %s" % (count, term) for (term, count) in stats)
 
 
-def dump_java(formulas):
+def dump_java_class(formulas):
     stats = get_term_stats(formulas)
     stats.sort(key=lambda x: x[0])
-    template = mt.Template(filename=TEMPLATE_REGISTRY)
-    s = template.render(name="KnownFormulas", formulas=formulas, stats=stats)
+    return render("KnownFormulas.mako", name="KnownFormulas",
+                  formulas=formulas, stats=stats)
+
+
+def dump_java_test(formulas):
+    return render("KnownFormulasTest.mako", name="KnownFormulasTest",
+                  formulas=formulas)
+
+
+def render(template_name, **namespace):
+    lookup = mako.lookup.TemplateLookup(directories=[TEMPLATE_DIR])
+    template = lookup.get_template(template_name)
+    s = template.render(**namespace)
     return re.sub("^\s+$", "", s, flags=re.M)
 
 
