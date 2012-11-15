@@ -17,7 +17,7 @@ import chemical_elements as E
 import wikipedia_compound_filter
 
 DEFAULT_URL = "http://en.wikipedia.org/wiki/Dictionary_of_chemical_formulas"
-TEMPLATE_REGISTRY = "templates/registry.mako"
+TEMPLATE_REGISTRY = "templates/KnownFormulas.mako"
 WIKI_USER_AGENT = "urllib"
 
 
