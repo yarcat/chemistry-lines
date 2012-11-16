@@ -41,6 +41,12 @@ def main():
     if args.only_simple:
         formulas = filter(is_simple, formulas)
 
+    if args.min_elements:
+        formulas = filter(lambda f: len(f.atoms) >= args.min_elements,
+                          formulas)
+    if args.min_terminals:
+        formulas = filter(lambda f: len(f) >= args.min_terminals, formulas)
+
     output = args.output(formulas)
 
     print output.encode("utf-8")
@@ -94,7 +100,14 @@ def parse_cmdline():
                         " of specified groups")
 
     parser.add_argument("--only-simple", default=False, action="store_true",
-                        help="Limit formula to simple ones")
+                        help="Limit formulas to simple ones")
+
+    limit = parser.add_mutually_exclusive_group()
+    limit.add_argument("--min-terminals", default=None, type=int,
+                       help="Limit formulas by terminal count")
+    limit.add_argument("--min-elements", default=None, type=int,
+                       help="Limit formulas by element count"
+                       " (different atoms)")
 
     parser.set_defaults(output=dump_text, filter=None, special=[])
     args = parser.parse_args()

@@ -37,6 +37,10 @@ class Formula(TextHelper):
         return self.text[-1] in u"+-"
 
     @property
+    def atoms(self):
+        return [t for t in self.terms if t.is_atom]
+
+    @property
     def coefficients(self):
         return [int(t.text) for t in self.terms if t.is_coefficient]
 
