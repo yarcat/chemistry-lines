@@ -39,6 +39,9 @@ public final class KnownElements {
 
     /** Registers element with the given id and name. */
     private final static Element E(String id, String name) {
+        if (knownElements.contains(id)) {
+            return knownElements.get(id);
+        }
         Element e = new Element(id, name);
         knownElements.register(e);
         return e;

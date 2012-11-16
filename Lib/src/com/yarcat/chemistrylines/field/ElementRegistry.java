@@ -6,6 +6,10 @@ import java.util.HashMap;
 /** Knows about elements and possible productions. */
 public class ElementRegistry {
 
+    public class DuplicateException extends RuntimeException {
+        private static final long serialVersionUID = 9005512708389128296L;
+    }
+
     private final ArrayList<String> mIdentifiers = new ArrayList<String>();
     private final HashMap<String, Element> mElements =
         new HashMap<String, Element>();
@@ -14,6 +18,9 @@ public class ElementRegistry {
 
     /** Registers element. */
     public void register(Element e) {
+        if (contains(e.getId())) {
+            throw new DuplicateException();
+        }
         mIdentifiers.add(e.getId());
         mElements.put(e.getId(), e);
     }

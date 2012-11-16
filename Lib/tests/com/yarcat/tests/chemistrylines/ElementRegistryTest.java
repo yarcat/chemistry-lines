@@ -1,12 +1,17 @@
 package com.yarcat.tests.chemistrylines;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
+import com.yarcat.chemistrylines.field.ElementRegistry.DuplicateException;
 
 public class ElementRegistryTest {
 
@@ -24,7 +29,7 @@ public class ElementRegistryTest {
         e2 = new Element("O2{0}", "Compound2")
             .startsCompound(true)
             .isFinal(true);
-        e3 = new Element("O3{0}", "Compound2")
+        e3 = new Element("O3{0}", "Compound3")
             .startsCompound(false)
             .isFinal(true);
     }
@@ -66,5 +71,11 @@ public class ElementRegistryTest {
         assertEquals(e1, mRegistry.getByIndex(0));
         assertNull(mRegistry.getByIndex(-1));
         assertNull(mRegistry.getByIndex(mRegistry.size()));
+    }
+
+    @Test(expected=DuplicateException.class)
+    public void duplicateElement() {
+        mRegistry.register(e1);
+        mRegistry.register(e1);
     }
 }

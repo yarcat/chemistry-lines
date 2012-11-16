@@ -49,6 +49,9 @@ public final class ${name} {
 
     /** Registers element with the given id and name. */
     private final static Element E(String id, String name) {
+        if (contents.contains(id)) {
+            return contents.get(id);
+        }
         Element e = new Element(id, name);
         contents.register(e);
         return e;

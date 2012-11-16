@@ -1,6 +1,7 @@
 package com.yarcat.tests.chemistrylines;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,14 @@ public class FormulaRegistryTest {
         mRegistry = KnownFormulas.contents;
         mReactor = new SimpleReactor(mRegistry);
         mRemover = new CompoundRemover(mReactor);
+    }
+
+    @Test
+    public void testO() {
+        Element O = mRegistry.get("O");
+        assertTrue(O.startsCompound());
+        assertTrue(O.isFinal());
+        assertFalse(formulaIsRemoved("O"));
     }
 
     @Test
