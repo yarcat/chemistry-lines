@@ -6,7 +6,7 @@ Arguments:
 <% import registry_helper as R %>\
 package com.yarcat.chemistrylines.field;
 
-/** Static definition of all known elements and their productions. */
+/** Static definition of all known formulas. */
 public final class ${name} {
 
     public final static ElementRegistry contents = new ElementRegistry();

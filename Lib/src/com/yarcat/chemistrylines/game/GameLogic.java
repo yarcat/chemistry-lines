@@ -1,8 +1,10 @@
 package com.yarcat.chemistrylines.game;
 
+import com.yarcat.chemistrylines.field.Element;
+
 /**
  * Game rules.
- * 
+ *
  * It looks like all Lines-like puzzles share lots of common functionality. The
  * main idea of this interface is encapsulation of rules of a particular game.
  * It knows about possible moves, verifies the logic, sends back notifications
@@ -25,7 +27,7 @@ public interface GameLogic {
 
     /**
      * Check whether a move from origin cell to fin is a valid one.
-     * 
+     *
      * @param origin
      *            Index of the origin cell.
      * @param fin
@@ -36,7 +38,7 @@ public interface GameLogic {
 
     /**
      * Make an actual move.
-     * 
+     *
      * @param origin
      *            Index of the origin cell.
      * @param fin
@@ -48,4 +50,7 @@ public interface GameLogic {
 
     /** Populates field with new elements. */
     public void addItems();
+
+    /** Returns next elements to preview in UI */
+    public Element[] previewNextElements();
 }

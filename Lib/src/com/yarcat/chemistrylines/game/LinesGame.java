@@ -12,10 +12,12 @@ public abstract class LinesGame implements GameLogic {
     private int mNewPortionSize;
     private Field mField;
     private CompoundRemover mRemover;
+    private ElementGenerator mElementGenerator;
 
-    public LinesGame(Field field, CompoundRemover remover) {
-        mField = field;
-        mRemover = remover;
+    public LinesGame(Field f, CompoundRemover r, ElementGenerator g) {
+        mField = f;
+        mRemover = r;
+        mElementGenerator = g;
         mNewPortionSize = 3;
     }
 
@@ -30,7 +32,7 @@ public abstract class LinesGame implements GameLogic {
             throw new InvalidMove();
         }
         if (origin != fin && !mField.at(origin).isEmpty()
-                && mField.at(fin).isEmpty()) {
+            && mField.at(fin).isEmpty()) {
             mField.at(fin).setElement(mField.at(origin).getElement());
             mField.at(origin).setElement(null);
             mRemover.removeAllCompounds(mField);
@@ -45,10 +47,13 @@ public abstract class LinesGame implements GameLogic {
             if (n < 0) {
                 break;
             }
-            mField.at(n).setElement(getRandomElement());
+            mField.at(n).setElement(mElementGenerator.getNext());
         }
         mRemover.removeAllCompounds(mField);
     }
 
-    protected abstract Element getRandomElement();
+    @Override
+    public Element[] previewNextElements() {
+        return mElementGenerator.preview(mNewPortionSize);
+    }
 }
