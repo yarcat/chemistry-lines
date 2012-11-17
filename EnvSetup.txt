@@ -30,6 +30,11 @@ Eclipse Plugins
 
   Open Window → Show View → Other → Git → Git Staging.
 
+Setup for Ubuntu 12.10:
+sudo apt-get install pep8 pylint python-pip
+pip-2.7 install -r Tools/requirements.txt
+(cd Tools; sh gen.sh)
+
 Python Environment
 * autopep8
 * pylint
