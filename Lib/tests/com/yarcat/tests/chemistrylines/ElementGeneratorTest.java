@@ -45,6 +45,7 @@ public class ElementGeneratorTest {
         assertEquals(e1, g.getNext());
         assertEquals(e2, g.getNext());
         assertEquals(e3, g.getNext());
+        assertEquals(e1, g.getNext());
     }
 
     @Test

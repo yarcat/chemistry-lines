@@ -29,7 +29,7 @@ public abstract class ElementGenerator {
             }
             r[i] = mNextElements.removeFirst();
         }
-        for (int i = n - 1; i > 0; --i) {
+        for (int i = n - 1; i >= 0; --i) {
             mNextElements.addFirst(r[i]);
         }
 
@@ -51,9 +51,6 @@ public abstract class ElementGenerator {
 
     protected void add(Collection<Element> c) {
         mNextElements.addAll(c);
-//        for (Element e : c) {
-//            mNextElements.addLast(e);
-//        }
     }
 
     /** Add at least one element to the next elements queue */
