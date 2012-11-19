@@ -11,6 +11,6 @@
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.yarcat.chemistrylines.swing.SwingChemistryLinesMain"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="formula"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="formula-random"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Swing"/>
 </launchConfiguration>

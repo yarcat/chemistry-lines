@@ -11,9 +11,7 @@ public class SwingChemistryLinesMain {
             @Override
             public void run() {
                 GameFactory factory =
-                    args.length > 0 && args[0].equals("formula")
-                        ? new GameFactory.FormulaMode()
-                        : new GameFactory.CompoundMode();
+                    GameFactory.byName(args.length == 0 ? "compound" : args[0]);
                 SwingChemistryLines.newInstance(factory, COLS, ROWS);
             }
         });

@@ -5,14 +5,24 @@ import com.yarcat.chemistrylines.game.ChemistryLinesGame;
 import com.yarcat.chemistrylines.game.FormulaLinesGame;
 import com.yarcat.chemistrylines.game.LinesGame;
 
-interface GameFactory {
+public abstract class GameFactory {
     /** Returns new instance of the game initialized with the given field. */
-    LinesGame newInstance(Field field);
+    abstract LinesGame newInstance(Field field);
 
     /** Returns a string, describing current mode. */
-    String getModeName();
+    abstract String getModeName();
 
-    static class CompoundMode implements GameFactory {
+    public static GameFactory byName(String name) {
+        if (name.equals("formula-random")) {
+            return new FormulaRandomMode();
+        } else if (name.equals("formula-shuffle")) {
+            return new FormulaRandomMode();
+        } else {
+            return new CompoundMode();
+        }
+    }
+
+    static class CompoundMode extends GameFactory {
         @Override
         public LinesGame newInstance(Field field) {
             return new ChemistryLinesGame(field);
@@ -24,15 +34,27 @@ interface GameFactory {
         }
     }
 
-    static class FormulaMode implements GameFactory {
+    static class FormulaRandomMode extends GameFactory {
         @Override
         public LinesGame newInstance(Field field) {
-            return new FormulaLinesGame(field);
+            return FormulaLinesGame.randomTerminalGame(field);
         }
 
         @Override
         public String getModeName() {
-            return "Formula Mode";
+            return "Formula Random Mode";
+        }
+    }
+
+    static class FormulaShuffleMode extends GameFactory {
+        @Override
+        public LinesGame newInstance(Field field) {
+            return FormulaLinesGame.formulaShuffleGame(field);
+        }
+
+        @Override
+        public String getModeName() {
+            return "Formula Shuffle Mode";
         }
     }
 
