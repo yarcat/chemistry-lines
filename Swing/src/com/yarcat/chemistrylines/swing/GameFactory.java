@@ -16,7 +16,7 @@ public abstract class GameFactory {
         if (name.equals("formula-random")) {
             return new FormulaRandomMode();
         } else if (name.equals("formula-shuffle")) {
-            return new FormulaRandomMode();
+            return new FormulaShuffleMode();
         } else {
             return new CompoundMode();
         }
