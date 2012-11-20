@@ -22,12 +22,17 @@ public final class ${name} {
     private final static void register${key}() {
     % for it in R.gen_prefixes(group):
         % if it.setters:
+            % if it.formula:
+        E("${it.prefix}", "${it.formula.text}")
+            % else:
         E("${it.prefix}")
+            % endif
             % for i, s in enumerate(it.setters):
             ${s}${";" if i == len(it.setters) - 1 else ""}
             % endfor
         % else:
-        E("${it.prefix}"); // does not match final conditions
+        ## only formulas could get here
+        E("${it.prefix}", "${it.formula.text if it.formula else ""}"); // does not match final conditions
         % endif
     % endfor
 

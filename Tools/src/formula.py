@@ -14,6 +14,20 @@ class Formula(collections.namedtuple("Formula", "text terms")):
         return cls.create(text, cls.RE_PLAIN.findall(text))
 
     @classmethod
+    def parse_closing_brackets(cls, text):
+        """Plain-parsed formula without opening bracket terminals"""
+        terms = (t for t in cls.RE_PLAIN.findall(text) if t not in "([")
+        return cls.create(text, terms)
+
+    TR_BRACKETS_PAIR = {"(": None, "[": None, ")": "()", "]": "[]"}
+
+    @classmethod
+    def parse_pair_brackets(cls, text):
+        map_terminal = cls.TR_BRACKETS_PAIR.get
+        terms = (map_terminal(t, t) for t in cls.RE_PLAIN.findall(text))
+        return cls.create(text, terms)
+
+    @classmethod
     def create(cls, text, terms):
         terms = tuple(Terminal(t) for t in terms if t)
         return cls(text, terms)

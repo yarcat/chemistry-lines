@@ -1,3 +1,6 @@
+# --no-opening-brackets
+#  * does not match '()' and '[]' of --pair-brackets
+#  * does not match anything with --closing-brackets
 known_formulas_cmd="python2.7 -B src/wiki_chemical_dict.py \
     -C --no-opening-brackets --max-atoms=7 \
     -group 1 -group 2 -group 3 -group 4 \

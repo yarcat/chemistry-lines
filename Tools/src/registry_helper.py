@@ -25,18 +25,22 @@ def iter_prefixes(formula, start=1, end=0):
 
 
 def gen_prefixes(formulas):
-    Item = collections.namedtuple("Item", "prefix setters")
+    Item = collections.namedtuple("Item", "prefix setters formula")
 
     prefixes = collections.defaultdict(set)
+    backlink = {}
     for f in formulas:
-        prefixes[f.text] = set()
+        prefix = f.prefix()
+        prefixes[prefix] = set()
+        if f.is_final():
+            prefixes[prefix].add(".isFinal(true)")
+        backlink[prefix] = f
     for f in formulas:
         for p in iter_prefixes(f, start=2):
             prefixes[p].add(".startsCompound(true)")
-        if f.is_final():
-            prefixes[f.text].add(".isFinal(true)")
 
-    prefixes = [Item(p, sorted(s)) for p, s in prefixes.iteritems()]
+    prefixes = [Item(p, sorted(s), backlink.get(p))
+                for p, s in prefixes.iteritems()]
     prefixes.sort(key=lambda x: x.prefix)
 
     return prefixes

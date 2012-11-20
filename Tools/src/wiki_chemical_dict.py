@@ -56,7 +56,7 @@ def main():
     table = parse_html(fh.read().decode("utf-8"))
     formulas = (row[0].data for row in table
                 if row[0].data != "(benzenediols)")
-    formulas = F.parse_formulas(Formula.parse_plain, formulas)
+    formulas = F.parse_formulas(getattr(Formula, args.parser), formulas)
 
     if args.filter:
         formulas = filter(args.filter and (lambda f: getattr(f, args.filter)),
@@ -144,7 +144,20 @@ def parse_cmdline():
                         default=2, type=int, metavar="N",
                         help="Limit formulas by minimal terminal count")
 
-    parser.set_defaults(output=dump_text, filter=None, special=[])
+    p = parser.add_mutually_exclusive_group()
+    p.add_argument("--plain", dest="parser",
+                   action="store_const", const="parse_plain",
+                   help="Parse formula terminals as they are.")
+    p.add_argument("--pair-brackets", dest="parser",
+                   action="store_const", const="parse_pair_brackets",
+                   help="Generate paired parenthesis terminals")
+    p.add_argument("--closing-brackets", dest="parser",
+                   action="store_const", const="parse_closing_brackets",
+                   help="Generate only closing parenthesis terminals."
+                   " Opening parenthesis terminals are removed.")
+
+    parser.set_defaults(output=dump_text, filter=None, special=[],
+                        parser="parse_plain")
     args = parser.parse_args()
 
     if args.min_terminals < 2:

@@ -3,9 +3,11 @@ import unittest
 import formula as F
 
 F_plain = F.Formula.parse_plain
+F_bra_pair = F.Formula.parse_pair_brackets
+F_bra_close = F.Formula.parse_closing_brackets
 
 
-class TestFormula(unittest.TestCase):
+class TestFormulaPlain(unittest.TestCase):
 
     def test_coefficients(self):
         self.assertEquals(F_plain("HCl").coefficients, [])
@@ -64,6 +66,43 @@ class TestFormula(unittest.TestCase):
         self.assertEquals(element_count("Na2O"), 2)
         self.assertEquals(element_count("H2O2"), 2)
         self.assertEquals(element_count("C2H5OH"), 3)
+
+
+class TestFormulaBracketPairs(unittest.TestCase):
+
+    def test_contains(self):
+        f = F_bra_pair("Ca(OH)2")
+
+        self.assertIn("Ca", f)
+        self.assertIn("O", f)
+        self.assertIn("H", f)
+        self.assertIn("()", f)
+        self.assertIn("2", f)
+
+        self.assertNotIn("(", f)
+        self.assertNotIn(")", f)
+
+    def test_prefix(self):
+        f = F_bra_pair("Ca(OH)2")
+        self.assertEquals(f.prefix(), "CaOH()2")
+
+
+class TestFormulaClosingBracket(unittest.TestCase):
+
+    def test_contains(self):
+        f = F_bra_close("Ca(OH)2")
+
+        self.assertIn("Ca", f)
+        self.assertIn("O", f)
+        self.assertIn("H", f)
+        self.assertIn("2", f)
+
+        self.assertNotIn("(", f)
+        self.assertIn(")", f)
+
+    def test_prefix(self):
+        f = F_bra_close("Ca(OH)2")
+        self.assertEquals(f.prefix(), "CaOH)2")
 
 
 class TestTerminal(unittest.TestCase):
