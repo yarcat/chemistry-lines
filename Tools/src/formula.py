@@ -1,32 +1,22 @@
 # -*- coding: utf-8 -*-
 """Classes and functions to work with formulas and terminals"""
 
+import collections
 import re
 
 
-class TextHelper(object):
-    def __str__(self):
-        return self.text
+class Formula(collections.namedtuple("Formula", "text terms")):
 
-    def __repr__(self):
-        return "%s(%r)" % (type(self).__name__, self.text)
+    RE_PLAIN = re.compile(u"[A-Z][a-z]{0,2}|[0-9.+-]+|.")
 
-    def __eq__(self, other):
-        val = other if isinstance(other, basestring) else other.text
-        return self.text == val
+    @classmethod
+    def parse_plain(cls, text):
+        return cls.create(text, cls.RE_PLAIN.findall(text))
 
-    def __lt__(self, other):
-        val = other if isinstance(other, basestring) else other.text
-        return self.text < val
-
-    def __hash__(self):
-        return hash(self.text)
-
-
-class Formula(TextHelper):
-    def __init__(self, text):
-        self.text = text
-        self.terms = tuple(Terminal(t) for t in parse_formula(self.text))
+    @classmethod
+    def create(cls, text, terms):
+        terms = tuple(Terminal(t) for t in terms if t)
+        return cls(text, terms)
 
     @property
     def is_compound(self):
@@ -62,7 +52,7 @@ class Formula(TextHelper):
         return iter(self.terms)
 
 
-class Terminal(TextHelper):
+class Terminal(object):
     def __init__(self, text):
         self.text = text
 
@@ -78,11 +68,22 @@ class Terminal(TextHelper):
     def starts_formula(self):
         return self.is_atom or self.text in "(["
 
+    def __str__(self):
+        return self.text
 
-def parse_formula(formula,
-                  term_re=re.compile(u"[A-Z][a-z]{0,2}|[0-9.+-]+|.")):
-    """Return list of formula terminals"""
-    return term_re.findall(formula)
+    def __repr__(self):
+        return "%s(%r)" % (type(self).__name__, self.text)
+
+    def __eq__(self, other):
+        val = other if isinstance(other, basestring) else other.text
+        return self.text == val
+
+    def __lt__(self, other):
+        val = other if isinstance(other, basestring) else other.text
+        return self.text < val
+
+    def __hash__(self):
+        return hash(self.text)
 
 
 def sanitize(formula):
@@ -91,6 +92,6 @@ def sanitize(formula):
     return "".join(TR_UNICODE.get(ch, ch) for ch in formula if ch > " ")
 
 
-def iter_formulas(text_formulas):
-    return (Formula(sanitize(s)) for s in text_formulas
-            if s and not s.isspace())
+def parse_formulas(parser, text_formulas):
+    return [parser(sanitize(s)) for s in text_formulas
+            if s and not s.isspace()]

@@ -29,8 +29,9 @@ def main():
         fh = wiki_urlopen(DEFAULT_URL)
 
     table = parse_html(fh.read().decode("utf-8"))
-    formulas = list(F.iter_formulas(row[0].data for row in table
-                    if row[0].data != "(benzenediols)"))
+    formulas = (row[0].data for row in table
+         if row[0].data != "(benzenediols)")
+    formulas = F.parse_formulas(F.Formula.parse_plain, formulas)
 
     if args.filter:
         formulas = filter(args.filter, formulas)
