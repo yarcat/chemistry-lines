@@ -51,20 +51,23 @@ def main():
         final_cond.append(lambda f: len(f) >= args.min_terminals)
 
     class Formula(F.Formula):
-        is_final = lambda self: all(c(self) for c in final_cond)
+        is_final = formula_matches(final_cond)
 
     table = parse_html(fh.read().decode("utf-8"))
     formulas = (row[0].data for row in table
                 if row[0].data != "(benzenediols)")
     formulas = F.parse_formulas(getattr(Formula, args.parser), formulas)
 
+    strict_cond = []
     if args.filter:
-        formulas = filter(args.filter and (lambda f: getattr(f, args.filter)),
-                          formulas)
-
+        strict_cond.append(lambda f: getattr(f, args.filter))
     if args.atoms:
-        formulas = filter_by_atoms(formulas, args.atoms)
+        strict_cond.append(lambda f: all(t in args.atoms for t in f.atoms))
+    if args.max_coefficient:
+        strict_cond.append(lambda f: all(c <= args.max_coefficient for c in
+                                         f.coefficients))
 
+    formulas = filter(formula_matches(strict_cond), formulas)
     output = args.output(formulas)
 
     print output.encode("utf-8")
@@ -125,6 +128,9 @@ def parse_cmdline():
     parser.add_argument("--max-atoms",
                         default=None, type=int, metavar="N",
                         help="Limit formulas by maximal atom count")
+    parser.add_argument("--max-coefficient",
+                        default=None, type=int, metavar="N",
+                        help="Limit formulas by maximal coefficient value")
     parser.add_argument("--max-elements",
                         default=None, type=int, metavar="N",
                         help="Limit formulas by maximal element count"
@@ -155,6 +161,10 @@ def parse_cmdline():
                    action="store_const", const="parse_closing_brackets",
                    help="Generate only closing parenthesis terminals."
                    " Opening parenthesis terminals are removed.")
+    p.add_argument("--compact", dest="parser",
+                   action="store_const", const="parse_compact",
+                   help="Parse formulas in a compact way, i.e."
+                   " an atom and its coefficients form one terminal")
 
     parser.set_defaults(output=dump_text, filter=None, special=[],
                         parser="parse_plain")
@@ -232,13 +242,12 @@ def get_term_stats(formulas):
     return stats
 
 
-def filter_by_atoms(formulas, atoms):
-    return [f for f in formulas
-            if all(not term.is_atom or term in atoms for term in f.terms)]
-
-
 def no_opening_brackets(formula):
     return "(" not in formula and "[" not in formula
+
+
+def formula_matches(conditions):
+    return lambda formula: all(c(formula) for c in conditions)
 
 
 if __name__ == "__main__":

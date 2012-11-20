@@ -4,6 +4,8 @@
 import collections
 import re
 
+# import chemical_elements
+
 
 class Formula(collections.namedtuple("Formula", "text terms")):
 
@@ -24,6 +26,10 @@ class Formula(collections.namedtuple("Formula", "text terms")):
         return cls.create(text, terms)
 
     @classmethod
+    def parse_compact(cls, text):
+        return cls.create(text, cls.compact_lexems(text))
+
+    @classmethod
     def create(cls, text, terms):
         terms = tuple(Terminal(t) for t in terms if t)
         return cls(text, terms)
@@ -33,6 +39,13 @@ class Formula(collections.namedtuple("Formula", "text terms")):
     @classmethod
     def plain_lexems(cls, text):
         return cls.RE_PLAIN.findall(cls.tr_brackets(text))
+
+    RE_COMPACT = \
+        re.compile(u"[A-Z][a-z]{0,2}[0-9]*|[*)][0-9x]*|'[0-9.]*[+-]+|[^)]")
+
+    @classmethod
+    def compact_lexems(cls, text):
+        return cls.RE_COMPACT.findall(cls.tr_brackets(text))
 
     @staticmethod
     def tr_brackets(text):
@@ -48,11 +61,11 @@ class Formula(collections.namedtuple("Formula", "text terms")):
 
     @property
     def atoms(self):
-        return [t for t in self.terms if t.is_atom]
+        return filter(None, [t.atom for t in self.terms])
 
     @property
     def coefficients(self):
-        return [int(t.text) for t in self.terms if t.is_coefficient]
+        return [t.coefficient for t in self.terms]
 
     def prefix(self, size=None, sep=""):
         """Return string prefix of first size terminals separated with sep
@@ -63,8 +76,8 @@ class Formula(collections.namedtuple("Formula", "text terms")):
         return sep.join(map(str, self.terms[:size]))
 
     def atom_count(self):
-        coefs = self.coefficients
-        return len(self) - 2 * len(coefs) + sum(coefs)
+        """Atom count for formulas without brackets"""
+        return sum(self.coefficients)
 
     def element_count(self):
         return len(set(self.atoms))
@@ -86,20 +99,51 @@ class Formula(collections.namedtuple("Formula", "text terms")):
 
 
 class Terminal(object):
+
     def __init__(self, text):
         self.text = text
 
-    @property
-    def is_atom(self):
-        return self.text[0].isupper()
+    RE_ATOM = re.compile("[A-Z][a-z]{0,2}")
 
     @property
-    def is_coefficient(self):
-        return self.text.isdigit()
+    def atom(self):
+        match = self.RE_ATOM.match(self.text)
+        return match and match.group()
+    # ATOMS = frozenset(chemical_elements.ATOMS)
+    # @property
+    # def atom(self):
+    #     t = self.text
+    #     if t in ("T", "T2"):
+    #         # Handle Tritium explicitly.  See #47.
+    #         return "T"
+    #     elif t[0].isupper():
+    #         for prefix_len in None, 3, 2, 1:
+    #             prefix = t[:prefix_len] if prefix_len else t
+    #             if prefix in self.ATOMS:
+    #                 return prefix
+    #
+    #     return None
+
+    @property
+    def coefficient(self):
+        atom = self.atom
+        if atom:
+            if atom == self.text:
+                return 1
+            else:
+                return int(self.text[len(atom):])
+        elif self.text == "0.5":
+            return 0
+        elif self.text[-1].isdigit():
+            for suffix_len in 3, 2, 1:
+                suffix = self.text[-suffix_len:]
+                if suffix.isdigit():
+                    return int(suffix)
+        return 0
 
     @property
     def starts_formula(self):
-        return self.is_atom or self.text == "("
+        return self.atom or self.text == "("
 
     def __str__(self):
         return self.text

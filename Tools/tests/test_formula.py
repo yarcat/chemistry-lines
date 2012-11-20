@@ -107,23 +107,23 @@ class TestFormulaClosingBracket(unittest.TestCase):
 class TestTerminal(unittest.TestCase):
 
     def test_atoms(self):
-        self.assertTrue(F.Terminal("H").is_atom)
-        self.assertFalse(F.Terminal("h").is_atom)
+        self.assertTrue(F.Terminal("H").atom)
+        self.assertFalse(F.Terminal("h").atom)
 
-        self.assertTrue(F.Terminal("Na").is_atom)
-        self.assertFalse(F.Terminal("na").is_atom)
-        self.assertFalse(F.Terminal("nA").is_atom)
+        self.assertTrue(F.Terminal("Na").atom)
+        self.assertFalse(F.Terminal("na").atom)
+        self.assertFalse(F.Terminal("nA").atom)
 
-        self.assertFalse(F.Terminal("2").is_atom)
-        self.assertFalse(F.Terminal("*").is_atom)
+        self.assertFalse(F.Terminal("2").atom)
+        self.assertFalse(F.Terminal("*").atom)
 
     def test_coeffients(self):
-        self.assertTrue(F.Terminal("2").is_coefficient)
-        self.assertTrue(F.Terminal("40").is_coefficient)
+        self.assertTrue(F.Terminal("2").coefficient)
+        self.assertTrue(F.Terminal("40").coefficient)
 
-        self.assertFalse(F.Terminal("0.5").is_coefficient)
-        self.assertFalse(F.Terminal("Na").is_coefficient)
-        self.assertFalse(F.Terminal("*").is_coefficient)
+        self.assertFalse(F.Terminal("0.5").coefficient)
+        self.assertFalse(F.Terminal("Na").coefficient)
+        self.assertFalse(F.Terminal("*").coefficient)
 
     def test_starts_formula(self):
         self.assertTrue(F.Terminal("H").starts_formula)
