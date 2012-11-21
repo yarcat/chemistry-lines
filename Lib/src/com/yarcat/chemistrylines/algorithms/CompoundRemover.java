@@ -17,6 +17,7 @@ public class CompoundRemover {
     private final ChemicalReactor mReactor;
     private final CompoundDetector mDetector;
     private final CompoundReporter mReporter;
+    private CompoundListener mRemoveListener;
 
     public CompoundRemover() {
         this(new SimpleReactor());
@@ -28,12 +29,23 @@ public class CompoundRemover {
         mReporter = new LinearCompoundReporter();
     }
 
+    public void setRemoveListener(CompoundListener removeListener) {
+        mRemoveListener = removeListener;
+    }
+
     /** Find all chemical reactions on the field and remove compounds. */
     public void removeAllCompounds(Field field) {
         for (int[] cells : scan(field)) {
+            onCompoundRemove(field, cells);
             for (int n : cells) {
                 field.at(n).setElement(null);
             }
+        }
+    }
+
+    public void onCompoundRemove(Field field, int[] cells) {
+        if (mRemoveListener != null) {
+            mRemoveListener.foundCompound(field, cells);
         }
     }
 
@@ -60,8 +72,8 @@ public class CompoundRemover {
 
         /** Cells start a compound if first one contains start-element.
          *
-         * We could try to add some logit to stop earlier than at an empty cell or
-         * at the field border, but it looks like overkill.
+         * We could try to add some logic to stop earlier than at an empty cell
+         * or at the field border, but it looks like overkill.
          */
         @Override
         public boolean startsCompound(Field field, int[] cells) {

@@ -11,6 +11,10 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
@@ -53,17 +57,23 @@ public class SwingChemistryLines implements MouseListener {
 
         JFrame f = new JFrame("Chemistry Lines - " + factory.getModeName());
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
+        f.setBackground(Color.BLACK);
+        f.setForeground(Color.WHITE);
+        f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.X_AXIS));
+
+        Panel mainPanel = new Panel();
+        f.getContentPane().add(mainPanel);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         Panel buttonPanel = new Panel(new GridLayout(cols, rows));
-        f.getContentPane().add(buttonPanel);
+        mainPanel.add(buttonPanel);
         for (int i = 0; i < cols * rows; ++i) {
             Button b = new Button(i);
             buttons[i] = b;
             b.setPreferredSize(new Dimension(60, 60));
             b.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
             b.setForeground(Color.WHITE);
-            b.setHorizontalAlignment(JLabel.CENTER);
+            b.setHorizontalAlignment(SwingConstants.CENTER);
             b.setOpaque(true);
             b.addMouseListener(game);
             buttonPanel.add(b);
@@ -71,16 +81,34 @@ public class SwingChemistryLines implements MouseListener {
 
         Panel previewPanel = new Panel();
         previewPanel.setBackground(Color.BLACK);
-        f.getContentPane().add(previewPanel);
+        mainPanel.add(previewPanel);
         for (int i = 0; i < preview.length; ++i) {
             Button b = new Button(i);
             preview[i] = b;
             b.setPreferredSize(new Dimension(60, 60));
             b.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
             b.setForeground(Color.WHITE);
-            b.setHorizontalAlignment(JLabel.CENTER);
+            b.setHorizontalAlignment(SwingConstants.CENTER);
             previewPanel.add(b);
         }
+
+        JTextArea logArea = new JTextArea(10, 10);
+        gameInstance.setGameLogger(new SwingGameLogger(logArea));
+        logArea.setEditable(false);
+        logArea.setBackground(Color.BLACK);
+        logArea.setForeground(Color.WHITE);
+
+        JScrollPane logScroll = new JScrollPane(logArea);
+        f.getContentPane().add(logScroll);
+        logScroll
+            .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        logScroll
+            .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        // logScroll
+        // .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        // logScroll
+        // .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        logScroll.setBorder(BorderFactory.createEmptyBorder());
 
         f.pack();
         f.setVisible(true);

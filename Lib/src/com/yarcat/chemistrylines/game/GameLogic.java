@@ -53,4 +53,6 @@ public interface GameLogic {
 
     /** Returns next elements to preview in UI */
     public Element[] previewNextElements();
+
+    public void setGameLogger(GameLogger gameLog);
 }

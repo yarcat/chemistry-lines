@@ -3,6 +3,7 @@ package com.yarcat.chemistrylines.game;
 import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
 
 import com.yarcat.chemistrylines.algorithms.CompoundRemover;
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
@@ -13,12 +14,20 @@ public abstract class LinesGame implements GameLogic {
     private Field mField;
     private CompoundRemover mRemover;
     private ElementGenerator mElementGenerator;
+    private GameLogger mGameLog;
 
     public LinesGame(Field f, CompoundRemover r, ElementGenerator g) {
         mField = f;
         mRemover = r;
         mElementGenerator = g;
         mNewPortionSize = 3;
+        setGameLogger(null);
+        mRemover.setRemoveListener(new CompoundListener() {
+            @Override
+            public void foundCompound(Field field, int[] cells) {
+                mGameLog.compoundRemoved(field, cells);
+            }
+        });
     }
 
     @Override
@@ -42,18 +51,30 @@ public abstract class LinesGame implements GameLogic {
 
     @Override
     public void addItems() {
+        int[] addedCells = new int[mNewPortionSize];
         for (int i = 0; i < mNewPortionSize; ++i) {
             int n = getRandomEmptyCell(mField);
             if (n < 0) {
                 break;
             }
             mField.at(n).setElement(mElementGenerator.getNext());
+            addedCells[i] = n;
         }
+        mGameLog.elementsAdded(mField, addedCells);
         mRemover.removeAllCompounds(mField);
     }
 
     @Override
     public Element[] previewNextElements() {
         return mElementGenerator.preview(mNewPortionSize);
+    }
+
+    @Override
+    public void setGameLogger(GameLogger gameLog) {
+        if (gameLog == null) {
+            mGameLog = new GameLogger.DummyGameLogger();
+        } else {
+            mGameLog = gameLog;
+        }
     }
 }
