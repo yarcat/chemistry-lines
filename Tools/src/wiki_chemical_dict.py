@@ -30,7 +30,7 @@ def main():
 
     table = parse_html(fh.read().decode("utf-8"))
     formulas = (row[0].data for row in table
-         if row[0].data != "(benzenediols)")
+                if row[0].data != "(benzenediols)")
     formulas = F.parse_formulas(F.Formula.parse_plain, formulas)
 
     if args.filter:
@@ -39,11 +39,23 @@ def main():
     if args.atoms:
         formulas = filter_by_atoms(formulas, args.atoms)
 
-    if args.only_simple:
-        formulas = filter(is_simple, formulas)
+    if args.no_opening_brackets:
+        formulas = filter(no_opening_brackets, formulas)
 
+    if args.max_atoms:
+        formulas = filter(lambda f: f.atom_count() <= args.max_atoms,
+                          formulas)
+    if args.max_elements:
+        formulas = filter(lambda f: f.elememt_count() <= args.max_elements,
+                          formulas)
+    if args.max_terminals:
+        formulas = filter(lambda f: len(f) <= args.max_terminals, formulas)
+
+    if args.min_atoms:
+        formulas = filter(lambda f: f.atom_count() >= args.min_atoms,
+                          formulas)
     if args.min_elements:
-        formulas = filter(lambda f: len(f.atoms) >= args.min_elements,
+        formulas = filter(lambda f: f.elememt_count() >= args.min_elements,
                           formulas)
     if args.min_terminals:
         formulas = filter(lambda f: len(f) >= args.min_terminals, formulas)
@@ -100,15 +112,34 @@ def parse_cmdline():
                         help="Limit formulas to those containg elements"
                         " of specified groups")
 
-    parser.add_argument("--only-simple", default=False, action="store_true",
-                        help="Limit formulas to simple ones")
+    parser.add_argument("--no-opening-brackets",
+                        default=False, action="store_true",
+                        help="Limit formulas to those without opening"
+                        " parentheses")
 
-    limit = parser.add_mutually_exclusive_group()
-    limit.add_argument("--min-terminals", default=None, type=int,
-                       help="Limit formulas by terminal count")
-    limit.add_argument("--min-elements", default=None, type=int,
-                       help="Limit formulas by element count"
-                       " (different atoms)")
+    max_limit = parser.add_mutually_exclusive_group()
+    max_limit.add_argument("--max-atoms",
+                           default=None, type=int, metavar="N",
+                           help="Limit formulas by maximal atom count")
+    max_limit.add_argument("--max-elements",
+                           default=None, type=int, metavar="N",
+                           help="Limit formulas by maximal element count"
+                           " (different atoms)")
+    max_limit.add_argument("--max-terminals",
+                           default=None, type=int, metavar="N",
+                           help="Limit formulas by maximal terminal count")
+
+    min_limit = parser.add_mutually_exclusive_group()
+    min_limit.add_argument("--min-atoms",
+                           default=None, type=int, metavar="N",
+                           help="Limit formulas by minimal atom count")
+    min_limit.add_argument("--min-elements",
+                           default=None, type=int, metavar="N",
+                           help="Limit formulas by minimal element count"
+                           " (different atoms)")
+    min_limit.add_argument("--min-terminals",
+                           default=None, type=int, metavar="N",
+                           help="Limit formulas by minimal terminal count")
 
     parser.set_defaults(output=dump_text, filter=None, special=[])
     args = parser.parse_args()
@@ -181,15 +212,8 @@ def filter_by_atoms(formulas, atoms):
             if all(not term.is_atom or term in atoms for term in f.terms)]
 
 
-def is_simple(formula, max_atom_count=7):
-    if "(" in formula or "[" in formula:
-        return False
-
-    coefs = formula.coefficients
-
-    # Count atoms without coefficients & add all coefficients
-    count = len(formula) - 2 * len(coefs) + sum(coefs)
-    return count <= max_atom_count
+def no_opening_brackets(formula):
+    return "(" not in formula and "[" not in formula
 
 
 if __name__ == "__main__":

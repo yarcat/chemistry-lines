@@ -50,6 +50,21 @@ class TestFormula(unittest.TestCase):
         self.assertEquals(f.prefix(), "Na2O")
         self.assertEquals(f.prefix(3, " "), "Na 2 O")
 
+    def test_atom_count(self):
+        atom_count = lambda f: F_plain(f).atom_count()
+        self.assertEquals(atom_count("Na"), 1)
+        self.assertEquals(atom_count("NaCl"), 2)
+        self.assertEquals(atom_count("Na2O"), 3)
+        self.assertEquals(atom_count("H2O2"), 4)
+
+    def test_element_count(self):
+        element_count = lambda f: F_plain(f).element_count()
+        self.assertEquals(element_count("Na"), 1)
+        self.assertEquals(element_count("NaCl"), 2)
+        self.assertEquals(element_count("Na2O"), 2)
+        self.assertEquals(element_count("H2O2"), 2)
+        self.assertEquals(element_count("C2H5OH"), 3)
+
 
 class TestTerminal(unittest.TestCase):
 

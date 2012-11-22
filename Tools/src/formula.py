@@ -42,6 +42,13 @@ class Formula(collections.namedtuple("Formula", "text terms")):
         """
         return sep.join(map(str, self.terms[:size]))
 
+    def atom_count(self):
+        coefs = self.coefficients
+        return len(self) - 2 * len(coefs) + sum(coefs)
+
+    def element_count(self):
+        return len(set(self.atoms))
+
     def __contains__(self, term):
         return term in self.terms
 
