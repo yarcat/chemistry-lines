@@ -6,7 +6,7 @@ Arguments:
 <% import registry_helper as R %>\
 package com.yarcat.tests.chemistrylines;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
@@ -40,9 +40,17 @@ public class ${name} {
     @Test
     public void test${key}() {
     % for f in group:
-        % if len(f) > 1: # FIXME(luch): what is single "O"?
 <%        t = '"%s"' % '", "'.join(map(str, f.terms)) %>\
-        assertTrue(reactionProduces("${f.text}", ${t}));
+        % if len(f) == 1:
+            ## Terminals that are also formulas should stay on the board.
+            ## For plain-formulas it stands for oxygen only. See #23.
+            ## For compact-formulas(#10) there are many of them.
+        assertFalse(formulaIsRemoved(${t}));
+        % else:
+            % if f.prefix() != f.text:
+        // ${f.text}
+            % endif
+        assertTrue(reactionProduces("${f.prefix()}", ${t}));
         assertTrue(formulaIsRemoved(${t}));
         % endif
     % endfor
