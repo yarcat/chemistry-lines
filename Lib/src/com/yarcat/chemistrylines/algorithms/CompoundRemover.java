@@ -35,8 +35,11 @@ public class CompoundRemover {
 
     /** Find all chemical reactions on the field and remove compounds. */
     public void removeAllCompounds(Field field) {
-        for (int[] cells : scan(field)) {
+        ArrayList<int[]> allCells = scan(field);
+        for (int[] cells : allCells) {
             onCompoundRemove(field, cells);
+        }
+        for (int[] cells : allCells) {
             for (int n : cells) {
                 field.at(n).setElement(null);
             }

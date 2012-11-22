@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.yarcat.chemistrylines.algorithms.ChemicalReactor;
 import com.yarcat.chemistrylines.algorithms.CompoundRemover;
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
 import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
@@ -47,6 +48,7 @@ public class FormulaRegistryTest {
     @Test
     public void testH2O() {
         assertTrue(reactionProduces("H2O", "H", "2", "O"));
+        // Tests also compound overlap - H2 & H2O.
         assertTrue(formulaIsRemoved("H", "2", "O"));
     }
 
@@ -55,8 +57,15 @@ public class FormulaRegistryTest {
         for (int i = 0; i < fieldMap.length; ++i) {
             field.at(i).setElement(mRegistry.get(fieldMap[i]));
         }
+        mRemover.setRemoveListener(new CompoundListener() {
+            @Override
+            public void foundCompound(Field field, int[] cells) {
+                for (int i : cells) {
+                    assertFalse(field.at(i).isEmpty());
+                }
+            }
+        });
         mRemover.removeAllCompounds(field);
-
         for (int i = 0; i < fieldMap.length; ++i) {
             if (!field.at(i).isEmpty()) {
                 return false;
