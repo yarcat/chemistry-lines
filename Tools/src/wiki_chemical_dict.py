@@ -28,37 +28,37 @@ def main():
     else:
         fh = wiki_urlopen(DEFAULT_URL)
 
+    final_cond = []
+    if args.no_opening_brackets:
+        final_cond.append(no_opening_brackets)
+
+    if args.max_atoms:
+        final_cond.append(lambda f: f.atom_count() <= args.max_atoms)
+    if args.max_elements:
+        final_cond.append(lambda f: f.elememt_count() <= args.max_elements)
+    if args.max_terminals:
+        final_cond.append(lambda f: len(f) <= args.max_terminals)
+
+    if args.min_atoms:
+        final_cond.append(lambda f: f.atom_count() >= args.min_atoms)
+    if args.min_elements:
+        final_cond.append(lambda f: f.elememt_count() >= args.min_elements)
+    if args.min_terminals:
+        final_cond.append(lambda f: len(f) >= args.min_terminals)
+
+    class Formula(F.Formula):
+        is_final = lambda self: all(c(self) for c in final_cond)
+
     table = parse_html(fh.read().decode("utf-8"))
     formulas = (row[0].data for row in table
                 if row[0].data != "(benzenediols)")
-    formulas = F.parse_formulas(F.Formula.parse_plain, formulas)
+    formulas = F.parse_formulas(Formula.parse_plain, formulas)
 
     if args.filter:
         formulas = filter(args.filter, formulas)
 
     if args.atoms:
         formulas = filter_by_atoms(formulas, args.atoms)
-
-    if args.no_opening_brackets:
-        formulas = filter(no_opening_brackets, formulas)
-
-    if args.max_atoms:
-        formulas = filter(lambda f: f.atom_count() <= args.max_atoms,
-                          formulas)
-    if args.max_elements:
-        formulas = filter(lambda f: f.elememt_count() <= args.max_elements,
-                          formulas)
-    if args.max_terminals:
-        formulas = filter(lambda f: len(f) <= args.max_terminals, formulas)
-
-    if args.min_atoms:
-        formulas = filter(lambda f: f.atom_count() >= args.min_atoms,
-                          formulas)
-    if args.min_elements:
-        formulas = filter(lambda f: f.elememt_count() >= args.min_elements,
-                          formulas)
-    if args.min_terminals:
-        formulas = filter(lambda f: len(f) >= args.min_terminals, formulas)
 
     output = args.output(formulas)
 
@@ -163,11 +163,17 @@ def parse_html(html):
 
 
 def dump_text(formulas):
-    return "\n".join("%s: %s" % (f.text, f.prefix(sep=" ")) for f in formulas)
+    return "\n".join(map(formula2text, formulas))
+
+
+def formula2text(f):
+    mark = "f" if f.is_final() else "-"
+    return "{}  {:<16} {}".format(mark, f.text, f.prefix(sep=" "))
 
 
 def dump_json(formulas):
-    return json.dumps(dict((f.text, map(str, f.terms)) for f in formulas))
+    props = lambda f: dict(final=f.is_final(), terms=map(str, f.terms))
+    return json.dumps(dict((f.text, props(f)) for f in formulas))
 
 
 def dump_stats(formulas):

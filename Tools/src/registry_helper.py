@@ -29,9 +29,12 @@ def gen_prefixes(formulas):
 
     prefixes = collections.defaultdict(set)
     for f in formulas:
+        prefixes[f.text] = set()
+    for f in formulas:
         for p in iter_prefixes(f, start=2):
             prefixes[p].add(".startsCompound(true)")
-        prefixes[f.text].add(".isFinal(true)")
+        if f.is_final():
+            prefixes[f.text].add(".isFinal(true)")
 
     prefixes = [Item(p, sorted(s)) for p, s in prefixes.iteritems()]
     prefixes.sort(key=lambda x: x.prefix)

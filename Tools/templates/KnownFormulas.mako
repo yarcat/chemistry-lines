@@ -21,10 +21,14 @@ public final class ${name} {
 
     private final static void register${key}() {
     % for it in R.gen_prefixes(group):
+        % if it.setters:
         E("${it.prefix}")
-        % for i, s in enumerate(it.setters):
+            % for i, s in enumerate(it.setters):
             ${s}${";" if i == len(it.setters) - 1 else ""}
-        % endfor
+            % endfor
+        % else:
+        E("${it.prefix}"); // does not match final conditions
+        % endif
     % endfor
 
     % for it in R.gen_productions(group):
