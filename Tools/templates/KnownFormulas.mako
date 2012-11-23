@@ -12,7 +12,7 @@ public final class ${name} {
     public final static ElementRegistry contents = new ElementRegistry();
     public final static Element[][] formulaTerms = new Element[${len(formulas)}][];
     public final static WeightedArrayOfStrings terms =
-            new WeightedArrayOfStrings(${len(stats)});
+            new WeightedArrayOfStrings(${len(final_formula_stats)});
 \
 <% keys = [] %> \
 <% n = 0 %> \
@@ -36,21 +36,27 @@ public final class ${name} {
     % endfor
 
     % for f in group:
-<%        t = '"%s"' % '", "'.join(map(str, f.terms)) %>\
+        % if f.is_final():
+<%            t = '"%s"' % '", "'.join(map(str, f.terms)) %>\
         F(${n}, ${t});
-<%        n += 1 %>\
+<%            n += 1 %>\
+        % endif
     % endfor
     }
 % endfor
 
     static {
-% for term, count in stats:
+% for term in R.collect_terms(formulas):
     % if term.starts_formula:
         E("${term}")
             .startsCompound(true);
     % else:
         E("${term}");
     % endif
+% endfor
+
+        // Terminals that could form a final formula.
+% for term, count in final_formula_stats:
         terms.add("${term}", ${count});
 % endfor
 

@@ -5,6 +5,7 @@ import registry_helper as R
 
 F_plain = F.Formula.parse_plain
 
+
 class TestFormula(unittest.TestCase):
 
     def test_split_formula_set(self):
@@ -23,6 +24,12 @@ class TestFormula(unittest.TestCase):
         expect = [("H", "2", "H2"), ("H2", "O", "H2O"), ("H2", "S", "H2S"),
                   ("H2S", "O", "H2SO"), ("H2SO", "4", "H2SO4")]
         self.assertEquals(prods, expect)
+
+
+class TestFinalTerms(unittest.TestCase):
+    def test_collect_terms(self):
+        collected_terms = R.collect_terms(map(F_plain, ["H", "F", "HF"]))
+        self.assertEquals(collected_terms, set(["H", "F"]))
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ import argparse
 import collections
 import itertools
 import json
+import os
 import re
 import urllib2
 
@@ -183,10 +184,10 @@ def dump_stats(formulas):
 
 
 def dump_java_class(formulas):
-    stats = get_term_stats(formulas)
+    stats = get_term_stats(f for f in formulas if f.is_final())
     stats.sort(key=lambda x: x[0])
     return render("KnownFormulas.mako", name="KnownFormulas",
-                  formulas=formulas, stats=stats)
+                  formulas=formulas, final_formula_stats=stats)
 
 
 def dump_java_test(formulas):

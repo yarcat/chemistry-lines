@@ -51,3 +51,10 @@ def gen_productions(formulas):
             if p not in produced:
                 yield p
                 produced.add(p)
+
+
+def collect_terms(formulas):
+    terms = set()
+    for f in formulas:
+        terms.update(f.terms)
+    return terms
