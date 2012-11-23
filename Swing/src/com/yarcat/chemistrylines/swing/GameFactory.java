@@ -17,6 +17,8 @@ public abstract class GameFactory {
             return new FormulaRandomMode();
         } else if (name.equals("formula-shuffle")) {
             return new FormulaShuffleMode();
+        } else if (name.equals("formula-debug")) {
+            return new FormulaDebugMode();
         } else {
             return new CompoundMode();
         }
@@ -58,4 +60,15 @@ public abstract class GameFactory {
         }
     }
 
+    static class FormulaDebugMode extends GameFactory {
+        @Override
+        public LinesGame newInstance(Field field) {
+            return FormulaLinesGame.formulaDebugGame(field);
+        }
+
+        @Override
+        public String getModeName() {
+            return "Formula Debug Mode";
+        }
+    }
 }

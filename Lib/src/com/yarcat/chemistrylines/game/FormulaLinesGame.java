@@ -94,4 +94,28 @@ public class FormulaLinesGame extends LinesGame {
             new FormulaTerminalGenerator(KnownFormulas.formulaTerms, 3));
         // @formatter:on
     }
+
+    public static class DebugGenerator extends ElementGenerator {
+
+        ArrayList<Element> mElements;
+
+        DebugGenerator(ElementRegistry registry, String... items) {
+            mElements = new ArrayList<Element>(items.length);
+            for (String id : items) {
+                 mElements.add(registry.get(id));
+            }
+        }
+
+        @Override
+        protected void fill() {
+            this.add(mElements);
+        }
+    };
+
+    public static FormulaLinesGame formulaDebugGame(Field field) {
+        // @formatter:off
+        return new FormulaLinesGame(field,
+            new DebugGenerator(KnownFormulas.contents, "H", "2", "O"));
+        // @formatter:on
+    }
 }
