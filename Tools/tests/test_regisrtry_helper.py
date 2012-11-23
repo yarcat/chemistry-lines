@@ -25,8 +25,6 @@ class TestFormula(unittest.TestCase):
                   ("H2S", "O", "H2SO"), ("H2SO", "4", "H2SO4")]
         self.assertEquals(prods, expect)
 
-
-class TestFinalTerms(unittest.TestCase):
     def test_collect_terms(self):
         collected_terms = R.collect_terms(map(F_plain, ["H", "F", "HF"]))
         self.assertEquals(collected_terms, set(["H", "F"]))
