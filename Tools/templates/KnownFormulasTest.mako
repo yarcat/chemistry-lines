@@ -3,6 +3,7 @@ Arguments:
     name -- class name,
     formulas -- list of formula (text, terms) pairs.
 </%doc>\
+<%include file="stamp.mako"/>\
 <% import registry_helper as R %>\
 package com.yarcat.tests.chemistrylines;
 

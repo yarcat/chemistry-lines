@@ -21,9 +21,12 @@ DEFAULT_URL = "http://en.wikipedia.org/wiki/Dictionary_of_chemical_formulas"
 TEMPLATE_DIR = "templates/"
 WIKI_USER_AGENT = "urllib"
 
+PARSED_ARGS = None
+
 
 def main():
-    args = parse_cmdline()
+    global PARSED_ARGS
+    PARSED_ARGS = args = parse_cmdline()
     if args.saved_html:
         fh = open(args.saved_html)
     else:
@@ -56,7 +59,8 @@ def main():
     formulas = F.parse_formulas(Formula.parse_plain, formulas)
 
     if args.filter:
-        formulas = filter(args.filter, formulas)
+        formulas = filter(args.filter and (lambda f: getattr(f, args.filter)),
+                          formulas)
 
     if args.atoms:
         formulas = filter_by_atoms(formulas, args.atoms)
@@ -97,10 +101,10 @@ def parse_cmdline():
                       action="store_const", const=None,
                       help="Only ions")
     mode.add_argument("-C", "--compounds", dest="filter",
-                      action="store_const", const=lambda f: f.is_compound,
+                      action="store_const", const="is_compound",
                       help="Only compounds")
     mode.add_argument("-I", "--ions", dest="filter",
-                      action="store_const", const=lambda f: f.is_ion,
+                      action="store_const", const="is_ion",
                       help="Only ions")
 
     parser.add_argument("-atom", default=[], action="append",
@@ -199,7 +203,7 @@ def dump_java_test(formulas):
 def render(template_name, **namespace):
     lookup = mako.lookup.TemplateLookup(directories=[TEMPLATE_DIR])
     template = lookup.get_template(template_name)
-    s = template.render(**namespace)
+    s = template.render(PARSED_ARGS=PARSED_ARGS, **namespace)
     return re.sub("^\s+$", "", s, flags=re.M)
 
 

@@ -3,6 +3,7 @@ Arguments:
     name -- class name,
     formulas -- list of formula (text, terms) pairs.
 </%doc>\
+<%include file="stamp.mako"/>\
 <% import registry_helper as R %>\
 package com.yarcat.chemistrylines.field;
 
@@ -96,5 +97,5 @@ public final class ${name} {
     private final static void P(String id1, String id2, String... ids) {
         contents.register(id1, id2, ids);
     }
-}\
+}
 ## vim: set ft=mako :
