@@ -36,52 +36,91 @@ public class FormulaRegistryTest {
         Element O = mRegistry.get("O");
         assertTrue(O.startsCompound());
         assertTrue(O.isFinal());
-        assertFalse(formulaIsRemoved("O"));
+        assertFalse(elements("O").allRemoved());
     }
 
     @Test
     public void testHCl() {
-        assertTrue(reactionProduces("HCl", "H", "Cl"));
-        assertTrue(formulaIsRemoved("H", "Cl"));
+        assertTrue(elements("H", "Cl").produceCompound("HCl"));
+        assertTrue(elements("H", "Cl").allRemoved());
     }
 
     @Test
     public void testH2O() {
-        assertTrue(reactionProduces("H2O", "H", "2", "O"));
+        assertTrue(elements("H", "2", "O").produceCompound("H2O"));
+        // TODO(yarcat): Remove "O" (Check bug #45).
+        assertTrue(elements("H", "2", "O").removeCompounds(
+            "H2O", "H2", "O2", "O"));
         // Tests also compound overlap - H2 & H2O.
-        assertTrue(formulaIsRemoved("H", "2", "O"));
+        assertTrue(elements("H", "2", "O").allRemoved());
     }
 
-    private boolean formulaIsRemoved(String... fieldMap) {
-        Field field = new RectField(fieldMap.length, 1);
-        for (int i = 0; i < fieldMap.length; ++i) {
-            field.at(i).setElement(mRegistry.get(fieldMap[i]));
+    private ExpectedRegistry elements(String... elements) {
+        Field field = new RectField(elements.length, 1);
+        for (int i = 0; i < elements.length; ++i) {
+            field.at(i).setElement(mRegistry.get(elements[i]));
         }
-        mRemover.setRemoveListener(new CompoundListener() {
-            @Override
-            public void foundCompound(Field field, int[] cells) {
-                for (int i : cells) {
-                    assertFalse(field.at(i).isEmpty());
-                }
+        return new ExpectedRegistry(field);
+    }
+
+    /**
+     * Helper allowing to set expectations for the set of terminals in a nice
+     * way.
+     */
+    private class ExpectedRegistry {
+        Field mField;
+
+        ExpectedRegistry(Field field) {
+            mField = field;
+        }
+
+        boolean produceCompound(String compound) {
+            ArrayList<Element> elements = new ArrayList<Element>();
+            for (int i = 0; i < mField.getLength(); ++i) {
+                elements.add(mField.at(i).getElement());
             }
-        });
-        mRemover.removeAllCompounds(field);
-        for (int i = 0; i < fieldMap.length; ++i) {
-            if (!field.at(i).isEmpty()) {
+            ArrayList<Element> productions = mReactor.getCompounds(elements);
+            Element target = mRegistry.get(compound);
+            if (!productions.contains(target)) {
                 return false;
             }
-        }
-        return true;
-    }
-
-    private boolean reactionProduces(String what, String... terms) {
-        ArrayList<Element> elements = new ArrayList<Element>(terms.length);
-        for (String it : terms) {
-            elements.add(mRegistry.get(it));
+            productions.remove(target);
+            return productions.isEmpty();
         }
 
-        ArrayList<Element> productions = mReactor.getCompounds(elements);
-        Element target = mRegistry.get(what);
-        return productions.contains(target);
+        boolean removeCompounds(String... compounds) {
+            final ArrayList<Element> removed = new ArrayList<Element>();
+            mRemover.setRemoveListener(new CompoundListener() {
+                @Override
+                public void foundCompound(Field field, int[] cells) {
+                    ArrayList<Element> elements = new ArrayList<Element>();
+                    for (int i : cells) {
+                        assertFalse(field.at(i).isEmpty());
+                        elements.add(field.at(i).getElement());
+                    }
+                    removed.addAll(mReactor.getCompounds(elements));
+                }
+            });
+            mRemover.removeAllCompounds(mField);
+            for (String c : compounds) {
+                Element target = mRegistry.get(c);
+                if (!removed.contains(target)) {
+                    return false;
+                }
+                removed.remove(target);
+            }
+            return removed.isEmpty();
+        }
+
+        boolean allRemoved() {
+            mRemover.setRemoveListener(null);
+            mRemover.removeAllCompounds(mField);
+            for (int i = 0; i < mField.getLength(); ++i) {
+                if (!mField.at(i).isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
