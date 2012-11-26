@@ -36,14 +36,14 @@ def main():
     if args.max_atoms:
         final_cond.append(lambda f: f.atom_count() <= args.max_atoms)
     if args.max_elements:
-        final_cond.append(lambda f: f.elememt_count() <= args.max_elements)
+        final_cond.append(lambda f: f.element_count() <= args.max_elements)
     if args.max_terminals:
         final_cond.append(lambda f: len(f) <= args.max_terminals)
 
     if args.min_atoms:
         final_cond.append(lambda f: f.atom_count() >= args.min_atoms)
     if args.min_elements:
-        final_cond.append(lambda f: f.elememt_count() >= args.min_elements)
+        final_cond.append(lambda f: f.element_count() >= args.min_elements)
     if args.min_terminals:
         final_cond.append(lambda f: len(f) >= args.min_terminals)
 
@@ -118,29 +118,27 @@ def parse_cmdline():
                         help="Limit formulas to those without opening"
                         " parentheses")
 
-    max_limit = parser.add_mutually_exclusive_group()
-    max_limit.add_argument("--max-atoms",
-                           default=None, type=int, metavar="N",
-                           help="Limit formulas by maximal atom count")
-    max_limit.add_argument("--max-elements",
-                           default=None, type=int, metavar="N",
-                           help="Limit formulas by maximal element count"
-                           " (different atoms)")
-    max_limit.add_argument("--max-terminals",
-                           default=None, type=int, metavar="N",
-                           help="Limit formulas by maximal terminal count")
+    parser.add_argument("--max-atoms",
+                        default=None, type=int, metavar="N",
+                        help="Limit formulas by maximal atom count")
+    parser.add_argument("--max-elements",
+                        default=None, type=int, metavar="N",
+                        help="Limit formulas by maximal element count"
+                        " (different atoms)")
+    parser.add_argument("--max-terminals",
+                        default=None, type=int, metavar="N",
+                        help="Limit formulas by maximal terminal count")
 
-    min_limit = parser.add_mutually_exclusive_group()
-    min_limit.add_argument("--min-atoms",
-                           default=None, type=int, metavar="N",
-                           help="Limit formulas by minimal atom count")
-    min_limit.add_argument("--min-elements",
-                           default=None, type=int, metavar="N",
-                           help="Limit formulas by minimal element count"
-                           " (different atoms)")
-    min_limit.add_argument("--min-terminals",
-                           default=None, type=int, metavar="N",
-                           help="Limit formulas by minimal terminal count")
+    parser.add_argument("--min-atoms",
+                        default=None, type=int, metavar="N",
+                        help="Limit formulas by minimal atom count")
+    parser.add_argument("--min-elements",
+                        default=None, type=int, metavar="N",
+                        help="Limit formulas by minimal element count"
+                        " (different atoms)")
+    parser.add_argument("--min-terminals",
+                        default=None, type=int, metavar="N",
+                        help="Limit formulas by minimal terminal count")
 
     parser.set_defaults(output=dump_text, filter=None, special=[])
     args = parser.parse_args()
