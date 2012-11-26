@@ -137,11 +137,14 @@ def parse_cmdline():
                         help="Limit formulas by minimal element count"
                         " (different atoms)")
     parser.add_argument("--min-terminals",
-                        default=None, type=int, metavar="N",
+                        default=2, type=int, metavar="N",
                         help="Limit formulas by minimal terminal count")
 
     parser.set_defaults(output=dump_text, filter=None, special=[])
     args = parser.parse_args()
+
+    if args.min_terminals < 2:
+        parser.error("--min-terminals must be greater or equal to 2")
 
     args.atoms = frozenset(itertools.chain(
         args.atom, *(E.GROUPS[i - 1] for i in args.group)))

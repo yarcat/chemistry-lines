@@ -35,8 +35,9 @@ public class FormulaRegistryTest {
     public void testO() {
         Element O = mRegistry.get("O");
         assertTrue(O.startsCompound());
-        assertTrue(O.isFinal());
+        assertFalse(O.isFinal());
         assertFalse(elements("O").allRemoved());
+        assertTrue(elements("O", "H").noneRemoved());
     }
 
     @Test
@@ -50,7 +51,7 @@ public class FormulaRegistryTest {
         assertTrue(elements("H", "2", "O").produceCompound("H2O"));
         // TODO(yarcat): Remove "O" (Check bug #45).
         assertTrue(elements("H", "2", "O").removeCompounds(
-            "H2O", "H2", "O2", "O"));
+            "H2O", "H2", "O2"));
         // Tests also compound overlap - H2 & H2O.
         assertTrue(elements("H", "2", "O").allRemoved());
     }
@@ -117,6 +118,17 @@ public class FormulaRegistryTest {
             mRemover.removeAllCompounds(mField);
             for (int i = 0; i < mField.getLength(); ++i) {
                 if (!mField.at(i).isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        boolean noneRemoved() {
+            mRemover.setRemoveListener(null);
+            mRemover.removeAllCompounds(mField);
+            for (int i = 0; i < mField.getLength(); ++i) {
+                if (mField.at(i).isEmpty()) {
                     return false;
                 }
             }
