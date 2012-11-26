@@ -9,10 +9,9 @@ package com.yarcat.chemistrylines.field;
 /** Static definition of all known formulas. */
 public final class ${name} {
 
-    public final static ElementRegistry contents = new ElementRegistry();
-    public final static Element[][] formulaTerms = new Element[${len(formulas)}][];
-    public final static WeightedArrayOfStrings terms =
-            new WeightedArrayOfStrings(${len(final_formula_stats)});
+    public final static ElementRegistry contents;
+    public final static Element[][] formulaTerms;
+    public final static WeightedArrayOfStrings terms;
 \
 <% keys = [] %> \
 <% n = 0 %> \
@@ -46,6 +45,10 @@ public final class ${name} {
 % endfor
 
     static {
+        contents = new ElementRegistry();
+        formulaTerms = new Element[${n}][];
+        terms = new WeightedArrayOfStrings(${len(final_formula_stats)});
+
 % for term in R.collect_terms(formulas):
     % if term.starts_formula:
         E("${term}")
