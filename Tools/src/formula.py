@@ -7,49 +7,48 @@ import re
 # import chemical_elements
 
 
-class Formula(collections.namedtuple("Formula", "text terms")):
-
-    @classmethod
-    def parse_plain(cls, text):
-        return cls.create(text, cls.plain_lexems(text))
-
-    @classmethod
-    def parse_closing_brackets(cls, text):
-        """Plain-parsed formula without opening bracket terminals"""
-        terms = (t for t in cls.plain_lexems(text) if t != "(")
-        return cls.create(text, terms)
-
-    @classmethod
-    def parse_pair_brackets(cls, text):
-        terms = ("()" if t == ")" else t for t in cls.plain_lexems(text)
-                 if t != "(")
-        return cls.create(text, terms)
-
-    @classmethod
-    def parse_compact(cls, text):
-        return cls.create(text, cls.compact_lexems(text))
-
-    @classmethod
-    def create(cls, text, terms):
-        terms = tuple(Terminal(t) for t in terms if t)
-        return cls(text, terms)
-
+class Lexems(object):
     RE_PLAIN = re.compile(u"[A-Z][a-z]{0,2}|[0-9.+-]+|.")
 
     @classmethod
-    def plain_lexems(cls, text):
+    def plain(cls, text):
         return cls.RE_PLAIN.findall(cls.tr_brackets(text))
 
     RE_COMPACT = \
         re.compile(u"[A-Z][a-z]{0,2}[0-9]*|[*)][0-9x]*|'[0-9.]*[+-]+|[^)]")
 
     @classmethod
-    def compact_lexems(cls, text):
+    def compact(cls, text):
         return cls.RE_COMPACT.findall(cls.tr_brackets(text))
 
     @staticmethod
     def tr_brackets(text):
         return text.replace("[", "(").replace("]", ")")
+
+
+class Formula(collections.namedtuple("Formula", "text terms")):
+
+    # TODO(luch) rename parse_plain -> parse or parse_asis
+    @classmethod
+    def parse_plain(cls, text, lex=Lexems.plain):
+        return cls.create(text, lex(text))
+
+    @classmethod
+    def parse_closing_brackets(cls, text, lex=Lexems.plain):
+        """Plain-parsed formula without opening bracket terminals"""
+        terms = (t for t in lex(text) if t != "(")
+        return cls.create(text, terms)
+
+    @classmethod
+    def parse_pair_brackets(cls, text, lex=Lexems.plain):
+        terms = ("()%s" % t[1:] if t[0] == ")" else t for t in lex(text)
+                 if t != "(")
+        return cls.create(text, terms)
+
+    @classmethod
+    def create(cls, text, terms):
+        terms = tuple(Terminal(t) for t in terms if t)
+        return cls(text, terms)
 
     @property
     def is_compound(self):
@@ -169,6 +168,6 @@ def sanitize(formula):
     return "".join(TR_UNICODE.get(ch, ch) for ch in formula if ch > " ")
 
 
-def parse_formulas(parser, text_formulas):
-    return [parser(sanitize(s)) for s in text_formulas
+def parse_formulas(text_formulas, parser, lex=Lexems.plain):
+    return [parser(sanitize(s), lex) for s in text_formulas
             if s and not s.isspace()]

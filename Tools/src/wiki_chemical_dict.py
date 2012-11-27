@@ -53,7 +53,8 @@ def main():
     table = parse_html(fh.read().decode("utf-8"))
     formulas = (row[0].data for row in table
                 if row[0].data != "(benzenediols)")
-    formulas = F.parse_formulas(getattr(Formula, args.parser), formulas)
+    formulas = F.parse_formulas(formulas, getattr(Formula, args.parser),
+                                args.lexer)
 
     strict_cond = []
     if args.filter:
@@ -159,6 +160,15 @@ def parse_cmdline():
                         default=2, type=int, metavar="N",
                         help="Limit formulas by minimal terminal count")
 
+    l = parser.add_mutually_exclusive_group()
+    l.add_argument("--simple", dest="lexer",
+                   action="store_const", const=F.Lexems.plain,
+                   help="Parse formula terminals as they are.")
+    l.add_argument("--compact", dest="lexer",
+                   action="store_const", const=F.Lexems.compact,
+                   help="Parse formulas in a compact way, i.e."
+                   " an atom and its coefficients form one terminal")
+
     p = parser.add_mutually_exclusive_group()
     p.add_argument("--plain", dest="parser",
                    action="store_const", const="parse_plain",
@@ -170,13 +180,9 @@ def parse_cmdline():
                    action="store_const", const="parse_closing_brackets",
                    help="Generate only closing parenthesis terminals."
                    " Opening parenthesis terminals are removed.")
-    p.add_argument("--compact", dest="parser",
-                   action="store_const", const="parse_compact",
-                   help="Parse formulas in a compact way, i.e."
-                   " an atom and its coefficients form one terminal")
 
     parser.set_defaults(output=dump_text, filter=None, special=[],
-                        parser="parse_plain")
+                        parser="parse_plain", lexer=F.Lexems.plain)
     args = parser.parse_args()
 
     if args.min_terminals < 2:
