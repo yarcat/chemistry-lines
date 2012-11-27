@@ -33,9 +33,6 @@ def main():
         fh = wiki_urlopen(DEFAULT_URL)
 
     final_cond = []
-    if args.no_opening_brackets:
-        final_cond.append(no_opening_brackets)
-
     if args.max_atoms:
         final_cond.append(lambda f: f.atom_count() <= args.max_atoms)
     if args.max_elements:
@@ -66,6 +63,12 @@ def main():
     if args.max_coefficient:
         strict_cond.append(lambda f: all(c <= args.max_coefficient for c in
                                          f.coefficients))
+    if args.no_hydrates:
+        strict_cond.append(lambda f: all(t.text[0] != "*" for t in f))
+    if args.no_opening_brackets:
+        strict_cond.append(lambda f: "(" not in f)
+    if args.unique_elements:
+        strict_cond.append(lambda f: len(f.atoms) == f.element_count())
 
     formulas = filter(formula_matches(strict_cond), formulas)
     output = args.output(formulas)
@@ -120,10 +123,16 @@ def parse_cmdline():
                         help="Limit formulas to those containg elements"
                         " of specified groups")
 
+    parser.add_argument("--no-hydrates", default=False, action="store_true",
+                        help="Limit formulas to those having no '*xH2O'")
     parser.add_argument("--no-opening-brackets",
                         default=False, action="store_true",
                         help="Limit formulas to those without opening"
                         " parentheses")
+    parser.add_argument("--unique-elements", "--no-repeated-elements",
+                        default=False, action="store_true",
+                        help="Limit formulas to those having each element"
+                        " 0 or 1 time, i.e. having no repeated elements")
 
     parser.add_argument("--max-atoms",
                         default=None, type=int, metavar="N",
@@ -240,10 +249,6 @@ def get_term_stats(formulas):
     stats = [Stat(term, len(list(group)))
              for (term, group) in itertools.groupby(terms)]
     return stats
-
-
-def no_opening_brackets(formula):
-    return "(" not in formula and "[" not in formula
 
 
 def formula_matches(conditions):
