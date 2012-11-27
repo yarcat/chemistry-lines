@@ -37,7 +37,6 @@ class TestFormulaPlain(unittest.TestCase):
         # other terminals
         self.assertIn("(", F_plain("Al(OH)3"))
         self.assertIn(")", F_plain("Al(OH)3"))
-        self.assertNotIn("[", F_plain("Al(OH)3"))
 
     def test_len(self):
         self.assertEquals(len(F_plain("Na")), 1)
@@ -129,12 +128,48 @@ class TestTerminal(unittest.TestCase):
     def test_starts_formula(self):
         self.assertTrue(F.Terminal("H").starts_formula)
         self.assertTrue(F.Terminal("(").starts_formula)
-        self.assertTrue(F.Terminal("[").starts_formula)
 
         self.assertFalse(F.Terminal("2").starts_formula)
         self.assertFalse(F.Terminal(")").starts_formula)
-        self.assertFalse(F.Terminal("]").starts_formula)
         self.assertFalse(F.Terminal("*").starts_formula)
+
+
+class TestBracketTranslation(unittest.TestCase):
+
+    def test_plain(self):
+        f = F_plain("Al[OH]3")
+        self.assertEquals(f.text, "Al[OH]3")
+        self.assertEquals(f, F_plain("Al(OH)3"))
+
+        self.assertIn("(", f)
+        self.assertIn(")", f)
+
+        self.assertNotIn("[", f)
+        self.assertNotIn("]", f)
+
+    def test_pair_brackets(self):
+        f = F_bra_pair("Al[OH]3")
+        self.assertEquals(f.text, "Al[OH]3")
+        self.assertEquals(f, F_bra_pair("Al(OH)3"))
+
+        self.assertIn("()", f)
+        self.assertNotIn("[]", f)
+
+        self.assertNotIn(")", f)
+        self.assertNotIn("(", f)
+        self.assertNotIn("[", f)
+        self.assertNotIn("]", f)
+
+    def test_plain(self):
+        f = F_bra_close("Al[OH]3")
+        self.assertEquals(f.text, "Al[OH]3")
+        self.assertEquals(f, F_bra_close("Al(OH)3"))
+
+        self.assertIn(")", f)
+        self.assertNotIn("(", f)
+
+        self.assertNotIn("[", f)
+        self.assertNotIn("]", f)
 
 
 if __name__ == "__main__":

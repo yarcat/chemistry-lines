@@ -7,30 +7,36 @@ import re
 
 class Formula(collections.namedtuple("Formula", "text terms")):
 
-    RE_PLAIN = re.compile(u"[A-Z][a-z]{0,2}|[0-9.+-]+|.")
-
     @classmethod
     def parse_plain(cls, text):
-        return cls.create(text, cls.RE_PLAIN.findall(text))
+        return cls.create(text, cls.plain_lexems(text))
 
     @classmethod
     def parse_closing_brackets(cls, text):
         """Plain-parsed formula without opening bracket terminals"""
-        terms = (t for t in cls.RE_PLAIN.findall(text) if t not in "([")
+        terms = (t for t in cls.plain_lexems(text) if t != "(")
         return cls.create(text, terms)
-
-    TR_BRACKETS_PAIR = {"(": None, "[": None, ")": "()", "]": "[]"}
 
     @classmethod
     def parse_pair_brackets(cls, text):
-        map_terminal = cls.TR_BRACKETS_PAIR.get
-        terms = (map_terminal(t, t) for t in cls.RE_PLAIN.findall(text))
+        terms = ("()" if t == ")" else t for t in cls.plain_lexems(text)
+                 if t != "(")
         return cls.create(text, terms)
 
     @classmethod
     def create(cls, text, terms):
         terms = tuple(Terminal(t) for t in terms if t)
         return cls(text, terms)
+
+    RE_PLAIN = re.compile(u"[A-Z][a-z]{0,2}|[0-9.+-]+|.")
+
+    @classmethod
+    def plain_lexems(cls, text):
+        return cls.RE_PLAIN.findall(cls.tr_brackets(text))
+
+    @staticmethod
+    def tr_brackets(text):
+        return text.replace("[", "(").replace("]", ")")
 
     @property
     def is_compound(self):
@@ -71,6 +77,12 @@ class Formula(collections.namedtuple("Formula", "text terms")):
 
     def __iter__(self):
         return iter(self.terms)
+
+    def __eq__(self, other):
+        return self.terms == other.terms
+
+    def __lt__(self, other):
+        return self.terms < other.terms
 
 
 class Terminal(object):
