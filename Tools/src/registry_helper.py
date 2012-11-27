@@ -11,8 +11,7 @@ def split_formula_set(formulas):
 
     """
     def group_key(formula):
-        s = formula.text
-        return s[1] if s[0] in "([" else s[0]
+        return formula.terms[formula.terms[0] == "("].text[0]
 
     formulas = sorted(formulas, key=lambda f: (group_key(f), f.text))
     for key, grp in itertools.groupby(formulas, key=group_key):

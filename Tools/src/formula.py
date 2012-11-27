@@ -99,7 +99,7 @@ class Terminal(object):
 
     @property
     def starts_formula(self):
-        return self.is_atom or self.text in "(["
+        return self.is_atom or self.text == "("
 
     def __str__(self):
         return self.text
