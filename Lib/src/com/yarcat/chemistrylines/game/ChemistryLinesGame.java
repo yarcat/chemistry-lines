@@ -5,7 +5,7 @@ import static com.yarcat.chemistrylines.field.KnownElements.knownElements;
 
 import java.util.Random;
 
-import com.yarcat.chemistrylines.algorithms.CompoundRemover;
+import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
 import com.yarcat.chemistrylines.field.Field;
@@ -36,7 +36,7 @@ public class ChemistryLinesGame extends LinesGame implements GameLogic {
 
     public ChemistryLinesGame(Field field) {
         // @formatter:off
-        super(field, new CompoundRemover(),
+        super(field, new CompoundScanner(),
             new RandomFinalElementGenerator(knownElements));
         // @formatter:on
     }

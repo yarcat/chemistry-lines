@@ -1,7 +1,7 @@
 package com.yarcat.tests.chemistrylines;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
@@ -9,8 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.yarcat.chemistrylines.algorithms.ChemicalReactor;
-import com.yarcat.chemistrylines.algorithms.CompoundRemover;
-import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
+import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
@@ -21,14 +20,14 @@ import com.yarcat.chemistrylines.field.RectField;
 public class FormulaRegistryTest {
 
     ElementRegistry mRegistry;
-    CompoundRemover mRemover;
+    CompoundScanner mScanner;
     ChemicalReactor mReactor;
 
     @Before
     public void setUp() {
         mRegistry = KnownFormulas.contents;
         mReactor = new SimpleReactor(mRegistry);
-        mRemover = new CompoundRemover(mReactor);
+        mScanner = new CompoundScanner(mReactor);
     }
 
     @Test
@@ -50,8 +49,7 @@ public class FormulaRegistryTest {
     public void testH2O() {
         assertTrue(elements("H", "2", "O").produceCompound("H2O"));
         // TODO(yarcat): Remove "O" (Check bug #45).
-        assertTrue(elements("H", "2", "O").removeCompounds(
-            "H2O", "H2", "O2"));
+        assertTrue(elements("H", "2", "O").removeCompounds("H2O", "H2", "O2"));
         // Tests also compound overlap - H2 & H2O.
         assertTrue(elements("H", "2", "O").allRemoved());
     }
@@ -91,18 +89,7 @@ public class FormulaRegistryTest {
 
         boolean removeCompounds(String... compounds) {
             final ArrayList<Element> removed = new ArrayList<Element>();
-            mRemover.setRemoveListener(new CompoundListener() {
-                @Override
-                public void foundCompound(Field field, int[] cells) {
-                    ArrayList<Element> elements = new ArrayList<Element>();
-                    for (int i : cells) {
-                        assertFalse(field.at(i).isEmpty());
-                        elements.add(field.at(i).getElement());
-                    }
-                    removed.addAll(mReactor.getCompounds(elements));
-                }
-            });
-            mRemover.removeAllCompounds(mField);
+            removeCompounds();
             for (String c : compounds) {
                 Element target = mRegistry.get(c);
                 if (!removed.contains(target)) {
@@ -113,9 +100,14 @@ public class FormulaRegistryTest {
             return removed.isEmpty();
         }
 
+        private void removeCompounds() {
+            for (int[] cells : mScanner.scan(mField)) {
+                mField.removeCompound(cells);
+            }
+        }
+
         boolean allRemoved() {
-            mRemover.setRemoveListener(null);
-            mRemover.removeAllCompounds(mField);
+            removeCompounds();
             for (int i = 0; i < mField.getLength(); ++i) {
                 if (!mField.at(i).isEmpty()) {
                     return false;
@@ -125,8 +117,7 @@ public class FormulaRegistryTest {
         }
 
         boolean noneRemoved() {
-            mRemover.setRemoveListener(null);
-            mRemover.removeAllCompounds(mField);
+            removeCompounds();
             for (int i = 0; i < mField.getLength(); ++i) {
                 if (mField.at(i).isEmpty()) {
                     return false;

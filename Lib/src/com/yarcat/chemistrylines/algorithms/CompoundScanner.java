@@ -13,52 +13,23 @@ import com.yarcat.chemistrylines.field.Field;
  * It should be called after each field change.
  *
  */
-public class CompoundRemover {
+public class CompoundScanner {
     private final ChemicalReactor mReactor;
     private final CompoundDetector mDetector;
     private final CompoundReporter mReporter;
-    private CompoundListener mRemoveListener;
 
-    public CompoundRemover() {
+    public CompoundScanner() {
         this(new SimpleReactor());
     }
 
-    public CompoundRemover(ChemicalReactor reactor) {
+    public CompoundScanner(ChemicalReactor reactor) {
         mReactor = reactor;
         mDetector = new ChemicalCompoundDetector(mReactor);
         mReporter = new LinearCompoundReporter();
     }
 
-    public void setRemoveListener(CompoundListener removeListener) {
-        mRemoveListener = removeListener;
-    }
-
-    /** Find all chemical reactions on the field and remove compounds.
-     *
-     * @return whether anything was removed.
-     */
-    public boolean removeAllCompounds(Field field) {
-        ArrayList<int[]> allCells = scan(field);
-        for (int[] cells : allCells) {
-            onCompoundRemove(field, cells);
-        }
-        for (int[] cells : allCells) {
-            for (int n : cells) {
-                field.at(n).setElement(null);
-            }
-        }
-
-        return !allCells.isEmpty();
-    }
-
-    public void onCompoundRemove(Field field, int[] cells) {
-        if (mRemoveListener != null) {
-            mRemoveListener.foundCompound(field, cells);
-        }
-    }
-
     /** Collect all field cell sequences containing chemical compounds. */
-    private ArrayList<int[]> scan(Field field) {
+    public ArrayList<int[]> scan(Field field) {
         final ArrayList<int[]> rv = new ArrayList<int[]>();
         mReporter.scan(field, mDetector, new CompoundListener() {
             @Override
@@ -78,7 +49,8 @@ public class CompoundRemover {
             mReactor = reactor;
         }
 
-        /** Cells start a compound if first one contains start-element.
+        /**
+         * Cells start a compound if first one contains start-element.
          *
          * We could try to add some logic to stop earlier than at an empty cell
          * or at the field border, but it looks like overkill.

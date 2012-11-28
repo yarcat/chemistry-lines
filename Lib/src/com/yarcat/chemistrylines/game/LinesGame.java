@@ -2,8 +2,8 @@ package com.yarcat.chemistrylines.game;
 
 import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
 
-import com.yarcat.chemistrylines.algorithms.CompoundRemover;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
+import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
@@ -12,17 +12,19 @@ public abstract class LinesGame implements GameLogic {
 
     private int mNewPortionSize;
     private Field mField;
-    private CompoundRemover mRemover;
+    private CompoundScanner mScanner;
+    private FieldCleaner mFieldCleaner;
     private ElementGenerator mElementGenerator;
     private GameLogger mGameLog;
 
-    public LinesGame(Field f, CompoundRemover r, ElementGenerator g) {
+    public LinesGame(Field f, CompoundScanner s, ElementGenerator g) {
         mField = f;
-        mRemover = r;
+        mScanner = s;
         mElementGenerator = g;
         mNewPortionSize = 3;
         setGameLogger(null);
-        mRemover.setRemoveListener(new CompoundListener() {
+        mFieldCleaner = new FieldCleaner(mField);
+        mFieldCleaner.setRemoveListener(new CompoundListener() {
             @Override
             public void foundCompound(Field field, int[] cells) {
                 mGameLog.compoundRemoved(field, cells);
@@ -51,7 +53,7 @@ public abstract class LinesGame implements GameLogic {
     }
 
     private boolean cleanupField() {
-        return mRemover.removeAllCompounds(mField);
+        return mFieldCleaner.process(mScanner.scan(mField));
     }
 
     @Override

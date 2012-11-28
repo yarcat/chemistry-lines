@@ -5,7 +5,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.yarcat.chemistrylines.algorithms.CompoundRemover;
+import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
@@ -13,7 +13,7 @@ import com.yarcat.chemistrylines.field.RectField;
 
 public class FieldCleanerTest {
 
-    private CompoundRemover mCleaner;
+    private CompoundScanner mScanner;
     private Registry mRegistry;
 
     @Before
@@ -46,7 +46,7 @@ public class FieldCleanerTest {
         // @formatter:on
 
         mRegistry = r;
-        mCleaner = new CompoundRemover(new SimpleReactor(r));
+        mScanner = new CompoundScanner(new SimpleReactor(r));
     }
 
     @Test
@@ -54,16 +54,17 @@ public class FieldCleanerTest {
         Field field =
             filledField(new RectField(1, 2), elementsById("Start", "A"));
         assertArrayEquals(new int[] { 0, 0 }, mapEmpties(field));
-        mCleaner.removeAllCompounds(field);
+        removeCompounds(field);
         assertArrayEquals(new int[] { 1, 1 }, mapEmpties(field));
     }
 
     @Test
     public void oneSymmetricalCompound() {
         Field field =
-            filledField(new RectField(1, 3), elementsById("StartFin", "A", "StartFin"));
+            filledField(
+                new RectField(1, 3), elementsById("StartFin", "A", "StartFin"));
         assertArrayEquals(new int[] { 0, 0, 0 }, mapEmpties(field));
-        mCleaner.removeAllCompounds(field);
+        removeCompounds(field);
         assertArrayEquals(new int[] { 1, 1, 1 }, mapEmpties(field));
     }
 
@@ -72,16 +73,17 @@ public class FieldCleanerTest {
         Field field =
             filledField(new RectField(1, 3), elementsById("Start", "A", "C"));
         assertArrayEquals(new int[] { 0, 0, 0 }, mapEmpties(field));
-        mCleaner.removeAllCompounds(field);
+        removeCompounds(field);
         assertArrayEquals(new int[] { 1, 1, 0 }, mapEmpties(field));
     }
 
     @Test
     public void twoOverlappingCompounds() {
         Field field =
-            filledField(new RectField(1, 3), elementsById("Start", "A", "Start"));
+            filledField(
+                new RectField(1, 3), elementsById("Start", "A", "Start"));
         assertArrayEquals(new int[] { 0, 0, 0 }, mapEmpties(field));
-        mCleaner.removeAllCompounds(field);
+        removeCompounds(field);
         assertArrayEquals(new int[] { 1, 1, 1 }, mapEmpties(field));
     }
 
@@ -99,7 +101,7 @@ public class FieldCleanerTest {
             0, 0, 0,
             0, 0, 0
         }, mapEmpties(field));
-        mCleaner.removeAllCompounds(field);
+        removeCompounds(field);
         assertArrayEquals(new int[] {
             1, 1, 1,
             1, 0, 0,
@@ -137,5 +139,11 @@ public class FieldCleanerTest {
             rv[n] = field.at(n).isEmpty() ? 1 : 0;
         }
         return rv;
+    }
+
+    private void removeCompounds(Field field) {
+        for (int[] cells : mScanner.scan(field)) {
+            field.removeCompound(cells);
+        }
     }
 }

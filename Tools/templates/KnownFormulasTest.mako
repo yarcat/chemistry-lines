@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.yarcat.chemistrylines.algorithms.ChemicalReactor;
-import com.yarcat.chemistrylines.algorithms.CompoundRemover;
+import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
@@ -23,19 +23,19 @@ import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.KnownFormulas;
 import com.yarcat.chemistrylines.field.RectField;
 
-public class ${name} {
+public class KnownFormulasTest {
 
     ElementRegistry mRegistry;
-    CompoundRemover mRemover;
     ChemicalReactor mReactor;
+    CompoundScanner mScanner;
 
     @Before
     public void setUp() {
         mRegistry = KnownFormulas.contents;
         mReactor = new SimpleReactor(mRegistry);
-        mRemover = new CompoundRemover(mReactor);
+        mScanner = new CompoundScanner(mReactor);
     }
-\
+
 % for key, group in R.split_formula_set(formulas):
 <%    group = list(group) %>
 
@@ -88,7 +88,7 @@ public class ${name} {
         for (int i = 0; i < fieldMap.length; ++i) {
             field.at(i).setElement(mRegistry.get(fieldMap[i]));
         }
-        mRemover.removeAllCompounds(field);
+        removeCompounds(field);
 
         for (int i = 0; i < fieldMap.length; ++i) {
             if (!field.at(i).isEmpty()) {
@@ -96,6 +96,12 @@ public class ${name} {
             }
         }
         return true;
+    }
+
+    private void removeCompounds(Field field) {
+        for (int[] cells : mScanner.scan(field)) {
+            field.removeCompound(cells);
+        }
     }
 
     private boolean reactionProduces(String what, String... terms) {

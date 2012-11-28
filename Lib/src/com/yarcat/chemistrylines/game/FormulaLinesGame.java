@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import com.yarcat.chemistrylines.algorithms.CompoundRemover;
+import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.ElementRegistry;
@@ -75,7 +75,7 @@ public class FormulaLinesGame extends LinesGame {
     protected FormulaLinesGame(Field field, ElementGenerator terminalGenerator) {
         // @formatter:off
         super(field,
-            new CompoundRemover(new SimpleReactor(KnownFormulas.contents)),
+            new CompoundScanner(new SimpleReactor(KnownFormulas.contents)),
             terminalGenerator);
         // @formatter:on
     }

@@ -1,7 +1,7 @@
 package com.yarcat.chemistrylines.field;
 
 /** Rectangular game field. */
-public class RectField implements Field {
+public class RectField extends Field.BaseField implements Field {
 
     private final Cell[] mCells;
     private final int mCols;
@@ -24,6 +24,7 @@ public class RectField implements Field {
         }
     }
 
+    @Override
     public int getLength() {
         return mCells.length;
     }
@@ -48,6 +49,7 @@ public class RectField implements Field {
         return 0 <= col && col < mCols && 0 <= row && row < mRows;
     }
 
+    @Override
     public Cell at(int n) {
         return 0 <= n && n < getLength() ? mCells[n] : null;
     }
@@ -55,6 +57,7 @@ public class RectField implements Field {
     private static final int[][] siblingShifts = new int[][] { { -1, 0 },
             { 0, -1 }, { +1, 0 }, { 0, +1 } };
 
+    @Override
     public void visitSiblings(int n, CellVisitor visitor) {
         int col = cellCol(n);
         int row = cellRow(n);
@@ -67,6 +70,7 @@ public class RectField implements Field {
         }
     }
 
+    @Override
     public void linearScan(SequenceVisitor visitor) {
         for (int origin = 0; origin < getLength(); ++origin) {
             if (at(origin).isEmpty()) {

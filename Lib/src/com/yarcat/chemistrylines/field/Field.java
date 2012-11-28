@@ -31,9 +31,23 @@ public interface Field {
         public boolean stopScan(Field field);
     }
 
-    /** Scan all linear sequences of non-empty cells.
+    /**
+     * Scan all linear sequences of non-empty cells.
      *
      * Sequences must be of 2 cells at least.
      */
     public void linearScan(SequenceVisitor visitor);
+
+    public void removeCompound(int[] cells);
+
+    /* Implementation of functionality common for all fields */
+    public static abstract class BaseField implements Field {
+
+        @Override
+        public void removeCompound(int[] cells) {
+            for (int n : cells) {
+                at(n).setElement(null);
+            }
+        }
+    }
 }
