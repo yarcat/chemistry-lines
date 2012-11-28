@@ -44,10 +44,14 @@ public abstract class LinesGame implements GameLogic {
             && mField.at(fin).isEmpty()) {
             mField.at(fin).setElement(mField.at(origin).getElement());
             mField.at(origin).setElement(null);
-            if (!mRemover.removeAllCompounds(mField)) {
+            if (!cleanupField()) {
                 addItems();
             }
         }
+    }
+
+    private boolean cleanupField() {
+        return mRemover.removeAllCompounds(mField);
     }
 
     @Override
@@ -61,8 +65,12 @@ public abstract class LinesGame implements GameLogic {
             mField.at(n).setElement(mElementGenerator.getNext());
             addedCells[i] = n;
         }
+        onElementsAdded(addedCells);
+        cleanupField();
+    }
+
+    private void onElementsAdded(int[] addedCells) {
         mGameLog.elementsAdded(mField, addedCells);
-        mRemover.removeAllCompounds(mField);
     }
 
     @Override
