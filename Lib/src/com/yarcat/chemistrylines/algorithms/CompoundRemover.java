@@ -33,8 +33,11 @@ public class CompoundRemover {
         mRemoveListener = removeListener;
     }
 
-    /** Find all chemical reactions on the field and remove compounds. */
-    public void removeAllCompounds(Field field) {
+    /** Find all chemical reactions on the field and remove compounds.
+     *
+     * @return whether anything was removed.
+     */
+    public boolean removeAllCompounds(Field field) {
         ArrayList<int[]> allCells = scan(field);
         for (int[] cells : allCells) {
             onCompoundRemove(field, cells);
@@ -44,6 +47,8 @@ public class CompoundRemover {
                 field.at(n).setElement(null);
             }
         }
+
+        return !allCells.isEmpty();
     }
 
     public void onCompoundRemove(Field field, int[] cells) {

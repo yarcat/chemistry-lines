@@ -44,8 +44,9 @@ public abstract class LinesGame implements GameLogic {
             && mField.at(fin).isEmpty()) {
             mField.at(fin).setElement(mField.at(origin).getElement());
             mField.at(origin).setElement(null);
-            mRemover.removeAllCompounds(mField);
-            addItems();
+            if (!mRemover.removeAllCompounds(mField)) {
+                addItems();
+            }
         }
     }
 
