@@ -23,7 +23,7 @@ public abstract class LinesGame implements GameLogic {
         mElementGenerator = g;
         mNewPortionSize = 3;
         setGameLogger(null);
-        mFieldCleaner = new FieldCleaner(mField);
+        mFieldCleaner = new ImmediateFieldCleaner(mField);
         mFieldCleaner.setRemoveListener(new CompoundListener() {
             @Override
             public void foundCompound(Field field, int[] cells) {

@@ -5,31 +5,27 @@ import java.util.ArrayList;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
 import com.yarcat.chemistrylines.field.Field;
 
-public class FieldCleaner {
-    private CompoundListener mRemoveListener;
-    private Field mField;
+public interface FieldCleaner {
 
-    FieldCleaner(Field field) {
-        mField = field;
-    }
+    public abstract void setRemoveListener(CompoundListener removeListener);
 
-    public void setRemoveListener(CompoundListener removeListener) {
-        mRemoveListener = removeListener;
-    }
+    public abstract boolean process(ArrayList<int[]> compounds);
 
-    public boolean process(ArrayList<int[]> compounds) {
-        for (int[] cells : compounds) {
-            onCompoundRemove(mField, cells);
+    public abstract class Base implements FieldCleaner {
+
+        private CompoundListener mRemoveListener;
+
+        @Override
+        public void setRemoveListener(CompoundListener removeListener) {
+            mRemoveListener = removeListener;
         }
-        for (int[] cells : compounds) {
-            mField.removeCompound(cells);
+
+        protected void onCompoundRemove(Field field, int[] cells) {
+            if (mRemoveListener != null) {
+                mRemoveListener.foundCompound(field, cells);
+            }
         }
-        return !compounds.isEmpty();
+
     }
 
-    public void onCompoundRemove(Field field, int[] cells) {
-        if (mRemoveListener != null) {
-            mRemoveListener.foundCompound(field, cells);
-        }
-    }
 }
