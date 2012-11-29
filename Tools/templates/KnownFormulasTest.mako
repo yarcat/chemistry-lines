@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.yarcat.chemistrylines.algorithms.ChemicalReactor;
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.algorithms.SimpleReactor;
 import com.yarcat.chemistrylines.field.Element;
@@ -99,8 +100,8 @@ public class KnownFormulasTest {
     }
 
     private void removeCompounds(Field field) {
-        for (int[] cells : mScanner.scan(field)) {
-            field.removeCompound(cells);
+        for (CompoundReference ref : mScanner.scan(field)) {
+            field.removeCompound(ref.getCells());
         }
     }
 

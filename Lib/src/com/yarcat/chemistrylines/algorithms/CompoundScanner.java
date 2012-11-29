@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundDetector;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 
@@ -29,12 +30,12 @@ public class CompoundScanner {
     }
 
     /** Collect all field cell sequences containing chemical compounds. */
-    public ArrayList<int[]> scan(Field field) {
-        final ArrayList<int[]> rv = new ArrayList<int[]>();
+    public ArrayList<CompoundReference> scan(Field field) {
+        final ArrayList<CompoundReference> rv = new ArrayList<CompoundReference>();
         mReporter.scan(field, mDetector, new CompoundListener() {
             @Override
-            public void foundCompound(Field field, int[] cells) {
-                rv.add(cells);
+            public void foundCompound(CompoundReference ref) {
+                rv.add(ref);
             }
         });
 
@@ -61,12 +62,19 @@ public class CompoundScanner {
             return field.at(cells[0]).getElement().startsCompound();
         }
 
-        /** Use chemical reactor to check compounds. */
+        /**
+         * Use chemical reactor to check compounds.
+         *
+         * @return either a compound formed by the field cells or null.
+         */
         @Override
-        public boolean isCompound(Field field, int[] cells) {
+        public Element getCompound(Field field, int[] cells) {
             assert cells.length > 0;
             ArrayList<Element> items = cellsToElements(field, cells);
-            return !mReactor.getCompounds(items).isEmpty();
+            ArrayList<Element> compounds = mReactor.getCompounds(items);
+            // TODO(luch): Review this implementing chemical reactions mode.
+            // Is compounds.size() > 1 possible?
+            return compounds.isEmpty() ? null : compounds.get(0);
         }
     }
 

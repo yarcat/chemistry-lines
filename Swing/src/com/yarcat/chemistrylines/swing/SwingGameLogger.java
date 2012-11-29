@@ -2,6 +2,7 @@ package com.yarcat.chemistrylines.swing;
 
 import javax.swing.JTextArea;
 
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.game.GameLogger;
 
@@ -31,10 +32,14 @@ public class SwingGameLogger implements GameLogger {
     }
 
     @Override
-    public void compoundRemoved(Field field, int[] cells) {
+    public void compoundRemoved(Field field, CompoundReference ref) {
         String s = " - ";
-        for (int i : cells) {
-            s += field.at(i).getElement().getName();
+        if (ref.getCompound() != null) {
+            s += ref.getCompound().getName();
+        } else {
+            for (int i : ref.getCells()) {
+                s += field.at(i).getElement().getName();
+            }
         }
         appendLine(s);
     }

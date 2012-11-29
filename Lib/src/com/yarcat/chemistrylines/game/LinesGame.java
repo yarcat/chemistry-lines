@@ -3,6 +3,7 @@ package com.yarcat.chemistrylines.game;
 import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Element;
@@ -26,8 +27,8 @@ public abstract class LinesGame implements GameLogic {
         mFieldCleaner = new ImmediateFieldCleaner(mField);
         mFieldCleaner.setRemoveListener(new CompoundListener() {
             @Override
-            public void foundCompound(Field field, int[] cells) {
-                mGameLog.compoundRemoved(field, cells);
+            public void foundCompound(CompoundReference ref) {
+                mGameLog.compoundRemoved(mField, ref);
             }
         });
     }

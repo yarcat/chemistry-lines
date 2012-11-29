@@ -2,22 +2,40 @@ package com.yarcat.chemistrylines.algorithms;
 
 import java.util.ArrayList;
 
+import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.Field.SequenceVisitor;
 
 /** Looks up compounds on a field */
 public abstract class CompoundReporter {
 
+    public static class CompoundReference {
+        private int[] mCells;
+        private Element mCompound;
+
+        public CompoundReference(int[] cells, Element compound) {
+            super();
+            mCells = cells;
+            mCompound = compound;
+        }
+
+        public int[] getCells() {
+            return mCells;
+        }
+
+        public int getLength() {
+            return mCells.length;
+        }
+
+        public Element getCompound() {
+            return mCompound;
+        }
+    }
+
     /** Process compounds found on the field */
     public interface CompoundListener {
 
-        /**
-         * Callback on a compound found.
-         *
-         * @param cells
-         *            sequence of indexes of cells forming a compound.
-         */
-        public void foundCompound(Field field, int[] cells);
+        public void foundCompound(CompoundReference ref);
     }
 
     /** Detects a compound or its start during field scan */
@@ -26,18 +44,17 @@ public abstract class CompoundReporter {
         /**
          * Check whether a sequence of cells is a valid start of a compound.
          *
-         * @param cells
-         *            sequence of indexes of cells forming a compound.
+         * @param cells sequence of indexes of cells forming a compound.
          */
         public boolean startsCompound(Field field, final int[] cells);
 
         /**
          * Check if a sequence of cells forms a compound.
          *
-         * @param cells
-         *            sequence of indexes of cells forming a compound.
+         * @param cells sequence of indexes of cells forming a compound.
+         * @return either an Element representing the compound or null.
          */
-        public boolean isCompound(Field field, final int[] cells);
+        public Element getCompound(Field field, final int[] cells);
     }
 
     /** Start scanning the field using an initialized sequence visitor */
@@ -62,17 +79,23 @@ public abstract class CompoundReporter {
             mListener = listener;
         }
 
+        @Override
         public void reset() {
             mPath.clear();
         }
 
+        @Override
         public void visit(int n, Field field) {
             mPath.add(n);
-            if (mDetector.isCompound(field, clonePath())) {
-                mListener.foundCompound(field, clonePath());
+            Element compound = mDetector.getCompound(field, clonePath());
+            if (compound != null) {
+                CompoundReference ref =
+                    new CompoundReference(clonePath(), compound);
+                mListener.foundCompound(ref);
             }
         }
 
+        @Override
         public boolean stopScan(Field field) {
             return !mDetector.startsCompound(field, clonePath());
         }

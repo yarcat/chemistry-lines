@@ -7,13 +7,17 @@ import org.junit.Test;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundDetector;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.algorithms.LinearCompoundReporter;
+import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.RectField;
 
 public class LinearCompoundReporterTest {
 
     final int MAX_LEN = 3;
+
+    final Element fakeElement = new Element("fake", "FakeElement");
 
     class FakeDetector implements CompoundDetector {
 
@@ -23,10 +27,10 @@ public class LinearCompoundReporterTest {
         }
 
         @Override
-        public boolean isCompound(Field field, int[] cells) {
+        public Element getCompound(Field field, int[] cells) {
             // only ascending sequences are test compounds
             return 1 < cells.length && cells.length <= MAX_LEN
-                    && cells[0] < cells[1];
+                    && cells[0] < cells[1] ? fakeElement : null;
         }
     }
 
@@ -35,8 +39,8 @@ public class LinearCompoundReporterTest {
         final int[] mCount = new int[MAX_LEN + 1];
 
         @Override
-        public void foundCompound(Field field, int[] cells) {
-            ++mCount[cells.length];
+        public void foundCompound(CompoundReference ref) {
+            ++mCount[ref.getLength()];
         }
     }
 

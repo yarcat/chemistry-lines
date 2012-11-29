@@ -2,9 +2,13 @@ package com.yarcat.chemistrylines.game;
 
 import java.util.ArrayList;
 
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.field.Field;
 
-public class ImmediateFieldCleaner extends FieldCleaner.Base implements FieldCleaner {
+// @formatter:off
+public class ImmediateFieldCleaner extends FieldCleaner.Base
+        implements FieldCleaner {
+// @formatter:on
     private Field mField;
 
     public ImmediateFieldCleaner (Field field) {
@@ -12,12 +16,12 @@ public class ImmediateFieldCleaner extends FieldCleaner.Base implements FieldCle
     }
 
     @Override
-    public boolean process(ArrayList<int[]> compounds) {
-        for (int[] cells : compounds) {
-            onCompoundRemove(mField, cells);
+    public boolean process(ArrayList<CompoundReference> compounds) {
+        for (CompoundReference ref : compounds) {
+            onCompoundRemove(ref);
         }
-        for (int[] cells : compounds) {
-            mField.removeCompound(cells);
+        for (CompoundReference ref : compounds) {
+            mField.removeCompound(ref.getCells());
         }
         return !compounds.isEmpty();
     }
