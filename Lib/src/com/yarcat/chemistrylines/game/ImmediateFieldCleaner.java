@@ -1,6 +1,6 @@
 package com.yarcat.chemistrylines.game;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.field.Field;
@@ -16,7 +16,7 @@ public class ImmediateFieldCleaner extends FieldCleaner.Base
     }
 
     @Override
-    public boolean process(ArrayList<CompoundReference> compounds) {
+    public boolean process(List<CompoundReference> compounds) {
         for (CompoundReference ref : compounds) {
             onCompoundRemove(ref);
         }

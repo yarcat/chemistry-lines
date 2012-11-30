@@ -1,6 +1,6 @@
 package com.yarcat.chemistrylines.game;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
@@ -10,7 +10,7 @@ public interface FieldCleaner {
 
     public abstract void setRemoveListener(CompoundListener removeListener);
 
-    public abstract boolean process(ArrayList<CompoundReference> compounds);
+    public abstract boolean process(List<CompoundReference> compounds);
 
     public abstract class Base implements FieldCleaner {
 

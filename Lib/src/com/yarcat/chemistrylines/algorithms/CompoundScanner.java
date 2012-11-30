@@ -1,6 +1,7 @@
 package com.yarcat.chemistrylines.algorithms;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundDetector;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
@@ -30,7 +31,7 @@ public class CompoundScanner {
     }
 
     /** Collect all field cell sequences containing chemical compounds. */
-    public ArrayList<CompoundReference> scan(Field field) {
+    public List<CompoundReference> scan(Field field) {
         final ArrayList<CompoundReference> rv = new ArrayList<CompoundReference>();
         mReporter.scan(field, mDetector, new CompoundListener() {
             @Override
