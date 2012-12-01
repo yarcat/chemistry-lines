@@ -1,0 +1,93 @@
+package com.yarcat.chemistrylines.swing;
+
+import java.awt.Container;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.JLabel;
+
+import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
+import com.yarcat.chemistrylines.game.DefferedFieldCleaner;
+
+public class DefferedCleanerUI implements MouseListener {
+
+    @SuppressWarnings("serial")
+    private static class Button extends JLabel {
+        public CompoundReference mRef;
+
+        public Button(CompoundReference ref) {
+            mRef = ref;
+        }
+    }
+
+    private DefferedFieldCleaner mCleaner;
+    private Container mPane;
+    private SwingChemistryLines mGameUI;
+
+    public DefferedCleanerUI(DefferedFieldCleaner cleaner, Container pane,
+            SwingChemistryLines gameUI) {
+        mCleaner = cleaner;
+        mPane = pane;
+        mGameUI = gameUI;
+    }
+
+    public void refresh() {
+        mPane.setEnabled(false);
+        mPane.removeAll();
+        mPane.validate();
+        for (CompoundReference ref : mCleaner.listCompounds()) {
+            Button b = new Button(ref);
+            b.addMouseListener(this);
+            b.setText(ref.getCompound().getName());
+            style.button(b);
+            mPane.add(b);
+        }
+        mPane.validate();
+        mPane.invalidate();
+        mPane.setEnabled(true);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Button b = (Button) e.getSource();
+        mCleaner.remove(b.mRef);
+        for (int n : b.mRef.getCells()) {
+            if (mCleaner.isCellEmpty(n)) {
+                style.defaultColor(mGameUI.getField()[n]);
+                mGameUI.getField()[n].setText(null);
+            }
+        }
+        style.invisibleButton(b);
+        b.setEnabled(false);
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        Button b = (Button) e.getSource();
+        if (b.isEnabled()) {
+            style.highlight(b);
+            for (int n : b.mRef.getCells()) {
+                style.highlight(mGameUI.getField()[n]);
+            }
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        Button b = (Button) e.getSource();
+        if (b.isEnabled()) {
+            style.defaultColor(b);
+            for (int n : b.mRef.getCells()) {
+                style.defaultColor(mGameUI.getField()[n]);
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+}

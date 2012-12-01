@@ -55,4 +55,7 @@ public interface GameLogic {
     public Element[] previewNextElements();
 
     public void setGameLogger(GameLogger gameLog);
+
+    public FieldCleaner getFieldCleaner();
+    public void setFieldCleaner(FieldCleaner createCleaner);
 }

@@ -12,8 +12,17 @@ public class SwingChemistryLinesMain {
             public void run() {
                 GameFactory factory =
                     GameFactory.byName(args.length == 0 ? "compound" : args[0]);
-                SwingChemistryLines.newInstance(factory, COLS, ROWS);
+                if (args.length > 1) {
+                    factory.setCleaner(args[1]);
+                }
+                newGame(factory, COLS, ROWS);
             }
         });
+    }
+
+    public static SwingChemistryLines newGame(GameFactory factory,
+            int cols, int rows) {
+        SwingUIFactory f = new SwingUIFactory(factory, cols, rows);
+        return f.newInstance();
     }
 }

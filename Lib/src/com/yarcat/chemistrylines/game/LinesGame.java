@@ -24,13 +24,7 @@ public abstract class LinesGame implements GameLogic {
         mElementGenerator = g;
         mNewPortionSize = 3;
         setGameLogger(null);
-        mFieldCleaner = new ImmediateFieldCleaner(mField);
-        mFieldCleaner.setRemoveListener(new CompoundListener() {
-            @Override
-            public void foundCompound(CompoundReference ref) {
-                mGameLog.compoundRemoved(mField, ref);
-            }
-        });
+        setFieldCleaner(new ImmediateFieldCleaner(mField));
     }
 
     @Override
@@ -89,4 +83,22 @@ public abstract class LinesGame implements GameLogic {
             mGameLog = gameLog;
         }
     }
+
+    @Override
+    public FieldCleaner getFieldCleaner() {
+        return mFieldCleaner;
+    }
+
+    private final CompoundListener mRemoveListener = new CompoundListener() {
+        @Override
+        public void foundCompound(CompoundReference ref) {
+            mGameLog.compoundRemoved(mField, ref);
+        }
+    };
+    @Override
+    public void setFieldCleaner(FieldCleaner cleaner) {
+        mFieldCleaner = cleaner;
+        mFieldCleaner.setRemoveListener(mRemoveListener);
+    }
+
 }

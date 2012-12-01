@@ -1,13 +1,14 @@
 package com.yarcat.chemistrylines.game;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import com.yarcat.chemistrylines.algorithms.CompoundReporter;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.field.Field;
 
-public class DefferedFieldCleaner extends FieldCleaner.Base implements FieldCleaner {
+public class DefferedFieldCleaner extends FieldCleaner.Base implements
+        FieldCleaner {
     private final ArrayList<CompoundReference> mContents;
     private int[] mMarks;
 
@@ -30,8 +31,8 @@ public class DefferedFieldCleaner extends FieldCleaner.Base implements FieldClea
         return false;
     }
 
-    public Iterator<CompoundReference> iterCompounds(){
-        return mContents.iterator();
+    public List<CompoundReference> listCompounds() {
+        return new ArrayList<CompoundReporter.CompoundReference>(mContents);
     }
 
     public void remove(CompoundReference ref) {
@@ -45,11 +46,11 @@ public class DefferedFieldCleaner extends FieldCleaner.Base implements FieldClea
     /** Remove a compound keeping overlaps in mind. */
     private void removeCompound(int[] cells) {
         int checkSum = 0;
-        for(int n: cells) {
+        for (int n : cells) {
             checkSum += mMarks[n] > 0 ? 1 : 0;
         }
         if (checkSum == cells.length) {
-            for(int n: cells) {
+            for (int n : cells) {
                 --mMarks[n];
                 if (mMarks[n] == 0) {
                     mField.at(n).setElement(null);
@@ -57,10 +58,16 @@ public class DefferedFieldCleaner extends FieldCleaner.Base implements FieldClea
             }
         }
     }
+
     private void reset() {
         mContents.clear();
-        for (int n=0; n < mMarks.length; ++n) {
+        for (int n = 0; n < mMarks.length; ++n) {
             mMarks[n] = 0;
         }
     }
+
+    public boolean isCellEmpty(int n) {
+        return mMarks[n] == 0;
+    }
+
 }
