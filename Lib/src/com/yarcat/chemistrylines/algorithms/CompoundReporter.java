@@ -1,6 +1,7 @@
 package com.yarcat.chemistrylines.algorithms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
@@ -16,6 +17,11 @@ public abstract class CompoundReporter {
         public CompoundReference(int[] cells, Element compound) {
             super();
             mCells = cells;
+            // Let mCells always be ascending sequence.
+            // This has side-effects for calling code.
+            if (mCells[mCells.length - 1] < mCells[0]) {
+                reverseInplace(mCells);
+            }
             mCompound = compound;
         }
 
@@ -29,6 +35,22 @@ public abstract class CompoundReporter {
 
         public Element getCompound() {
             return mCompound;
+        }
+
+        public static void reverseInplace(int[] a) {
+            int l = a.length / 2;
+            for (int i = 0; i < l; ++i) {
+                int x = a[a.length - 1 - i];
+                a[a.length - 1 - i] = a[i];
+                a[i] = x;
+            }
+        }
+
+        @Override
+        // To ease debug
+        public String toString() {
+            return String.format(
+                "(%s %s)", Arrays.toString(mCells), mCompound.getId());
         }
     }
 
