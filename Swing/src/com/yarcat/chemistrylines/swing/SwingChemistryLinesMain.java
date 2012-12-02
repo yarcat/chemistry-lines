@@ -3,25 +3,33 @@ package com.yarcat.chemistrylines.swing;
 import javax.swing.SwingUtilities;
 
 public class SwingChemistryLinesMain {
-    static final int COLS = 10;
-    static final int ROWS = 10;
+    protected static final int COLS = 10;
+    protected static final int ROWS = 10;
 
-    public static void main(final String[] args) {
+    public static void main(String[] args) {
+        run(getFactory(args));
+    }
+
+    static GameFactory getFactory(String[] args) {
+        GameFactory f =
+            GameFactory.byName(args.length == 0 ? "compound" : args[0]);
+        if (args.length > 1) {
+            f.setCleaner(args[1]);
+        }
+        return f;
+    }
+
+    protected static void run(final GameFactory f) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                GameFactory factory =
-                    GameFactory.byName(args.length == 0 ? "compound" : args[0]);
-                if (args.length > 1) {
-                    factory.setCleaner(args[1]);
-                }
-                newGame(factory, COLS, ROWS);
+                newGame(f, COLS, ROWS);
             }
         });
     }
 
-    public static SwingChemistryLines newGame(GameFactory factory,
-            int cols, int rows) {
+    protected static SwingChemistryLines newGame(GameFactory factory, int cols,
+            int rows) {
         SwingUIFactory f = new SwingUIFactory(factory, cols, rows);
         return f.newInstance();
     }

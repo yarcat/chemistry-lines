@@ -35,7 +35,7 @@ public abstract class GameFactory {
         }
     }
 
-    static class CompoundMode extends GameFactory {
+    public static class CompoundMode extends GameFactory {
         @Override
         protected GameLogic createInstance(Field field) {
             return new ChemistryLinesGame(field);
@@ -54,7 +54,7 @@ public abstract class GameFactory {
         }
     }
 
-    static class FormulaRandomMode extends FormulaGameFactory {
+    public static class FormulaRandomMode extends FormulaGameFactory {
         @Override
         protected GameLogic createInstance(Field field) {
             return FormulaLinesGame.randomTerminalGame(field);
@@ -66,7 +66,7 @@ public abstract class GameFactory {
         }
     }
 
-    static class FormulaShuffleMode extends FormulaGameFactory {
+    public static class FormulaShuffleMode extends FormulaGameFactory {
         @Override
         protected GameLogic createInstance(Field field) {
             return FormulaLinesGame.formulaShuffleGame(field);
@@ -78,7 +78,7 @@ public abstract class GameFactory {
         }
     }
 
-    static class FormulaDebugMode extends FormulaGameFactory {
+    public static class FormulaDebugMode extends FormulaGameFactory {
         @Override
         protected GameLogic createInstance(Field field) {
             return FormulaLinesGame.formulaDebugGame(field);
