@@ -3,6 +3,7 @@ package com.yarcat.chemistrylines.swing;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.game.ChemistryLinesGame;
 import com.yarcat.chemistrylines.game.DefferedFieldCleaner;
+import com.yarcat.chemistrylines.game.DefferedFormulaFieldCleaner;
 import com.yarcat.chemistrylines.game.FieldCleaner;
 import com.yarcat.chemistrylines.game.FormulaLinesGame;
 import com.yarcat.chemistrylines.game.GameLogic;
@@ -46,7 +47,14 @@ public abstract class GameFactory {
         }
     }
 
-    static class FormulaRandomMode extends GameFactory {
+    static abstract class FormulaGameFactory extends GameFactory {
+        @Override
+        protected FieldCleaner createDefferedCleaner(Field field) {
+            return new DefferedFormulaFieldCleaner(field);
+        }
+    }
+
+    static class FormulaRandomMode extends FormulaGameFactory {
         @Override
         protected GameLogic createInstance(Field field) {
             return FormulaLinesGame.randomTerminalGame(field);
@@ -58,7 +66,7 @@ public abstract class GameFactory {
         }
     }
 
-    static class FormulaShuffleMode extends GameFactory {
+    static class FormulaShuffleMode extends FormulaGameFactory {
         @Override
         protected GameLogic createInstance(Field field) {
             return FormulaLinesGame.formulaShuffleGame(field);
@@ -70,7 +78,7 @@ public abstract class GameFactory {
         }
     }
 
-    static class FormulaDebugMode extends GameFactory {
+    static class FormulaDebugMode extends FormulaGameFactory {
         @Override
         protected GameLogic createInstance(Field field) {
             return FormulaLinesGame.formulaDebugGame(field);
@@ -91,10 +99,14 @@ public abstract class GameFactory {
     protected FieldCleaner createCleaner(Field field) {
         switch (mCleaner) {
         case Deffered:
-            return new DefferedFieldCleaner(field);
+            return createDefferedCleaner(field);
         default:
             return new ImmediateFieldCleaner(field);
         }
+    }
+
+    protected FieldCleaner createDefferedCleaner(Field field) {
+        return new DefferedFieldCleaner(field);
     }
 
     public Cleaner getCleaner() {
