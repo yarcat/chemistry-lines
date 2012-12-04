@@ -1,0 +1,93 @@
+<project>
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="dist" depends="clean">
+        <!-- Random terminal generator -->
+        <antcall target="jar">
+            <param name="JarName" value="Random-Automatic-Plain"/>
+            <param name="MainClass" value="AutomaticRandom"/>
+            <param name="TerminalSet" value=""/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Random-Automatic-Plain-Pair"/>
+            <param name="MainClass" value="AutomaticRandom"/>
+            <param name="TerminalSet" value="--pair-brackets"/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Random-Manual-Plain"/>
+            <param name="MainClass" value="ManualRandom"/>
+            <param name="TerminalSet" value=""/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Random-Manual-Plain-Pair"/>
+            <param name="MainClass" value="ManualRandom"/>
+            <param name="TerminalSet" value="--pair-brackets"/>
+        </antcall>
+        <!-- Formula Suffle terminal generator -->
+        <antcall target="jar">
+            <param name="JarName" value="Shuffle-Automatic-Plain"/>
+            <param name="MainClass" value="AutomaticShuffle"/>
+            <param name="TerminalSet" value=""/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Shuffle-Automatic-Plain-Pair"/>
+            <param name="MainClass" value="AutomaticShuffle"/>
+            <param name="TerminalSet" value="--pair-brackets"/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Shuffle-Automatic-Compact"/>
+            <param name="MainClass" value="AutomaticShuffle"/>
+            <param name="TerminalSet" value="--compact"/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Shuffle-Automatic-Compact-Pair"/>
+            <param name="MainClass" value="AutomaticShuffle"/>
+            <param name="TerminalSet" value="--compact -pair-brackets"/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Shuffle-Manual-Plain"/>
+            <param name="MainClass" value="ManualShuffle"/>
+            <param name="TerminalSet" value=""/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Shuffle-Manual-Plain-Pair"/>
+            <param name="MainClass" value="ManualShuffle"/>
+            <param name="TerminalSet" value="--pair-brackets"/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Shuffle-Manual-Compact"/>
+            <param name="MainClass" value="ManualShuffle"/>
+            <param name="TerminalSet" value="--compact"/>
+        </antcall>
+        <antcall target="jar">
+            <param name="JarName" value="Shuffle-Manual-Compact-Pair"/>
+            <param name="MainClass" value="ManualShuffle"/>
+            <param name="TerminalSet" value="--compact -pair-brackets"/>
+        </antcall>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/${JarName}.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="com.yarcat.chemistrylines.swing.release.${MainClass}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="compile" depends="gen">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="Lib/src" destdir="build/classes"/>
+        <javac srcdir="Swing/src" destdir="build/classes"/>
+    </target>
+
+    <target name="gen">
+        <exec executable="sh" newenvironment="false" dir="Tools">
+          <arg value="-xc"/>
+          <arg value="./gen.sh --no-hydrates --unique-elements ${TerminalSet}"/>
+        </exec>
+    </target>
+
+</project>

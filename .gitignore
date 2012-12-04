@@ -6,3 +6,4 @@ Android/gen/
 Lib/gen/
 Lib/src/com/yarcat/chemistrylines/field/KnownFormulas.java
 Lib/tests/com/yarcat/tests/chemistrylines/KnownFormulasTest.java
+/build
