@@ -11,11 +11,11 @@ import com.yarcat.chemistrylines.field.Field;
 
 public abstract class LinesGame implements GameLogic {
 
-    private int mNewPortionSize;
-    private Field mField;
-    private CompoundScanner mScanner;
+    private final int mNewPortionSize;
+    private final Field mField;
+    private final CompoundScanner mScanner;
+    private final ElementGenerator mElementGenerator;
     private FieldCleaner mFieldCleaner;
-    private ElementGenerator mElementGenerator;
     private GameLogger mGameLog;
 
     public LinesGame(Field f, CompoundScanner s, ElementGenerator g) {
@@ -95,10 +95,10 @@ public abstract class LinesGame implements GameLogic {
             mGameLog.compoundRemoved(mField, ref);
         }
     };
+
     @Override
     public void setFieldCleaner(FieldCleaner cleaner) {
         mFieldCleaner = cleaner;
         mFieldCleaner.setRemoveListener(mRemoveListener);
     }
-
 }

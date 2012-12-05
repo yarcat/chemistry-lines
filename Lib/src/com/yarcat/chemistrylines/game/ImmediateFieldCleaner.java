@@ -5,14 +5,10 @@ import java.util.List;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.field.Field;
 
-// @formatter:off
-public class ImmediateFieldCleaner extends FieldCleaner.Base
-        implements FieldCleaner {
-// @formatter:on
-    private Field mField;
+public class ImmediateFieldCleaner extends FieldCleaner.Base {
 
     public ImmediateFieldCleaner (Field field) {
-        mField = field;
+        super(field);
     }
 
     @Override

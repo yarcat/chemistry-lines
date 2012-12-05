@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -89,8 +90,7 @@ public class FormulaRegistryTest {
         }
 
         boolean removeCompounds(String... compounds) {
-            final ArrayList<Element> removed = new ArrayList<Element>();
-            removeCompounds();
+            final List<Element> removed = removeCompounds();
             for (String c : compounds) {
                 Element target = mRegistry.get(c);
                 if (!removed.contains(target)) {
@@ -101,10 +101,13 @@ public class FormulaRegistryTest {
             return removed.isEmpty();
         }
 
-        private void removeCompounds() {
+        private List<Element> removeCompounds() {
+            final ArrayList<Element> removed = new ArrayList<Element>();
             for (CompoundReference ref : mScanner.scan(mField)) {
+                removed.add(ref.getCompound());
                 mField.removeCompound(ref.getCells());
             }
+            return removed;
         }
 
         boolean allRemoved() {

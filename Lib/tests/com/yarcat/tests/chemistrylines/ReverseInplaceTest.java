@@ -1,8 +1,7 @@
 package com.yarcat.tests.chemistrylines;
 
+import static com.yarcat.chemistrylines.algorithms.ArrayUtils.reverseInplace;
 import static org.junit.Assert.assertArrayEquals;
-
-import static com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference.reverseInplace;
 
 import org.junit.Test;
 

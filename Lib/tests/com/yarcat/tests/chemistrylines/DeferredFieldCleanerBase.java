@@ -11,9 +11,9 @@ import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.field.RectField;
-import com.yarcat.chemistrylines.game.DefferedFieldCleaner;
+import com.yarcat.chemistrylines.game.DeferredFieldCleaner;
 
-public abstract class DefferedFieldCleanerBase {
+public abstract class DeferredFieldCleanerBase {
 
     Element F = new Element("F", "Fake Element");
 
@@ -21,7 +21,7 @@ public abstract class DefferedFieldCleanerBase {
     public void noOverlap() {
         Field field = markFilled(new RectField(3, 1), 0, 2);
         CompoundReference[] refs = pack(new int[] { 0 }, new int[] { 2 });
-        DefferedFieldCleaner cleaner = prepareClean(field, refs);
+        DeferredFieldCleaner cleaner = prepareClean(field, refs);
 
         assertArrayEquals(new int[] { 1, 0, 1 }, mapFilled(field));
         cleaner.remove(refs[0]);
@@ -34,7 +34,7 @@ public abstract class DefferedFieldCleanerBase {
     public void lineOverlap() {
         Field field = markFilled(new RectField(3, 1), 0, 1, 2);
         CompoundReference[] refs = pack(new int[] { 0, 1 }, new int[] { 1, 2 });
-        DefferedFieldCleaner cleaner = prepareClean(field, refs);
+        DeferredFieldCleaner cleaner = prepareClean(field, refs);
 
         assertArrayEquals(new int[] { 1, 1, 1 }, mapFilled(field));
         cleaner.remove(refs[0]);
@@ -47,7 +47,7 @@ public abstract class DefferedFieldCleanerBase {
     public void removeTwice() {
         Field field = markFilled(new RectField(3, 1), 0, 1, 2);
         CompoundReference[] refs = pack(new int[] { 0, 1 }, new int[] { 1, 2 });
-        DefferedFieldCleaner cleaner = prepareClean(field, refs);
+        DeferredFieldCleaner cleaner = prepareClean(field, refs);
 
         assertArrayEquals(new int[] { 1, 1, 1 }, mapFilled(field));
         cleaner.remove(refs[0]);
@@ -61,7 +61,7 @@ public abstract class DefferedFieldCleanerBase {
         Field field = markFilled(new RectField(3, 1), 0, 1, 2);
         CompoundReference[] refs =
             pack(new int[] { 0, 1 }, new int[] { 1, 2 }, new int[] { 0, 1, 2 });
-        DefferedFieldCleaner cleaner = prepareClean(field, refs);
+        DeferredFieldCleaner cleaner = prepareClean(field, refs);
 
         assertArrayEquals(new int[] { 1, 1, 1 }, mapFilled(field));
         cleaner.remove(refs[0]);
@@ -79,7 +79,7 @@ public abstract class DefferedFieldCleanerBase {
             pack(
                 new int[] { 1, 4 }, new int[] { 3, 4 }, new int[] { 5, 4 },
                 new int[] { 7, 4 });
-        DefferedFieldCleaner cleaner = prepareClean(field, refs);
+        DeferredFieldCleaner cleaner = prepareClean(field, refs);
 
         // @formatter:off
         assertArrayEquals(new int[] {
@@ -138,14 +138,14 @@ public abstract class DefferedFieldCleanerBase {
         return true;
     }
 
-    private DefferedFieldCleaner prepareClean(Field field,
+    private DeferredFieldCleaner prepareClean(Field field,
             CompoundReference[] compounds) {
-        DefferedFieldCleaner cleaner = createFieldCleaner(field);
+        DeferredFieldCleaner cleaner = createFieldCleaner(field);
         cleaner.process(Arrays.asList(compounds));
         return cleaner;
     }
 
-    protected abstract DefferedFieldCleaner createFieldCleaner(Field field);
+    protected abstract DeferredFieldCleaner createFieldCleaner(Field field);
 
     private CompoundReference[] pack(int[]... compounds) {
         CompoundReference[] refs = new CompoundReference[compounds.length];

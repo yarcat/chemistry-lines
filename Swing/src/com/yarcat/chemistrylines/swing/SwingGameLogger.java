@@ -15,12 +15,6 @@ public class SwingGameLogger implements GameLogger {
         mTextArea = textArea;
     }
 
-    // @Override
-    // public void elementAdded(Field field, int cell) {
-    // // TODO(luch) #25 add field.cellName(cell)
-    // //appendLine(" + " + field.at(cell).getElement().getName());
-    // }
-
     @Override
     public void elementsAdded(Field field, int[] cells) {
         String s = "    +";
@@ -34,12 +28,12 @@ public class SwingGameLogger implements GameLogger {
     @Override
     public void compoundRemoved(Field field, CompoundReference ref) {
         String s = " - ";
-        if (ref.getCompound() != null) {
-            s += ref.getCompound().getName();
-        } else {
+        if (ref.getCompound() == null) {
             for (int i : ref.getCells()) {
                 s += field.at(i).getElement().getName();
             }
+        } else {
+            s += ref.getCompound().getName();
         }
         appendLine(s);
     }

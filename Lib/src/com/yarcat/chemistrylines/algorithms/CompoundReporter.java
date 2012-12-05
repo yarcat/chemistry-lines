@@ -11,16 +11,16 @@ import com.yarcat.chemistrylines.field.Field.SequenceVisitor;
 public abstract class CompoundReporter {
 
     public static class CompoundReference {
-        private int[] mCells;
-        private Element mCompound;
+        private final int[] mCells;
+        private final Element mCompound;
 
         public CompoundReference(int[] cells, Element compound) {
             super();
             mCells = cells;
             // Let mCells always be ascending sequence.
-            // This has side-effects for calling code.
+            // This has side-effects on calling code.
             if (mCells[mCells.length - 1] < mCells[0]) {
-                reverseInplace(mCells);
+                ArrayUtils.reverseInplace(mCells);
             }
             mCompound = compound;
         }
@@ -35,15 +35,6 @@ public abstract class CompoundReporter {
 
         public Element getCompound() {
             return mCompound;
-        }
-
-        public static void reverseInplace(int[] a) {
-            int l = a.length / 2;
-            for (int i = 0; i < l; ++i) {
-                int x = a[a.length - 1 - i];
-                a[a.length - 1 - i] = a[i];
-                a[i] = x;
-            }
         }
 
         @Override

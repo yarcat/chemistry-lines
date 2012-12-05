@@ -15,7 +15,11 @@ public interface FieldCleaner {
     public abstract class Base implements FieldCleaner {
 
         private CompoundListener mRemoveListener;
-        protected Field mField;
+        protected final Field mField;
+
+        protected Base(Field field) {
+            mField = field;
+        }
 
         @Override
         public void setRemoveListener(CompoundListener removeListener) {

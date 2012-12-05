@@ -8,9 +8,9 @@ import com.yarcat.chemistrylines.algorithms.ReduceSubSets.AscIntArraySubSetCheck
 import com.yarcat.chemistrylines.algorithms.ReduceSubSets.SubSetCheck;
 import com.yarcat.chemistrylines.field.Field;
 
-public class DefferedFormulaFieldCleaner extends DefferedFieldCleaner {
+public class DeferredFormulaFieldCleaner extends DeferredFieldCleaner {
 
-    public DefferedFormulaFieldCleaner(Field field) {
+    public DeferredFormulaFieldCleaner(Field field) {
         super(field);
     }
 

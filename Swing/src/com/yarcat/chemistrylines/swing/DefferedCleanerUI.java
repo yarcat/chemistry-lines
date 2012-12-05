@@ -7,7 +7,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JLabel;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
-import com.yarcat.chemistrylines.game.DefferedFieldCleaner;
+import com.yarcat.chemistrylines.game.DeferredFieldCleaner;
 
 public class DefferedCleanerUI implements MouseListener {
 
@@ -20,11 +20,11 @@ public class DefferedCleanerUI implements MouseListener {
         }
     }
 
-    private DefferedFieldCleaner mCleaner;
+    private DeferredFieldCleaner mCleaner;
     private Container mPane;
     private SwingChemistryLines mGameUI;
 
-    public DefferedCleanerUI(DefferedFieldCleaner cleaner, Container pane,
+    public DefferedCleanerUI(DeferredFieldCleaner cleaner, Container pane,
             SwingChemistryLines gameUI) {
         mCleaner = cleaner;
         mPane = pane;
@@ -52,7 +52,7 @@ public class DefferedCleanerUI implements MouseListener {
         Button b = (Button) e.getSource();
         mCleaner.remove(b.mRef);
         for (int n : b.mRef.getCells()) {
-            if (mCleaner.isCellEmpty(n)) {
+            if (mCleaner.isEmpty(n)) {
                 style.defaultColor(mGameUI.getField()[n]);
                 mGameUI.getField()[n].setText(null);
             }

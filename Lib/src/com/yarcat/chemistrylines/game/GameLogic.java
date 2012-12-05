@@ -57,5 +57,5 @@ public interface GameLogic {
     public void setGameLogger(GameLogger gameLog);
 
     public FieldCleaner getFieldCleaner();
-    public void setFieldCleaner(FieldCleaner createCleaner);
+    public void setFieldCleaner(FieldCleaner cleaner);
 }

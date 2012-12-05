@@ -2,8 +2,8 @@ package com.yarcat.chemistrylines.swing;
 
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.game.ChemistryLinesGame;
-import com.yarcat.chemistrylines.game.DefferedFieldCleaner;
-import com.yarcat.chemistrylines.game.DefferedFormulaFieldCleaner;
+import com.yarcat.chemistrylines.game.DeferredFieldCleaner;
+import com.yarcat.chemistrylines.game.DeferredFormulaFieldCleaner;
 import com.yarcat.chemistrylines.game.FieldCleaner;
 import com.yarcat.chemistrylines.game.FormulaLinesGame;
 import com.yarcat.chemistrylines.game.GameLogic;
@@ -50,7 +50,7 @@ public abstract class GameFactory {
     static abstract class FormulaGameFactory extends GameFactory {
         @Override
         protected FieldCleaner createDefferedCleaner(Field field) {
-            return new DefferedFormulaFieldCleaner(field);
+            return new DeferredFormulaFieldCleaner(field);
         }
     }
 
@@ -106,7 +106,7 @@ public abstract class GameFactory {
     }
 
     protected FieldCleaner createDefferedCleaner(Field field) {
-        return new DefferedFieldCleaner(field);
+        return new DeferredFieldCleaner(field);
     }
 
     public Cleaner getCleaner() {

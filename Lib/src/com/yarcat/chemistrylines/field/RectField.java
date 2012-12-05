@@ -1,7 +1,7 @@
 package com.yarcat.chemistrylines.field;
 
 /** Rectangular game field. */
-public class RectField extends Field.BaseField implements Field {
+public class RectField extends Field.BaseField {
 
     private final Cell[] mCells;
     private final int mCols;
