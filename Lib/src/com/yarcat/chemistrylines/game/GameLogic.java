@@ -1,6 +1,7 @@
 package com.yarcat.chemistrylines.game;
 
 import com.yarcat.chemistrylines.field.Element;
+import com.yarcat.chemistrylines.field.Field;
 
 /**
  * Game rules.
@@ -58,4 +59,6 @@ public interface GameLogic {
 
     public FieldCleaner getFieldCleaner();
     public void setFieldCleaner(FieldCleaner cleaner);
+
+    public Field getField();
 }

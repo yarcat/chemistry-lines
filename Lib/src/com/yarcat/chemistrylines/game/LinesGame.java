@@ -101,4 +101,9 @@ public abstract class LinesGame implements GameLogic {
         mFieldCleaner = cleaner;
         mFieldCleaner.setRemoveListener(mRemoveListener);
     }
+
+    @Override
+    public Field getField() {
+        return mField;
+    }
 }

@@ -19,7 +19,7 @@ import com.yarcat.chemistrylines.field.RectField;
 import com.yarcat.chemistrylines.game.DeferredFieldCleaner;
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.swing.GameFactory.Cleaner;
-import com.yarcat.chemistrylines.swing.SwingChemistryLines.Button;
+import com.yarcat.chemistrylines.swing.SwingField.Button;
 
 /** Game UI Factory */
 class SwingUIFactory {
@@ -39,20 +39,21 @@ class SwingUIFactory {
 
     class Builder {
         GameLogic mGame;
-        Field mField;
+        SwingField mFieldUI;
         Button[] mButtons;
         JLabel[] mPreview;
         SwingChemistryLines mGameUI;
 
         public SwingChemistryLines newInstance() {
-            mField = new RectField(mCols, mRows);
-            mButtons = new Button[mField.getLength()];
+            Field field = new RectField(mCols, mRows);
+            mButtons = new Button[field.getLength()];
             // TODO(luch): global constant for 3.
             mPreview = new JLabel[3];
 
-            mGame = mGameFactory.newInstance(mField);
+            mGame = mGameFactory.newInstance(field);
+            mFieldUI = new SwingField(mGame, mButtons);
             mGameUI =
-                new SwingChemistryLines(mField, mGame, mButtons, mPreview);
+                new SwingChemistryLines(mGame, mFieldUI, mPreview);
 
             JFrame f =
                 new JFrame("Chemistry Lines - " + mGameFactory.getModeName());
@@ -140,7 +141,7 @@ class SwingUIFactory {
                 (DeferredFieldCleaner) mGame.getFieldCleaner();
             // @formatter:on
             mGameUI
-                .setCleanerUI(new DefferedCleanerUI(fieldCleaner, p, mGameUI));
+                .setCleanerUI(new DefferedCleanerUI(fieldCleaner, p, mFieldUI));
             return scrollPane(p);
         }
 

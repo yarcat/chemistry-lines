@@ -22,13 +22,13 @@ public class DefferedCleanerUI implements MouseListener {
 
     private DeferredFieldCleaner mCleaner;
     private Container mPane;
-    private SwingChemistryLines mGameUI;
+    private SwingField mFieldUI;
 
     public DefferedCleanerUI(DeferredFieldCleaner cleaner, Container pane,
-            SwingChemistryLines gameUI) {
+            SwingField fieldUI) {
         mCleaner = cleaner;
         mPane = pane;
-        mGameUI = gameUI;
+        mFieldUI = fieldUI;
     }
 
     public void refresh() {
@@ -53,8 +53,8 @@ public class DefferedCleanerUI implements MouseListener {
         mCleaner.remove(b.mRef);
         for (int n : b.mRef.getCells()) {
             if (mCleaner.isEmpty(n)) {
-                style.defaultColor(mGameUI.getField()[n]);
-                mGameUI.getField()[n].setText(null);
+                style.defaultColor(mFieldUI.getButton(n));
+                mFieldUI.getButton(n).setText(null);
             }
         }
         style.invisibleButton(b);
@@ -67,7 +67,7 @@ public class DefferedCleanerUI implements MouseListener {
         if (b.isEnabled()) {
             style.highlight(b);
             for (int n : b.mRef.getCells()) {
-                style.highlight(mGameUI.getField()[n]);
+                style.highlight(mFieldUI.getButton(n));
             }
         }
     }
@@ -78,7 +78,7 @@ public class DefferedCleanerUI implements MouseListener {
         if (b.isEnabled()) {
             style.defaultColor(b);
             for (int n : b.mRef.getCells()) {
-                style.defaultColor(mGameUI.getField()[n]);
+                style.defaultColor(mFieldUI.getButton(n));
             }
         }
     }
