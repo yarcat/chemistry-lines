@@ -7,6 +7,9 @@ Arguments:
 <% import registry_helper as R %>\
 package com.yarcat.chemistrylines.field;
 
+import com.yarcat.chemistrylines.field.Element.Category;
+import com.yarcat.chemistrylines.field.Element.StateOfMatter;
+
 /** Static definition of all known formulas. */
 public final class ${name} {
 
@@ -56,12 +59,17 @@ public final class ${name} {
         terms = new WeightedArrayOfStrings(${len(final_formula_stats)});
 
 % for term in R.collect_terms(formulas):
+        E("${term}")\
     % if term.starts_formula:
-        E("${term}")
-            .startsCompound(true);
-    % else:
-        E("${term}");
+
+            .startsCompound(true)\
     % endif
+    % if term.atom:
+
+            .category(Category.${term.category})
+            .stateOfMatter(StateOfMatter.${term.state_of_matter})\
+    % endif
+;
 % endfor
 
         // Terminals that could form a final formula.

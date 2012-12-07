@@ -4,7 +4,7 @@
 import collections
 import re
 
-# import chemical_elements
+import chemical_elements
 
 
 class Lexems(object):
@@ -143,6 +143,14 @@ class Terminal(object):
     @property
     def starts_formula(self):
         return self.atom or self.text == "("
+
+    @property
+    def category(self):
+        return chemical_elements.category(self.atom)
+
+    @property
+    def state_of_matter(self):
+        return chemical_elements.state_of_matter(self.atom)
 
     def __str__(self):
         return self.text

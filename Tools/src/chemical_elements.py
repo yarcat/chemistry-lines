@@ -16,3 +16,33 @@ GROUP_STARTS = (0, 2, 10, 19, 37, 55, 87)
 
 GROUPS = tuple(ATOMS[start:end] for start, end in
                zip(GROUP_STARTS, GROUP_STARTS[1:] + (None,)))
+
+def pack2dict(*pairs):
+    return dict((it, group) for group, elements in pairs for it in elements)
+
+CATEGORY = pack2dict(
+    ("AlkaliMetal", ["Li", "Na", "K", "Rb", "Cs", "Fr"]),
+    ("AlkalineMetal", ["Be", "Mg", "Ca", "Sr", "Ba", "Ra"]),
+    ("Lanthanoid", ATOMS[56:71]),
+    ("Actinoid", ATOMS[88:103]),
+    ("TransitionMetal", ATOMS[20:30] + ATOMS[38:48] + ATOMS[71:80]),
+    ("PostTransitionMetal", ["Al", "Ga", "In", "Sn", "Tl", "Pb", "Bi"]),
+    ("Metalloid", ["B", "Si", "Ge", "As", "Sb", "Te"]),
+    ("OtherNonMetal", ["H", "C", "N", "O", "P", "S", "Se"]),
+    ("Halogen", ["F", "Cl", "Br", "I", "At"]),
+    ("NobleGas", ["He", "Ne", "Ar", "Kr", "Xe", "Rn"]),
+)
+
+def category(atom):
+    return CATEGORY.get(atom, "Undefined")
+
+GASES = ("H", "He", "N", "O", "F", "Ne", "Cl", "Ar", "Kr", "Rn")
+LIQUIDS = ("Br", "Hg")
+STATE_OF_MATTER = pack2dict(
+    ("Gas", GASES),
+    ("Liquid", LIQUIDS),
+    ("Solid", set(ATOMS[:104]) - set(GASES) - set(LIQUIDS)),
+)
+
+def state_of_matter(atom):
+    return STATE_OF_MATTER.get(atom, "Undefined")
