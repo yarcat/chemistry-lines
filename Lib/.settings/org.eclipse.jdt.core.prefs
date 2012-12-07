@@ -9,6 +9,3 @@ org.eclipse.jdt.core.codeComplete.staticFieldPrefixes=
 org.eclipse.jdt.core.codeComplete.staticFieldSuffixes=
 org.eclipse.jdt.core.codeComplete.staticFinalFieldPrefixes=
 org.eclipse.jdt.core.codeComplete.staticFinalFieldSuffixes=
-org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.5
-org.eclipse.jdt.core.compiler.compliance=1.5
-org.eclipse.jdt.core.compiler.source=1.5
