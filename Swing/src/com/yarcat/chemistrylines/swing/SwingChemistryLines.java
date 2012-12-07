@@ -11,14 +11,14 @@ import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
-public class SwingChemistryLines implements MouseListener {
+class SwingChemistryLines implements MouseListener {
 
     private final SelectionInView mSelection = new SelectionInView();
 
     private final Field mField;
     private final GameLogic mGame;
     private final Button[] mButtons;
-    private final Button[] mPreview;
+    private final JLabel[] mPreview;
     private DefferedCleanerUI mCleanerUI;
 
     @SuppressWarnings("serial")
@@ -31,7 +31,7 @@ public class SwingChemistryLines implements MouseListener {
     }
 
     public SwingChemistryLines(Field field, GameLogic game, Button[] buttons,
-            Button[] preview) {
+            JLabel[] preview) {
         mField = field;
         mGame = game;
         mButtons = buttons;

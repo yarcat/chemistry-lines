@@ -9,6 +9,7 @@ import java.awt.Panel;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -40,14 +41,14 @@ class SwingUIFactory {
         GameLogic mGame;
         Field mField;
         Button[] mButtons;
-        Button[] mPreview;
+        JLabel[] mPreview;
         SwingChemistryLines mGameUI;
 
         public SwingChemistryLines newInstance() {
             mField = new RectField(mCols, mRows);
             mButtons = new Button[mField.getLength()];
             // TODO(luch): global constant for 3.
-            mPreview = new Button[3];
+            mPreview = new JLabel[3];
 
             mGame = mGameFactory.newInstance(mField);
             mGameUI =
@@ -89,7 +90,9 @@ class SwingUIFactory {
             Panel buttonPanel = new Panel(new GridLayout(mCols, mRows));
             style.defaultColor(buttonPanel);
             for (int i = 0; i < mCols * mRows; ++i) {
-                Button b = createButton(i);
+                Button b = new Button(i);
+                b.setPreferredSize(new Dimension(60, 60));
+                style.button(b);
                 b.addMouseListener(mGameUI);
                 buttons[i] = b;
                 buttonPanel.add(b);
@@ -97,22 +100,17 @@ class SwingUIFactory {
             return buttonPanel;
         }
 
-        protected Container createPreviewPane(Button[] preview) {
+        protected Container createPreviewPane(JLabel[] preview) {
             Panel previewPanel = new Panel();
             style.defaultColor(previewPanel);
             for (int i = 0; i < preview.length; ++i) {
-                Button b = createButton(i);
-                preview[i] = b;
-                previewPanel.add(b);
+                JLabel l = new JLabel();
+                l.setPreferredSize(new Dimension(60, 60));
+                style.button(l);
+                preview[i] = l;
+                previewPanel.add(l);
             }
             return previewPanel;
-        }
-
-        protected Button createButton(int n) {
-            Button b = new Button(n);
-            b.setPreferredSize(new Dimension(60, 60));
-            style.button(b);
-            return b;
         }
 
         protected Container createRightPane() {
