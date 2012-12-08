@@ -17,8 +17,6 @@ public class style {
     // @formatter:off
     private final static Border BORDER =
         BorderFactory.createLineBorder(Color.DARK_GRAY);
-    private final static Border INVISIBLE_BORDER =
-            BorderFactory.createLineBorder(DEFAULT_BG);
     // @formatter:on
 
     public static void defaultColor(Component c) {
@@ -31,20 +29,10 @@ public class style {
         c.setForeground(HIGHLIGHT_FG);
     }
 
-    public static void invisible(Component c) {
-        c.setBackground(DEFAULT_BG);
-        c.setForeground(DEFAULT_BG);
-    }
-
     public static void button(JLabel b) {
         defaultColor(b);
         b.setBorder(BORDER);
         b.setHorizontalAlignment(SwingConstants.CENTER);
         b.setOpaque(true);
-    }
-
-    public static void invisibleButton(JLabel b) {
-        invisible(b);
-        b.setBorder(INVISIBLE_BORDER);
     }
 }

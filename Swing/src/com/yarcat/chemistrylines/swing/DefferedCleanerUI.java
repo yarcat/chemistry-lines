@@ -1,6 +1,7 @@
 package com.yarcat.chemistrylines.swing;
 
 import java.awt.Container;
+import java.awt.Panel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -10,6 +11,8 @@ import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.game.DeferredFieldCleaner;
 
 public class DefferedCleanerUI implements MouseListener {
+
+    private static final Panel DUMB_PANEL = new Panel();
 
     @SuppressWarnings("serial")
     private static class Button extends JLabel {
@@ -42,6 +45,7 @@ public class DefferedCleanerUI implements MouseListener {
             style.button(b);
             mPane.add(b);
         }
+        mPane.add(DUMB_PANEL);
         mPane.validate();
         mPane.invalidate();
         mPane.setEnabled(true);
@@ -52,8 +56,7 @@ public class DefferedCleanerUI implements MouseListener {
         Button b = (Button) e.getSource();
         remove(b.mRef);
         mFieldUI.refresh();
-        style.invisibleButton(b);
-        b.setEnabled(false);
+        mPane.remove(b);
     }
 
     private void remove(CompoundReference ref) {
@@ -68,21 +71,16 @@ public class DefferedCleanerUI implements MouseListener {
     @Override
     public void mouseEntered(MouseEvent e) {
         Button b = (Button) e.getSource();
-        if (b.isEnabled()) {
-            mFieldUI.refresh();
-            style.highlight(b);
-            for (int n : b.mRef.getCells()) {
-                style.highlight(mFieldUI.getButton(n));
-            }
+        mFieldUI.refresh();
+        style.highlight(b);
+        for (int n : b.mRef.getCells()) {
+            style.highlight(mFieldUI.getButton(n));
         }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        Button b = (Button) e.getSource();
-        if (b.isEnabled()) {
-            style.defaultColor(b);
-        }
+        style.defaultColor((Button) e.getSource());
         mFieldUI.refresh();
     }
 
