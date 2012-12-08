@@ -9,6 +9,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 public class style {
+    public final static Color DEFAULT_BG = Color.BLACK;
+    public final static Color DEFAULT_FG = Color.WHITE;
     private final static Color HIGHLIGHT_BG = new Color(0, 0, 71);
     private final static Color HIGHLIGHT_FG = Color.YELLOW;
 
@@ -16,22 +18,12 @@ public class style {
     private final static Border BORDER =
         BorderFactory.createLineBorder(Color.DARK_GRAY);
     private final static Border INVISIBLE_BORDER =
-            BorderFactory.createLineBorder(Color.BLACK);
+            BorderFactory.createLineBorder(DEFAULT_BG);
     // @formatter:on
 
     public static void defaultColor(Component c) {
-        c.setBackground(Color.BLACK);
-        c.setForeground(Color.WHITE);
-    }
-
-    public static void selected(Component c) {
-        defaultColor(c);
-        c.setBackground(Color.DARK_GRAY);
-    }
-
-    public static void underCursor(Component c) {
-        defaultColor(c);
-        c.setBackground(Color.GRAY);
+        c.setBackground(DEFAULT_BG);
+        c.setForeground(DEFAULT_FG);
     }
 
     public static void highlight(Component c) {
@@ -40,8 +32,8 @@ public class style {
     }
 
     public static void invisible(Component c) {
-        c.setBackground(Color.BLACK);
-        c.setForeground(Color.BLACK);
+        c.setBackground(DEFAULT_BG);
+        c.setForeground(DEFAULT_BG);
     }
 
     public static void button(JLabel b) {

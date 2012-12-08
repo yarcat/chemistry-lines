@@ -50,21 +50,26 @@ public class DefferedCleanerUI implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         Button b = (Button) e.getSource();
-        mCleaner.remove(b.mRef);
-        for (int n : b.mRef.getCells()) {
-            if (mCleaner.isEmpty(n)) {
-                style.defaultColor(mFieldUI.getButton(n));
-                mFieldUI.getButton(n).setText(null);
-            }
-        }
+        remove(b.mRef);
+        mFieldUI.refresh();
         style.invisibleButton(b);
         b.setEnabled(false);
+    }
+
+    private void remove(CompoundReference ref) {
+        mCleaner.remove(ref);
+        for (int n : ref.getCells()) {
+            if (mCleaner.isEmpty(n)) {
+                mFieldUI.clear(n);
+            }
+        }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
         Button b = (Button) e.getSource();
         if (b.isEnabled()) {
+            mFieldUI.refresh();
             style.highlight(b);
             for (int n : b.mRef.getCells()) {
                 style.highlight(mFieldUI.getButton(n));
@@ -77,10 +82,8 @@ public class DefferedCleanerUI implements MouseListener {
         Button b = (Button) e.getSource();
         if (b.isEnabled()) {
             style.defaultColor(b);
-            for (int n : b.mRef.getCells()) {
-                style.defaultColor(mFieldUI.getButton(n));
-            }
         }
+        mFieldUI.refresh();
     }
 
     @Override
