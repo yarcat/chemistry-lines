@@ -1,5 +1,7 @@
 package com.yarcat.chemistrylines.swing;
 
+import static com.yarcat.chemistrylines.constants.PORTION_SIZE;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -47,8 +49,7 @@ class SwingUIFactory {
         public SwingChemistryLines newInstance() {
             Field field = new RectField(mCols, mRows);
             mButtons = new Button[field.getLength()];
-            // TODO(luch): global constant for 3.
-            mPreview = new JLabel[3];
+            mPreview = new JLabel[PORTION_SIZE];
 
             mGame = mGameFactory.newInstance(field);
             mFieldUI = new SwingField(mGame, mButtons);

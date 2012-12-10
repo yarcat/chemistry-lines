@@ -1,6 +1,7 @@
 package com.yarcat.chemistrylines.game;
 
 import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
+import static com.yarcat.chemistrylines.constants.PORTION_SIZE;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
@@ -22,7 +23,7 @@ public abstract class LinesGame implements GameLogic {
         mField = f;
         mScanner = s;
         mElementGenerator = g;
-        mNewPortionSize = 3;
+        mNewPortionSize = PORTION_SIZE;
         setGameLogger(null);
         setFieldCleaner(new ImmediateFieldCleaner(mField));
     }
