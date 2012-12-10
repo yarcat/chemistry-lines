@@ -3,32 +3,30 @@ package com.yarcat.chemistrylines.swing;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JLabel;
-
-import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.game.GameLogic;
+import com.yarcat.chemistrylines.game.GameLogic.GameListener;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
 import com.yarcat.chemistrylines.swing.SwingField.Button;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
-class SwingChemistryLines implements MouseListener {
+class SwingChemistryLines implements MouseListener, GameListener {
 
     private final SwingField mFieldUI;
     private final GameLogic mGame;
-    private final JLabel[] mPreview;
+    private SwingPreview mPreviewUI;
     private DefferedCleanerUI mCleanerUI;
 
     public SwingChemistryLines(GameLogic game, SwingField fieldUI,
-            JLabel[] preview) {
+            SwingPreview previewUI) {
         mFieldUI = fieldUI;
         mGame = game;
-        mPreview = preview;
+        mPreviewUI = previewUI;
         mCleanerUI = null;
     }
 
     void refresh() {
         refreshField();
-        refreshPreview();
+        mPreviewUI.refresh();
         if (mCleanerUI != null) {
             mCleanerUI.refresh();
         }
@@ -36,13 +34,6 @@ class SwingChemistryLines implements MouseListener {
 
     private void refreshField() {
         mFieldUI.refresh();
-    }
-
-    private void refreshPreview() {
-        Element[] nextElements = mGame.previewNextElements();
-        for (int i = 0; i < mPreview.length; ++i) {
-            mPreview[i].setText(nextElements[i].getId());
-        }
     }
 
     @Override
@@ -108,5 +99,14 @@ class SwingChemistryLines implements MouseListener {
 
     private SelectionInView selection() {
         return mFieldUI.selection();
+    }
+
+    @Override
+    public void onFinished() {
+    }
+
+    @Override
+    public void onFieldChange(GameLogic game) {
+        refreshField();
     }
 }

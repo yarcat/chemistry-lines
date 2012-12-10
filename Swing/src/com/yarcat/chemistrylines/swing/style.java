@@ -21,17 +21,17 @@ public class style {
         BorderFactory.createLineBorder(new Color(0x55, 0x44, 0x33));
     // @formatter:on
 
-    public static void defaultColor(Component c) {
+    static void defaultColor(Component c) {
         c.setBackground(DEFAULT_BG);
         c.setForeground(DEFAULT_FG);
     }
 
-    public static void highlight(Component c) {
+    static void highlight(Component c) {
         c.setBackground(HIGHLIGHT_BG);
         c.setForeground(HIGHLIGHT_FG);
     }
 
-    public static void button(JLabel b) {
+    static void button(JLabel b) {
         defaultColor(b);
         b.setBorder(BORDER);
         b.setHorizontalAlignment(SwingConstants.CENTER);

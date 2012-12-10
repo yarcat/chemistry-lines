@@ -18,12 +18,15 @@ public interface GameLogic {
     }
 
     /** Interface for callback invocation on a game actions. */
-    public interface Listener {
+    public interface GameListener {
         /**
          * Called when game is finished. TODO(yarcat): provide information about
          * type of the end.
          */
         public void onFinished();
+
+        /** Called on change on the game field */
+        public void onFieldChange(GameLogic game);
     }
 
     /**
@@ -61,4 +64,6 @@ public interface GameLogic {
     public void setFieldCleaner(FieldCleaner cleaner);
 
     public Field getField();
+
+    public void setChangeListener(GameListener listener);
 }

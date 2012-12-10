@@ -40,9 +40,12 @@ class SwingUIFactory {
     }
 
     class Builder {
+        final Dimension BUTTON_SIZE = new Dimension(60, 60);
+
         GameLogic mGame;
         SwingField mFieldUI;
         Button[] mButtons;
+        SwingPreview mPreviewUI;
         JLabel[] mPreview;
         SwingChemistryLines mGameUI;
 
@@ -53,8 +56,10 @@ class SwingUIFactory {
 
             mGame = mGameFactory.newInstance(field);
             mFieldUI = new SwingField(mGame, mButtons);
+            mPreviewUI = new SwingPreview(mGame, mPreview);
             mGameUI =
-                new SwingChemistryLines(mGame, mFieldUI, mPreview);
+                new SwingChemistryLines(mGame, mFieldUI, mPreviewUI);
+            mGame.setChangeListener(mGameUI);
 
             JFrame f =
                 new JFrame("Chemistry Lines - " + mGameFactory.getModeName());
@@ -84,7 +89,9 @@ class SwingUIFactory {
             Panel p = new Panel();
             p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
             p.add(createButtonsPane(mButtons));
-            p.add(createPreviewPane(mPreview));
+            Panel previewPanel = new Panel();
+            previewPanel.add(createPreviewPane(mPreview));
+            p.add(previewPanel);
             return p;
         }
 
@@ -93,7 +100,7 @@ class SwingUIFactory {
             style.defaultColor(buttonPanel);
             for (int i = 0; i < mCols * mRows; ++i) {
                 Button b = new Button(i);
-                b.setPreferredSize(new Dimension(60, 60));
+                b.setPreferredSize(BUTTON_SIZE);
                 style.button(b);
                 b.addMouseListener(mGameUI);
                 buttons[i] = b;
@@ -104,10 +111,10 @@ class SwingUIFactory {
 
         protected Container createPreviewPane(JLabel[] preview) {
             Panel previewPanel = new Panel();
-            style.defaultColor(previewPanel);
+            previewPanel.addMouseListener(mPreviewUI);
             for (int i = 0; i < preview.length; ++i) {
                 JLabel l = new JLabel();
-                l.setPreferredSize(new Dimension(60, 60));
+                l.setPreferredSize(BUTTON_SIZE);
                 style.button(l);
                 preview[i] = l;
                 previewPanel.add(l);
@@ -140,9 +147,9 @@ class SwingUIFactory {
             // @formatter:off
             DeferredFieldCleaner fieldCleaner =
                 (DeferredFieldCleaner) mGame.getFieldCleaner();
-            // @formatter:on
             mGameUI
                 .setCleanerUI(new DefferedCleanerUI(fieldCleaner, p, mFieldUI));
+            // @formatter:on
             return scrollPane(p);
         }
 

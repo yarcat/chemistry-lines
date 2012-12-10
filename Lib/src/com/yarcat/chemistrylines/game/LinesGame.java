@@ -18,13 +18,13 @@ public abstract class LinesGame implements GameLogic {
     private final ElementGenerator mElementGenerator;
     private FieldCleaner mFieldCleaner;
     private GameLogger mGameLog;
+    private GameListener mChangeListener;
 
     public LinesGame(Field f, CompoundScanner s, ElementGenerator g) {
         mField = f;
         mScanner = s;
         mElementGenerator = g;
         mNewPortionSize = PORTION_SIZE;
-        setGameLogger(null);
         setFieldCleaner(new ImmediateFieldCleaner(mField));
     }
 
@@ -49,7 +49,9 @@ public abstract class LinesGame implements GameLogic {
     }
 
     private boolean cleanupField() {
-        return mFieldCleaner.process(mScanner.scan(mField));
+        boolean r = mFieldCleaner.process(mScanner.scan(mField));
+        onFieldChange();
+        return r;
     }
 
     @Override
@@ -65,6 +67,10 @@ public abstract class LinesGame implements GameLogic {
         }
         onElementsAdded(addedCells);
         cleanupField();
+    }
+
+    private void onFieldChange() {
+        mChangeListener.onFieldChange(this);
     }
 
     private void onElementsAdded(int[] addedCells) {
@@ -106,5 +112,10 @@ public abstract class LinesGame implements GameLogic {
     @Override
     public Field getField() {
         return mField;
+    }
+
+    @Override
+    public void setChangeListener(GameListener listener) {
+        mChangeListener = listener;
     }
 }
