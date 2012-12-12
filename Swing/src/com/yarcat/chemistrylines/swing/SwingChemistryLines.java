@@ -6,7 +6,7 @@ import java.awt.event.MouseListener;
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.game.GameLogic.GameListener;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
-import com.yarcat.chemistrylines.swing.SwingField.Button;
+import com.yarcat.chemistrylines.swing.SwingField.FieldButton;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
 class SwingChemistryLines implements MouseListener, GameListener {
@@ -43,8 +43,8 @@ class SwingChemistryLines implements MouseListener, GameListener {
     @Override
     public void mouseEntered(MouseEvent e) {
         if (selection().hasSource()) {
-            Button b = (Button) e.getSource();
-            selection().select(b.id());
+            FieldButton b = (FieldButton) e.getSource();
+            selection().select(b.n);
             refreshField();
         }
     }
@@ -55,14 +55,14 @@ class SwingChemistryLines implements MouseListener, GameListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Button b = (Button) e.getSource();
+        FieldButton b = (FieldButton) e.getSource();
         if (selection().hasSource() && selection().hasDestination()
             && selection().getSource() == selection().getDestination()
-            && selection().getSource() == b.id()) {
+            && selection().getSource() == b.n) {
             selection().clear();
             refreshField();
         } else {
-            tryMakeMove(b.id());
+            tryMakeMove(b.n);
         }
     }
 
@@ -88,8 +88,8 @@ class SwingChemistryLines implements MouseListener, GameListener {
     @Override
     public void mouseReleased(MouseEvent e) {
         if (selection().hasSource()) {
-            Button b = (Button) e.getSource();
-            tryMakeMove(b.id());
+            FieldButton b = (FieldButton) e.getSource();
+            tryMakeMove(b.n);
         }
     }
 

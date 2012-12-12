@@ -11,7 +11,6 @@ import java.awt.Panel;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -21,7 +20,8 @@ import com.yarcat.chemistrylines.field.RectField;
 import com.yarcat.chemistrylines.game.DeferredFieldCleaner;
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.swing.GameFactory.Cleaner;
-import com.yarcat.chemistrylines.swing.SwingField.Button;
+import com.yarcat.chemistrylines.swing.SwingField.FieldButton;
+import com.yarcat.chemistrylines.swing.SwingPreview.PreviewButton;
 
 /** Game UI Factory */
 class SwingUIFactory {
@@ -44,21 +44,20 @@ class SwingUIFactory {
 
         GameLogic mGame;
         SwingField mFieldUI;
-        Button[] mButtons;
+        FieldButton[] mButtons;
         SwingPreview mPreviewUI;
-        JLabel[] mPreview;
+        PreviewButton[] mPreview;
         SwingChemistryLines mGameUI;
 
         public SwingChemistryLines newInstance() {
             Field field = new RectField(mCols, mRows);
-            mButtons = new Button[field.getLength()];
-            mPreview = new JLabel[PORTION_SIZE];
+            mButtons = new FieldButton[field.getLength()];
+            mPreview = new PreviewButton[PORTION_SIZE];
 
             mGame = mGameFactory.newInstance(field);
             mFieldUI = new SwingField(mGame, mButtons);
             mPreviewUI = new SwingPreview(mGame, mPreview);
-            mGameUI =
-                new SwingChemistryLines(mGame, mFieldUI, mPreviewUI);
+            mGameUI = new SwingChemistryLines(mGame, mFieldUI, mPreviewUI);
             mGame.setChangeListener(mGameUI);
 
             JFrame f =
@@ -95,13 +94,13 @@ class SwingUIFactory {
             return p;
         }
 
-        protected Container createButtonsPane(Button[] buttons) {
+        protected Container createButtonsPane(FieldButton[] buttons) {
             Panel buttonPanel = new Panel(new GridLayout(mCols, mRows));
             style.defaultColor(buttonPanel);
             for (int i = 0; i < mCols * mRows; ++i) {
-                Button b = new Button(i);
+                FieldButton b = mFieldUI.newButton(i);
+                b.init();
                 b.setPreferredSize(BUTTON_SIZE);
-                style.button(b);
                 b.addMouseListener(mGameUI);
                 buttons[i] = b;
                 buttonPanel.add(b);
@@ -109,15 +108,15 @@ class SwingUIFactory {
             return buttonPanel;
         }
 
-        protected Container createPreviewPane(JLabel[] preview) {
+        protected Container createPreviewPane(PreviewButton[] preview) {
             Panel previewPanel = new Panel();
             previewPanel.addMouseListener(mPreviewUI);
             for (int i = 0; i < preview.length; ++i) {
-                JLabel l = new JLabel();
-                l.setPreferredSize(BUTTON_SIZE);
-                style.button(l);
-                preview[i] = l;
-                previewPanel.add(l);
+                PreviewButton b = new PreviewButton();
+                b.init();
+                b.setPreferredSize(BUTTON_SIZE);
+                preview[i] = b;
+                previewPanel.add(b);
             }
             return previewPanel;
         }
