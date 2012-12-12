@@ -107,6 +107,6 @@ class SwingChemistryLines implements MouseListener, GameListener {
 
     @Override
     public void onFieldChange(GameLogic game) {
-        refreshField();
+        refresh();
     }
 }
