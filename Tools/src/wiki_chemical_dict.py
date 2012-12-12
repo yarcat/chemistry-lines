@@ -56,7 +56,8 @@ def main():
     formulas = F.parse_formulas(formulas, getattr(Formula, args.parser),
                                 args.lexer)
 
-    strict_cond = []
+    # Explicitly filter Tritium #47
+    strict_cond = [lambda f: "T" not in f.atoms]
     if args.filter:
         strict_cond.append(lambda f: getattr(f, args.filter))
     if args.atoms:
