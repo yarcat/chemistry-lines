@@ -120,8 +120,8 @@ def parse_cmdline():
                         help="Limit formulas to those containg"
                         " specified elements")
 
-    parser.add_argument("-group", default=[], action="append", type=int,
-                        choices=range(1, len(E.GROUPS) + 1),
+    parser.add_argument("-period", default=[], action="append", type=int,
+                        choices=range(1, len(E.PERIODS) + 1),
                         help="Limit formulas to those containg elements"
                         " of specified groups")
 
@@ -190,7 +190,7 @@ def parse_cmdline():
         parser.error("--min-terminals must be greater or equal to 2")
 
     args.atoms = frozenset(itertools.chain(
-        args.atom, *(E.GROUPS[i - 1] for i in args.group)))
+        args.atom, *(E.PERIODS[i - 1] for i in args.period)))
 
     return args
 

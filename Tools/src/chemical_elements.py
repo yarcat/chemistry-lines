@@ -12,10 +12,10 @@ ATOMS = (
     "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds",
     "Rg", "Cn", "Uut", "Fl", "Uup", "Lv", "Uus", "Uuo")
 
-GROUP_STARTS = (0, 2, 10, 19, 37, 55, 87)
+PERIOD_STARTS = (0, 2, 10, 19, 37, 55, 87)
 
-GROUPS = tuple(ATOMS[start:end] for start, end in
-               zip(GROUP_STARTS, GROUP_STARTS[1:] + (None,)))
+PERIODS = tuple(ATOMS[start:end] for start, end in
+               zip(PERIOD_STARTS, PERIOD_STARTS[1:] + (None,)))
 
 def pack2dict(*pairs):
     return dict((it, group) for group, elements in pairs for it in elements)
