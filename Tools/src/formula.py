@@ -104,24 +104,19 @@ class Terminal(object):
 
     RE_ATOM = re.compile("[A-Z][a-z]{0,2}")
 
+    ATOMS = frozenset(chemical_elements.ATOMS)
     @property
     def atom(self):
-        match = self.RE_ATOM.match(self.text)
-        return match and match.group()
-    # ATOMS = frozenset(chemical_elements.ATOMS)
-    # @property
-    # def atom(self):
-    #     t = self.text
-    #     if t in ("T", "T2"):
-    #         # Handle Tritium explicitly.  See #47.
-    #         return "T"
-    #     elif t[0].isupper():
-    #         for prefix_len in None, 3, 2, 1:
-    #             prefix = t[:prefix_len] if prefix_len else t
-    #             if prefix in self.ATOMS:
-    #                 return prefix
-    #
-    #     return None
+        t = self.text
+        if t in ("T", "T2"):
+            # Handle Tritium explicitly.  See #47.
+            return "T"
+        elif t[0].isupper():
+            for prefix_len in None, 3, 2, 1:
+                prefix = t[:prefix_len] if prefix_len else t
+                if prefix in self.ATOMS:
+                    return prefix
+        return None
 
     @property
     def coefficient(self):

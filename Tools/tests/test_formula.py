@@ -179,6 +179,10 @@ class TestTerminal(unittest.TestCase):
         self.assertFalse(F.Terminal(")").atom)
         self.assertFalse(F.Terminal(")2").atom)
 
+        self.assertFalse(F.Terminal("X").atom)
+        self.assertFalse(F.Terminal("X3").atom)
+        self.assertFalse(F.Terminal("Xz").atom)
+
     def test_coeffients(self):
         self.assertEquals(F.Terminal("2").coefficient, 2)
         self.assertEquals(F.Terminal("40").coefficient, 40)
