@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import com.yarcat.chemistrylines.field.Element;
 
-/** A generator of new elements to be paced to the field */
+/** A generator of new elements to be placed to the field */
 public abstract class ElementGenerator {
 
     /** Queue of generated elements */

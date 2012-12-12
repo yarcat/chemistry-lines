@@ -1,6 +1,7 @@
 package com.yarcat.chemistrylines.game;
 
 import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
+import static com.yarcat.chemistrylines.algorithms.RandomCell.countEmptyCells;
 import static com.yarcat.chemistrylines.constants.PORTION_SIZE;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
@@ -12,11 +13,13 @@ import com.yarcat.chemistrylines.field.Field;
 
 public abstract class LinesGame implements GameLogic {
 
+    private static final int RETRY_ADD_CLEANUP = 108;
+
     private final ElementGenerator mElementGenerator;
     private final Field mField;
     private final int mNewPortionSize;
     private final CompoundScanner mScanner;
-    private Scorer mScorer;
+    private final Scorer mScorer;
     private GameListener mChangeListener;
     private FieldCleaner mFieldCleaner;
     private GameLogger mGameLog;
@@ -44,20 +47,39 @@ public abstract class LinesGame implements GameLogic {
             && mField.at(fin).isEmpty()) {
             mField.at(fin).setElement(mField.at(origin).getElement());
             mField.at(origin).setElement(null);
-            if (!cleanupField()) {
-                addItems();
+            if (!cleanupField() || isFieldEmpty()) {
+                retryAddCleanup();
             }
         }
     }
 
     private boolean cleanupField() {
         boolean r = mFieldCleaner.process(mScanner.scan(mField));
-        onFieldChange();
+        if (r) {
+            onFieldChange();
+        }
         return r;
     }
 
     @Override
     public void addItems() {
+        retryAddCleanup();
+    }
+
+    private void retryAddCleanup() {
+        int i = RETRY_ADD_CLEANUP;
+        do {
+            addMoreItems();
+            cleanupField();
+            --i;
+        } while (i > 0 && isFieldEmpty());
+    }
+
+    private boolean isFieldEmpty() {
+        return countEmptyCells(mField) == mField.getLength();
+    }
+
+    private void addMoreItems() {
         int[] addedCells = new int[mNewPortionSize];
         for (int i = 0; i < mNewPortionSize; ++i) {
             int n = getRandomEmptyCell(mField);
@@ -68,7 +90,6 @@ public abstract class LinesGame implements GameLogic {
             addedCells[i] = n;
         }
         onElementsAdded(addedCells);
-        cleanupField();
     }
 
     private void onFieldChange() {
@@ -77,6 +98,7 @@ public abstract class LinesGame implements GameLogic {
 
     private void onElementsAdded(int[] addedCells) {
         mGameLog.elementsAdded(mField, addedCells);
+        onFieldChange();
     }
 
     @Override

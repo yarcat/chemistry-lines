@@ -115,7 +115,10 @@ public class FormulaLinesGame extends LinesGame {
     public static FormulaLinesGame formulaDebugGame(Field field) {
         // @formatter:off
         return new FormulaLinesGame(field,
-            new DebugGenerator(KnownFormulas.contents, "H", "2", "O"));
+            new DebugGenerator(KnownFormulas.contents,
+                "H", "2", "O",
+                "2", "H", "O",
+                "O", "H", "2"));
         // @formatter:on
     }
 }
