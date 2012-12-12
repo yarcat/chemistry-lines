@@ -76,7 +76,7 @@ class Formula(collections.namedtuple("Formula", "text terms")):
 
     def atom_count(self):
         """Atom count for formulas without brackets"""
-        return sum(self.coefficients)
+        return sum(self.coefficients) - len([t for t in self if not t.atom])
 
     def element_count(self):
         return len(set(self.atoms))
