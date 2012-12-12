@@ -44,7 +44,7 @@
         <antcall target="jar">
             <param name="JarName" value="Shuffle-Automatic-Compact-Pair"/>
             <param name="MainClass" value="AutomaticShuffle"/>
-            <param name="TerminalSet" value="--compact -pair-brackets"/>
+            <param name="TerminalSet" value="--compact --pair-brackets"/>
         </antcall>
         <antcall target="jar">
             <param name="JarName" value="Shuffle-Manual-Plain"/>
@@ -64,7 +64,7 @@
         <antcall target="jar">
             <param name="JarName" value="Shuffle-Manual-Compact-Pair"/>
             <param name="MainClass" value="ManualShuffle"/>
-            <param name="TerminalSet" value="--compact -pair-brackets"/>
+            <param name="TerminalSet" value="--compact --pair-brackets"/>
         </antcall>
     </target>
 
