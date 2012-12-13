@@ -60,7 +60,7 @@ class Formula(collections.namedtuple("Formula", "text terms")):
 
     @property
     def atoms(self):
-        return filter(None, [t.atom for t in self.terms])
+        return filter(None, [t.element for t in self.terms])
 
     @property
     def coefficients(self):
@@ -112,31 +112,27 @@ class Terminal(object):
 
     def __init__(self, text):
         self.text = text
+        self.element = self._element()
 
-    RE_ATOM = re.compile("[A-Z][a-z]{0,2}")
-
-    ATOMS = frozenset(chemical_elements.ATOMS)
-    @property
-    def atom(self):
+    def _element(self):
         t = self.text
         if t in ("T", "T2"):
             # Handle Tritium explicitly.  See #47.
-            return "T"
+            return chemical_elements.TRITIUM
         elif t[0].isupper():
             for prefix_len in None, 3, 2, 1:
                 prefix = t[:prefix_len] if prefix_len else t
-                if prefix in self.ATOMS:
-                    return prefix
+                if prefix in chemical_elements.ELEMENTS:
+                    return chemical_elements.ELEMENTS[prefix]
         return None
 
     @property
     def coefficient(self):
-        atom = self.atom
-        if atom:
-            if atom == self.text:
+        if self.element:
+            if self.element.symbol == self.text:
                 return 1
             else:
-                return int(self.text[len(atom):])
+                return int(self.text[len(self.element.symbol):])
         elif self.text == "0.5":
             return 0
         elif self.text[-1].isdigit():
@@ -148,15 +144,7 @@ class Terminal(object):
 
     @property
     def starts_formula(self):
-        return self.atom or self.text == "("
-
-    @property
-    def category(self):
-        return chemical_elements.category(self.atom)
-
-    @property
-    def state_of_matter(self):
-        return chemical_elements.state_of_matter(self.atom)
+        return self.element or self.text == "("
 
     def __str__(self):
         return self.text

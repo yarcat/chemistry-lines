@@ -64,10 +64,10 @@ public final class ${name} {
 
             .startsCompound(true)\
     % endif
-    % if term.atom:
+    % if term.element:
 
-            .category(Category.${term.category})
-            .stateOfMatter(StateOfMatter.${term.state_of_matter})\
+            .category(Category.${term.element.category})
+            .stateOfMatter(StateOfMatter.${term.element.state_of_matter})\
     % endif
 ;
 % endfor

@@ -57,11 +57,12 @@ def main():
                                 args.lexer)
 
     # Explicitly filter Tritium #47
-    strict_cond = [lambda f: "T" not in f.atoms]
+    strict_cond = [lambda f: E.TRITIUM not in f.atoms]
     if args.filter:
         strict_cond.append(lambda f: getattr(f, args.filter))
     if args.atoms:
-        strict_cond.append(lambda f: all(t in args.atoms for t in f.atoms))
+        allowed_elem = frozenset(E.ELEMENTS[sym] for sym in args.atoms)
+        strict_cond.append(lambda f: all(e in allowed_elem for e in f.atoms))
     if args.max_coefficient:
         strict_cond.append(lambda f: all(c <= args.max_coefficient for c in
                                          f.coefficients))
@@ -116,7 +117,7 @@ def parse_cmdline():
                       help="Only ions")
 
     parser.add_argument("-atom", default=[], action="append",
-                        choices=E.ATOMS,
+                        choices=E.SYMBOLS,
                         help="Limit formulas to those containg"
                         " specified elements")
 
@@ -190,7 +191,7 @@ def parse_cmdline():
         parser.error("--min-terminals must be greater or equal to 2")
 
     args.atoms = frozenset(itertools.chain(
-        args.atom, *(E.PERIODS[i - 1] for i in args.period)))
+        args.atom, *(map(str, E.PERIODS[i - 1]) for i in args.period)))
 
     return args
 

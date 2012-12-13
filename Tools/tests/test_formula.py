@@ -168,24 +168,24 @@ class TestFormulaClosingBracket(unittest.TestCase):
 class TestTerminal(unittest.TestCase):
 
     def test_atoms(self):
-        self.assertTrue(F.Terminal("H").atom)
-        self.assertTrue(F.Terminal("H2").atom)
-        self.assertFalse(F.Terminal("h").atom)
+        self.assertTrue(F.Terminal("H").element)
+        self.assertTrue(F.Terminal("H2").element)
+        self.assertIsNone(F.Terminal("h").element)
 
-        self.assertTrue(F.Terminal("Na").atom)
-        self.assertFalse(F.Terminal("na").atom)
-        self.assertFalse(F.Terminal("nA").atom)
+        self.assertTrue(F.Terminal("Na").element)
+        self.assertIsNone(F.Terminal("na").element)
+        self.assertIsNone(F.Terminal("nA").element)
 
-        self.assertFalse(F.Terminal("2").atom)
-        self.assertFalse(F.Terminal("*").atom)
+        self.assertIsNone(F.Terminal("2").element)
+        self.assertIsNone(F.Terminal("*").element)
 
-        self.assertFalse(F.Terminal("(").atom)
-        self.assertFalse(F.Terminal(")").atom)
-        self.assertFalse(F.Terminal(")2").atom)
+        self.assertIsNone(F.Terminal("(").element)
+        self.assertIsNone(F.Terminal(")").element)
+        self.assertIsNone(F.Terminal(")2").element)
 
-        self.assertFalse(F.Terminal("X").atom)
-        self.assertFalse(F.Terminal("X3").atom)
-        self.assertFalse(F.Terminal("Xz").atom)
+        self.assertIsNone(F.Terminal("X").element)
+        self.assertIsNone(F.Terminal("X3").element)
+        self.assertIsNone(F.Terminal("Xz").element)
 
     def test_coeffients(self):
         self.assertEquals(F.Terminal("2").coefficient, 2)
