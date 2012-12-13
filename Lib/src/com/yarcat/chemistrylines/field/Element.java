@@ -33,12 +33,14 @@ public class Element {
     private StateOfMatter mMatter;
     private boolean mStartsCompound;
     private boolean mIsFinal;
+    private int mAtomCount;
 
     public Element(String id, String name) {
         mId = id;
         mName = name;
         mCategory = Category.Undefined;
         mMatter = StateOfMatter.Undefined;
+        mAtomCount = 0;
     }
 
     public final String getId() {
@@ -82,6 +84,15 @@ public class Element {
 
     public Element stateOfMatter(StateOfMatter matter) {
         mMatter = matter;
+        return this;
+    }
+
+    public int atomCount() {
+        return mAtomCount;
+    }
+
+    public Element atomCount(int c) {
+        mAtomCount = c;
         return this;
     }
 

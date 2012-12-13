@@ -33,6 +33,7 @@ def gen_prefixes(formulas):
         prefixes[prefix] = set()
         if f.is_final():
             prefixes[prefix].add(".isFinal(true)")
+            prefixes[prefix].add(".atomCount(%i)" % f.atom_count())
         backlink[prefix] = f
     for f in formulas:
         for p in iter_prefixes(f, start=2):
