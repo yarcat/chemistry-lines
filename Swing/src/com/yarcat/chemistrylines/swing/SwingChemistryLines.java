@@ -3,6 +3,8 @@ package com.yarcat.chemistrylines.swing;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.JLabel;
+
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.game.GameLogic.GameListener;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
@@ -13,15 +15,17 @@ class SwingChemistryLines implements MouseListener, GameListener {
 
     private final SwingField mFieldUI;
     private final GameLogic mGame;
+    private final JLabel mScoreUI;
     private SwingPreview mPreviewUI;
     private DefferedCleanerUI mCleanerUI;
 
     public SwingChemistryLines(GameLogic game, SwingField fieldUI,
-            SwingPreview previewUI) {
+            SwingPreview previewUI, JLabel scoreUI) {
         mFieldUI = fieldUI;
         mGame = game;
         mPreviewUI = previewUI;
         mCleanerUI = null;
+        mScoreUI = scoreUI;
     }
 
     void refresh() {
@@ -30,6 +34,11 @@ class SwingChemistryLines implements MouseListener, GameListener {
         if (mCleanerUI != null) {
             mCleanerUI.refresh();
         }
+        refreshScore();
+    }
+
+    private void refreshScore() {
+        mScoreUI.setText("Score: " + String.valueOf(mGame.getScore()));
     }
 
     private void refreshField() {
@@ -75,8 +84,8 @@ class SwingChemistryLines implements MouseListener, GameListener {
         if (selection().hasDestination()
             && selection().getSource() != selection().getDestination()) {
             try {
-                mGame.makeMove(
-                    selection().getSource(), selection().getDestination());
+                mGame.makeMove(selection().getSource(), selection()
+                    .getDestination());
                 refresh();
             } catch (InvalidMove e1) {
             }
@@ -108,5 +117,10 @@ class SwingChemistryLines implements MouseListener, GameListener {
     @Override
     public void onFieldChange(GameLogic game) {
         refresh();
+    }
+
+    @Override
+    public void onScoreChange(GameLogic game) {
+        refreshScore();
     }
 }

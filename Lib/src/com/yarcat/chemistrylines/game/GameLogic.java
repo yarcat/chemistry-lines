@@ -27,6 +27,9 @@ public interface GameLogic {
 
         /** Called on change on the game field */
         public void onFieldChange(GameLogic game);
+
+        /** Called on change on the game field */
+        public void onScoreChange(GameLogic game);
     }
 
     /**
@@ -64,6 +67,7 @@ public interface GameLogic {
     public void setFieldCleaner(FieldCleaner cleaner);
 
     public Field getField();
+    public int getScore();
 
     public void setChangeListener(GameListener listener);
 }

@@ -11,6 +11,7 @@ import java.awt.Panel;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -48,6 +49,7 @@ class SwingUIFactory {
         SwingPreview mPreviewUI;
         PreviewButton[] mPreview;
         SwingChemistryLines mGameUI;
+        JLabel mScoreUI;
 
         public SwingChemistryLines newInstance() {
             Field field = new RectField(mCols, mRows);
@@ -57,7 +59,9 @@ class SwingUIFactory {
             mGame = mGameFactory.newInstance(field);
             mFieldUI = new SwingField(mGame, mButtons);
             mPreviewUI = new SwingPreview(mGame, mPreview);
-            mGameUI = new SwingChemistryLines(mGame, mFieldUI, mPreviewUI);
+            mScoreUI = new JLabel();
+            mGameUI =
+                new SwingChemistryLines(mGame, mFieldUI, mPreviewUI, mScoreUI);
             mGame.setChangeListener(mGameUI);
 
             JFrame f =
@@ -87,10 +91,8 @@ class SwingUIFactory {
         protected Container createMainPane() {
             Panel p = new Panel();
             p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+            p.add(createInfoPane());
             p.add(createButtonsPane(mButtons));
-            Panel previewPanel = new Panel();
-            previewPanel.add(createPreviewPane(mPreview));
-            p.add(previewPanel);
             return p;
         }
 
@@ -108,8 +110,16 @@ class SwingUIFactory {
             return buttonPanel;
         }
 
+        private Container createInfoPane() {
+            Panel p = new Panel(new GridLayout(1, 2));
+            p.add(createScorePane());
+            p.add(createPreviewPane(mPreview));
+            return p;
+        }
+
         protected Container createPreviewPane(PreviewButton[] preview) {
             Panel previewPanel = new Panel();
+            previewPanel.add(style.defaultColor(new JLabel("Next: ")));
             previewPanel.addMouseListener(mPreviewUI);
             for (int i = 0; i < preview.length; ++i) {
                 PreviewButton b = new PreviewButton();
@@ -119,6 +129,17 @@ class SwingUIFactory {
                 previewPanel.add(b);
             }
             return previewPanel;
+        }
+
+        private Component createScorePane() {
+            Panel p = new Panel();
+            p.add(mScoreUI);
+            style.button(mScoreUI);
+            // @formatter:off
+            mScoreUI.setPreferredSize(
+                new Dimension(BUTTON_SIZE.width * 2, BUTTON_SIZE.height));
+            // @formatter:on
+            return p;
         }
 
         protected Container createRightPane() {

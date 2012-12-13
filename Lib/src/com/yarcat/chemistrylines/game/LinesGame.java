@@ -12,19 +12,21 @@ import com.yarcat.chemistrylines.field.Field;
 
 public abstract class LinesGame implements GameLogic {
 
-    private final int mNewPortionSize;
-    private final Field mField;
-    private final CompoundScanner mScanner;
     private final ElementGenerator mElementGenerator;
+    private final Field mField;
+    private final int mNewPortionSize;
+    private final CompoundScanner mScanner;
+    private int mAtomScore;
+    private GameListener mChangeListener;
     private FieldCleaner mFieldCleaner;
     private GameLogger mGameLog;
-    private GameListener mChangeListener;
 
     public LinesGame(Field f, CompoundScanner s, ElementGenerator g) {
-        mField = f;
-        mScanner = s;
+        mAtomScore = 0;
         mElementGenerator = g;
+        mField = f;
         mNewPortionSize = PORTION_SIZE;
+        mScanner = s;
         setFieldCleaner(new ImmediateFieldCleaner(mField));
     }
 
@@ -100,6 +102,7 @@ public abstract class LinesGame implements GameLogic {
         @Override
         public void foundCompound(CompoundReference ref) {
             mGameLog.compoundRemoved(mField, ref);
+            updateScore(ref);
         }
     };
 
@@ -117,5 +120,15 @@ public abstract class LinesGame implements GameLogic {
     @Override
     public void setChangeListener(GameListener listener) {
         mChangeListener = listener;
+    }
+
+    @Override
+    public int getScore() {
+        return mAtomScore;
+    }
+
+    private void updateScore(CompoundReference ref) {
+        mAtomScore += ref.getCompound().atomCount();
+        mChangeListener.onScoreChange(this);
     }
 }

@@ -21,9 +21,10 @@ public class style {
         BorderFactory.createLineBorder(new Color(0x55, 0x44, 0x33));
     // @formatter:on
 
-    static void defaultColor(Component c) {
+    static Component defaultColor(Component c) {
         c.setBackground(DEFAULT_BG);
         c.setForeground(DEFAULT_FG);
+        return c;
     }
 
     static void highlight(Component c) {
