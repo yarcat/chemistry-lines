@@ -1,9 +1,10 @@
-.DS_Store
-.metadata
+*.class
+*.py[co]
 .*.sw?
-bin
-Android/gen/
-Lib/gen/
-Lib/src/com/yarcat/chemistrylines/field/KnownFormulas.java
-Lib/tests/com/yarcat/tests/chemistrylines/KnownFormulasTest.java
+.DS_Store
+/*/bin
+/*/gen
+/.metadata
 /build
+/Lib/src/com/yarcat/chemistrylines/field/KnownFormulas.java
+/Lib/tests/com/yarcat/tests/chemistrylines/KnownFormulasTest.java
