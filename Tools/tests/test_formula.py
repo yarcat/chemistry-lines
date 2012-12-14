@@ -58,6 +58,8 @@ class TestFormulaPlain(unittest.TestCase):
         self.assertEquals(atom_count("Na2O"), 3)
         self.assertEquals(atom_count("H2O2"), 4)
         self.assertEquals(atom_count("C2H5OH"), 9)
+        self.assertEquals(atom_count("Ca(OH)2"), 5)
+        self.assertEquals(atom_count("[Cu(H2O)4]SO4*H2O"), 21)
 
     def test_element_count(self):
         element_count = lambda f: F_plain(f).element_count()
@@ -114,6 +116,8 @@ class TestFormulaCompact(unittest.TestCase):
         self.assertEquals(atom_count("Na2O"), 3)
         self.assertEquals(atom_count("H2O2"), 4)
         self.assertEquals(atom_count("C2H5OH"), 9)
+        self.assertEquals(atom_count("Ca(OH)2"), 5)
+        self.assertEquals(atom_count("[Cu(H2O)4]SO4*H2O"), 21)
 
     def test_element_count(self):
         element_count = lambda f: F_compact(f).element_count()

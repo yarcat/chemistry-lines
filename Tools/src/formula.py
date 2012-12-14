@@ -76,7 +76,18 @@ class Formula(collections.namedtuple("Formula", "text terms")):
 
     def atom_count(self):
         """Atom count for formulas without brackets"""
-        return sum(self.coefficients) - len([t for t in self if not t.atom])
+        plain = self.parse_plain(self.text, Lexems.compact)
+        count = 0
+        stack = []
+        for t in plain:
+            if t.text == "(":
+                stack.append(count)
+                count = 0
+            elif t.text[0] == ")":
+                count = stack.pop() + count * max(t.coefficient, 1)
+            else:
+                count += t.coefficient
+        return count
 
     def element_count(self):
         return len(set(self.atoms))
