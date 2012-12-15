@@ -84,7 +84,7 @@ class Formula(collections.namedtuple("Formula", "text terms")):
                 stack.append(count)
                 count = 0
             elif t.text[0] == ")":
-                count = stack.pop() + count * max(t.coefficient, 1)
+                count = stack.pop() + count * t.coefficient
             else:
                 count += t.coefficient
         return count
@@ -133,6 +133,8 @@ class Terminal(object):
                 return 1
             else:
                 return int(self.text[len(self.element.symbol):])
+        elif self.text == ")":
+            return 1
         elif self.text == "0.5":
             return 0
         elif self.text[-1].isdigit():

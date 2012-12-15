@@ -14,7 +14,7 @@ class TestFormulaPlain(unittest.TestCase):
         self.assertEquals(F_plain("H2").coefficients, [1, 2])
         self.assertEquals(F_plain("H2O2").coefficients, [1, 2, 1, 2])
         self.assertEquals(F_plain("H2SO4").coefficients, [1, 2, 1, 1, 4])
-        self.assertEquals(F_plain("Al(OH)3").coefficients, [1, 0, 1, 1, 0, 3])
+        self.assertEquals(F_plain("Al(OH)3").coefficients, [1, 0, 1, 1, 1, 3])
 
     def test_compound_ion(self):
         self.assertTrue(F_plain("H2O").is_compound)
