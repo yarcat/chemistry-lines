@@ -86,7 +86,7 @@
     <target name="gen">
         <exec executable="sh" newenvironment="false" dir="Tools">
           <arg value="-xc"/>
-          <arg value="./gen.sh --no-hydrates --unique-elements ${TerminalSet}"/>
+          <arg value="./gen.sh --unique-elements ${TerminalSet}"/>
         </exec>
     </target>
 
