@@ -40,9 +40,9 @@ def row2element(r):
     w = r.weight.strip()
     if "!" in w:
         w = w.split("!", 1)[1]
-    w = w.split("(", 1)[0]
     if w.startswith("["):
         w = w[1:].split("]", 1)[0]
+    w = float(w.split("(", 1)[0])
 
     return Element(str(r.symbol), n, str(r.name), g, int(r.period), w,
                    category(r.symbol, n), state_of_matter(r.symbol, n))

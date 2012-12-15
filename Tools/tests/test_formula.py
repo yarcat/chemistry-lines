@@ -61,6 +61,13 @@ class TestFormulaPlain(unittest.TestCase):
         self.assertEquals(atom_count("Ca(OH)2"), 5)
         self.assertEquals(atom_count("[Cu(H2O)4]SO4*H2O"), 21)
 
+    def test_repeated_elements(self):
+        r = lambda f: [e.symbol for e in F_plain(f).repeated_elements()]
+        self.assertEquals(r("Na"), ["Na"])
+        self.assertEquals(r("Na2O"), ["Na", "Na", "O"])
+        self.assertEquals(r("H2O2"), ["H", "H", "O", "O"])
+        self.assertEquals(r("Ca(OH)2"), ["Ca", "O", "H", "O", "H"])
+
     def test_element_count(self):
         element_count = lambda f: F_plain(f).element_count()
         self.assertEquals(element_count("Na"), 1)
@@ -118,6 +125,13 @@ class TestFormulaCompact(unittest.TestCase):
         self.assertEquals(atom_count("C2H5OH"), 9)
         self.assertEquals(atom_count("Ca(OH)2"), 5)
         self.assertEquals(atom_count("[Cu(H2O)4]SO4*H2O"), 21)
+
+    def test_repeated_elements(self):
+        r = lambda f: [e.symbol for e in F_compact(f).repeated_elements()]
+        self.assertEquals(r("Na"), ["Na"])
+        self.assertEquals(r("Na2O"), ["Na", "Na", "O"])
+        self.assertEquals(r("H2O2"), ["H", "H", "O", "O"])
+        self.assertEquals(r("Ca(OH)2"), ["Ca", "O", "H", "O", "H"])
 
     def test_element_count(self):
         element_count = lambda f: F_compact(f).element_count()

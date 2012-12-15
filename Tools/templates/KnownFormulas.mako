@@ -66,6 +66,7 @@ public final class ${name} {
     % endif
     % if term.element:
 
+            .atomicWeight(${term.element.weight}f)
             .category(Category.${term.element.category})
             .stateOfMatter(StateOfMatter.${term.element.state_of_matter})\
     % endif
