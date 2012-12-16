@@ -70,6 +70,8 @@ public class KnownFormulasTest {
                 % endif
 <%                t = '"%s"' % '", "'.join(map(str, f.terms)) %>\
                 % if f.is_final():
+        assertTrue(elem("${f.prefix()}").atomCount() > 0);
+        assertTrue(elem("${f.prefix()}").atomicWeight() > 0);
         assertTrue(reactionProduces("${f.prefix()}", ${t}));
         assertTrue(formulaIsRemoved(${t}));
                 % else:
@@ -108,12 +110,16 @@ public class KnownFormulasTest {
     private boolean reactionProduces(String what, String... terms) {
         ArrayList<Element> elements = new ArrayList<Element>(terms.length);
         for (String it : terms) {
-            elements.add(mRegistry.get(it));
+            elements.add(elem(it));
         }
 
         ArrayList<Element> productions = mReactor.getCompounds(elements);
-        Element target = mRegistry.get(what);
+        Element target = elem(what);
         return productions.contains(target);
+    }
+
+    private Element elem(String id) {
+        return mRegistry.get(id);
     }
 }
 ## vim: set ft=mako :
