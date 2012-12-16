@@ -67,7 +67,7 @@ public interface GameLogic {
     public void setFieldCleaner(FieldCleaner cleaner);
 
     public Field getField();
-    public int getScore();
+    public Scorer getScorer();
 
     public void setChangeListener(GameListener listener);
 }

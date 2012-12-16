@@ -16,13 +16,13 @@ public abstract class LinesGame implements GameLogic {
     private final Field mField;
     private final int mNewPortionSize;
     private final CompoundScanner mScanner;
-    private int mAtomScore;
+    private Scorer mScorer;
     private GameListener mChangeListener;
     private FieldCleaner mFieldCleaner;
     private GameLogger mGameLog;
 
     public LinesGame(Field f, CompoundScanner s, ElementGenerator g) {
-        mAtomScore = 0;
+        mScorer = new Scorer.ScoreContainer();
         mElementGenerator = g;
         mField = f;
         mNewPortionSize = PORTION_SIZE;
@@ -123,12 +123,12 @@ public abstract class LinesGame implements GameLogic {
     }
 
     @Override
-    public int getScore() {
-        return mAtomScore;
+    public Scorer getScorer() {
+        return mScorer;
     }
 
     private void updateScore(CompoundReference ref) {
-        mAtomScore += ref.getCompound().atomCount();
+        mScorer.update(ref);
         mChangeListener.onScoreChange(this);
     }
 }

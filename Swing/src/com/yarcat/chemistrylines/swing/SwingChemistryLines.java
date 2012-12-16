@@ -3,7 +3,7 @@ package com.yarcat.chemistrylines.swing;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JLabel;
+import javax.swing.JTextArea;
 
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.game.GameLogic.GameListener;
@@ -15,12 +15,12 @@ class SwingChemistryLines implements MouseListener, GameListener {
 
     private final SwingField mFieldUI;
     private final GameLogic mGame;
-    private final JLabel mScoreUI;
+    private final JTextArea mScoreUI;
     private SwingPreview mPreviewUI;
     private DefferedCleanerUI mCleanerUI;
 
     public SwingChemistryLines(GameLogic game, SwingField fieldUI,
-            SwingPreview previewUI, JLabel scoreUI) {
+            SwingPreview previewUI, JTextArea scoreUI) {
         mFieldUI = fieldUI;
         mGame = game;
         mPreviewUI = previewUI;
@@ -38,7 +38,8 @@ class SwingChemistryLines implements MouseListener, GameListener {
     }
 
     private void refreshScore() {
-        mScoreUI.setText("Score: " + String.valueOf(mGame.getScore()));
+        mScoreUI.setText("");
+        mScoreUI.append(mGame.getScorer().get());
     }
 
     private void refreshField() {

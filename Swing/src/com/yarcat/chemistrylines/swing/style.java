@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -33,9 +34,13 @@ public class style {
     }
 
     static void button(JLabel b) {
-        defaultColor(b);
-        b.setBorder(BORDER);
+        frame(b);
         b.setHorizontalAlignment(SwingConstants.CENTER);
-        b.setOpaque(true);
+    }
+
+    static void frame(JComponent c) {
+        defaultColor(c);
+        c.setBorder(BORDER);
+        c.setOpaque(true);
     }
 }

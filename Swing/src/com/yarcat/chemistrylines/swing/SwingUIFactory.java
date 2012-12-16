@@ -49,7 +49,7 @@ class SwingUIFactory {
         SwingPreview mPreviewUI;
         PreviewButton[] mPreview;
         SwingChemistryLines mGameUI;
-        JLabel mScoreUI;
+        JTextArea mScoreUI;
 
         public SwingChemistryLines newInstance() {
             Field field = new RectField(mCols, mRows);
@@ -59,7 +59,7 @@ class SwingUIFactory {
             mGame = mGameFactory.newInstance(field);
             mFieldUI = new SwingField(mGame, mButtons);
             mPreviewUI = new SwingPreview(mGame, mPreview);
-            mScoreUI = new JLabel();
+            mScoreUI = new JTextArea();
             mGameUI =
                 new SwingChemistryLines(mGame, mFieldUI, mPreviewUI, mScoreUI);
             mGame.setChangeListener(mGameUI);
@@ -133,8 +133,10 @@ class SwingUIFactory {
 
         private Component createScorePane() {
             Panel p = new Panel();
+            p.add(style.defaultColor(new JLabel("Score:")));
             p.add(mScoreUI);
-            style.button(mScoreUI);
+            style.frame(mScoreUI);
+            mScoreUI.setEditable(false);
             // @formatter:off
             mScoreUI.setPreferredSize(
                 new Dimension(BUTTON_SIZE.width * 2, BUTTON_SIZE.height));
