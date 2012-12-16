@@ -15,7 +15,8 @@ PERIODS = tuple(tuple(grp) for p, grp in
 
 def tritium():
     d = ELEMENTS["H"]._asdict()
-    d.symbol = "T"
+    d["symbol"] = "T"
+    d["name"] = "Tritium"
     return parse_wiki_elements.Element(**d)
 
 
