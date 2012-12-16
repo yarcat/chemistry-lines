@@ -139,7 +139,7 @@ class SwingUIFactory {
             mScoreUI.setEditable(false);
             // @formatter:off
             mScoreUI.setPreferredSize(
-                new Dimension(BUTTON_SIZE.width * 2, BUTTON_SIZE.height));
+                new Dimension(BUTTON_SIZE.width * 3, BUTTON_SIZE.height));
             // @formatter:on
             return p;
         }

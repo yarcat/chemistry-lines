@@ -3,6 +3,8 @@ package com.yarcat.chemistrylines.game;
 import java.util.Map;
 import java.util.TreeMap;
 
+import android.annotation.SuppressLint;
+
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 
 public interface Scorer {
@@ -11,10 +13,10 @@ public interface Scorer {
 
     public void update(CompoundReference ref);
 
-    abstract class Base implements Scorer {
+    abstract class BaseInt implements Scorer {
         int mScore;
 
-        public Base() {
+        public BaseInt() {
             mScore = 0;
         }
 
@@ -24,7 +26,21 @@ public interface Scorer {
         }
     }
 
-    class AtomScore extends Base {
+    abstract class BaseFloat implements Scorer {
+        float mScore;
+
+        public BaseFloat() {
+            mScore = 0;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        public String get() {
+            return String.format("%.4f", mScore);
+        }
+    }
+
+    class AtomScore extends BaseInt {
 
         @Override
         public void update(CompoundReference ref) {
@@ -32,12 +48,20 @@ public interface Scorer {
         }
     }
 
-    class AtomExpScore extends Base {
+    class AtomExpScore extends BaseInt {
 
         @Override
         public void update(CompoundReference ref) {
             int n = ref.getCompound().atomCount();
             mScore += n < 4 ? 1 : 1 << (n - 3);
+        }
+    }
+
+    class AtomicWeightScore extends BaseFloat {
+
+        @Override
+        public void update(CompoundReference ref) {
+            mScore += ref.getCompound().atomicWeight();
         }
     }
 
@@ -48,7 +72,8 @@ public interface Scorer {
         public ScoreContainer() {
             mContents = new TreeMap<String, Scorer>();
             mContents.put("Atoms", new AtomScore());
-            mContents.put("1 or 2^(n-3)", new AtomExpScore());
+            mContents.put("Max 1, 2^(n-3)", new AtomExpScore());
+            mContents.put("Weight", new AtomicWeightScore());
         }
 
         @Override

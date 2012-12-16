@@ -34,6 +34,7 @@ public class Element {
     private boolean mStartsCompound;
     private boolean mIsFinal;
     private int mAtomCount;
+    private float mAtomicWeight;
 
     public Element(String id, String name) {
         mId = id;
@@ -93,6 +94,15 @@ public class Element {
 
     public Element atomCount(int c) {
         mAtomCount = c;
+        return this;
+    }
+
+    public float atomicWeight() {
+        return mAtomicWeight;
+    }
+
+    public Element atomicWeight(float atomicWeight) {
+        mAtomicWeight = atomicWeight;
         return this;
     }
 
