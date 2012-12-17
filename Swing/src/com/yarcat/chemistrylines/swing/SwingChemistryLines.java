@@ -8,10 +8,12 @@ import javax.swing.JTextArea;
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.game.GameLogic.GameListener;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
+import com.yarcat.chemistrylines.game.Scorer;
+import com.yarcat.chemistrylines.game.Scorer.ScoreListener;
 import com.yarcat.chemistrylines.swing.SwingField.FieldButton;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
-class SwingChemistryLines implements MouseListener, GameListener {
+class SwingChemistryLines implements GameListener, MouseListener, ScoreListener {
 
     private final SwingField mFieldUI;
     private final GameLogic mGame;
@@ -34,12 +36,6 @@ class SwingChemistryLines implements MouseListener, GameListener {
         if (mCleanerUI != null) {
             mCleanerUI.refresh();
         }
-        refreshScore();
-    }
-
-    private void refreshScore() {
-        mScoreUI.setText("");
-        mScoreUI.append(mGame.getScorer().get());
     }
 
     private void refreshField() {
@@ -121,7 +117,8 @@ class SwingChemistryLines implements MouseListener, GameListener {
     }
 
     @Override
-    public void onScoreChange(GameLogic game) {
-        refreshScore();
+    public void onScoreChange(Scorer scorer) {
+        mScoreUI.setText("");
+        mScoreUI.append(scorer.get());
     }
 }

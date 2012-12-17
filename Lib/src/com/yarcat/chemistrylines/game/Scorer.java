@@ -13,7 +13,28 @@ public interface Scorer {
 
     public void update(CompoundReference ref);
 
-    abstract class BaseInt implements Scorer {
+    public interface ScoreListener {
+        public void onScoreChange(Scorer scorer);
+    }
+
+    public void setScoreListener(ScoreListener l);
+
+    abstract class Base implements Scorer {
+        ScoreListener mListener;
+
+        @Override
+        public void setScoreListener(ScoreListener l) {
+            mListener = l;
+        }
+
+        void onScoreChange() {
+            if (mListener != null) {
+                mListener.onScoreChange(this);
+            }
+        }
+    }
+
+    abstract class BaseInt extends Base {
         int mScore;
 
         public BaseInt() {
@@ -26,7 +47,7 @@ public interface Scorer {
         }
     }
 
-    abstract class BaseFloat implements Scorer {
+    abstract class BaseFloat extends Base {
         float mScore;
 
         public BaseFloat() {
@@ -45,6 +66,7 @@ public interface Scorer {
         @Override
         public void update(CompoundReference ref) {
             mScore += ref.getCompound().atomCount();
+            onScoreChange();
         }
     }
 
@@ -54,6 +76,7 @@ public interface Scorer {
         public void update(CompoundReference ref) {
             int n = ref.getCompound().atomCount();
             mScore += n < 4 ? 1 : 1 << (n - 3);
+            onScoreChange();
         }
     }
 
@@ -62,10 +85,11 @@ public interface Scorer {
         @Override
         public void update(CompoundReference ref) {
             mScore += ref.getCompound().atomicWeight();
+            onScoreChange();
         }
     }
 
-    class ScoreContainer implements Scorer {
+    class ScoreContainer extends Base {
 
         Map<String, Scorer> mContents;
 
@@ -78,18 +102,21 @@ public interface Scorer {
 
         @Override
         public String get() {
-            String r="";
-            for (String name: mContents.keySet()) {
-                r = String.format("%s%s\t%s\n", r, name, mContents.get(name).get());
+            String r = "";
+            for (String name : mContents.keySet()) {
+                r =
+                    String.format("%s%s\t%s\n", r, name, mContents
+                        .get(name).get());
             }
             return r;
         }
 
         @Override
         public void update(CompoundReference ref) {
-            for(Scorer s : mContents.values()) {
+            for (Scorer s : mContents.values()) {
                 s.update(ref);
             }
+            onScoreChange();
         }
     }
 }

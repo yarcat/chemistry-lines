@@ -63,6 +63,7 @@ class SwingUIFactory {
             mGameUI =
                 new SwingChemistryLines(mGame, mFieldUI, mPreviewUI, mScoreUI);
             mGame.setChangeListener(mGameUI);
+            mGame.getScorer().setScoreListener(mGameUI);
 
             JFrame f =
                 new JFrame("Chemistry Lines - " + mGameFactory.getModeName());
@@ -78,6 +79,8 @@ class SwingUIFactory {
 
             mGame.addItems();
             mGameUI.refresh();
+            // The score is not refreshed automatically before first move.
+            mGameUI.onScoreChange(mGame.getScorer());
 
             return mGameUI;
         }

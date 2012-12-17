@@ -124,7 +124,7 @@ public abstract class LinesGame implements GameLogic {
         @Override
         public void foundCompound(CompoundReference ref) {
             mGameLog.compoundRemoved(mField, ref);
-            updateScore(ref);
+            mScorer.update(ref);
         }
     };
 
@@ -147,10 +147,5 @@ public abstract class LinesGame implements GameLogic {
     @Override
     public Scorer getScorer() {
         return mScorer;
-    }
-
-    private void updateScore(CompoundReference ref) {
-        mScorer.update(ref);
-        mChangeListener.onScoreChange(this);
     }
 }

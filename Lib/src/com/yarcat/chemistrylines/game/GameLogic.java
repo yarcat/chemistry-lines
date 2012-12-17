@@ -27,9 +27,6 @@ public interface GameLogic {
 
         /** Called on change on the game field */
         public void onFieldChange(GameLogic game);
-
-        /** Called on change on the game field */
-        public void onScoreChange(GameLogic game);
     }
 
     /**
