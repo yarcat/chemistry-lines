@@ -107,6 +107,20 @@ public class Element {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Element) {
+            Element other = (Element) obj;
+            return getId() == other.getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    @Override
     public String toString() {
         return getId();
     }

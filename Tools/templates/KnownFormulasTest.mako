@@ -10,6 +10,7 @@ package com.yarcat.tests.chemistrylines;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,9 +30,11 @@ public class KnownFormulasTest {
     ElementRegistry mRegistry;
     ChemicalReactor mReactor;
     CompoundScanner mScanner;
+    Map<Element, Element[]> mFormulaTerms;
 
     @Before
     public void setUp() {
+        mFormulaTerms = KnownFormulas.formulaTerms;
         mRegistry = KnownFormulas.contents;
         mReactor = new SimpleReactor(mRegistry);
         mScanner = new CompoundScanner(mReactor);
@@ -42,6 +45,7 @@ public class KnownFormulasTest {
 
     @Test
     public void test${key}() {
+        Element e;
 \
 <%    one_terminal_formulas = [f for f in group if len(f) == 1]%>\
     % if one_terminal_formulas:
@@ -68,18 +72,23 @@ public class KnownFormulasTest {
                 % if f.prefix() != f.text:
         // ${f.text}
                 % endif
+        e = elem("${f.prefix()}");
 <%                t = '"%s"' % '", "'.join(map(str, f.terms)) %>\
                 % if f.is_final():
-        assertTrue(elem("${f.prefix()}").atomCount() > 0);
-        assertTrue(elem("${f.prefix()}").atomicWeight() > 0);
-        assertTrue(reactionProduces("${f.prefix()}", ${t}));
+        assertTrue(e.atomCount() > 0);
+        assertTrue(e.atomicWeight() > 0);
+        assertTrue(mFormulaTerms.containsKey(e));
+        assertArrayEquals(elements(${t}).toArray(), mFormulaTerms.get(e));
+        assertTrue(reactionProduces(e, elements(${t})));
         assertTrue(formulaIsRemoved(${t}));
                 % else:
-        assertFalse(reactionProduces("${f.prefix()}", ${t}));
+        assertFalse(mFormulaTerms.containsKey(e));
+        assertFalse(reactionProduces(e, elements(${t})));
                 ## Do not assertFalse(formulaIsRemoved(${t})) because parts of
                 ## a terminal sequence could match other formulas and
                 ## the sequence can get validly removed.
                 % endif
+
             % endif
         % endfor
     % endfor
@@ -89,7 +98,7 @@ public class KnownFormulasTest {
     private boolean formulaIsRemoved(String... fieldMap) {
         Field field = new RectField(fieldMap.length, 1);
         for (int i = 0; i < fieldMap.length; ++i) {
-            field.at(i).setElement(mRegistry.get(fieldMap[i]));
+            field.at(i).setElement(elem(fieldMap[i]));
         }
         removeCompounds(field);
 
@@ -107,19 +116,20 @@ public class KnownFormulasTest {
         }
     }
 
-    private boolean reactionProduces(String what, String... terms) {
-        ArrayList<Element> elements = new ArrayList<Element>(terms.length);
-        for (String it : terms) {
-            elements.add(elem(it));
-        }
-
-        ArrayList<Element> productions = mReactor.getCompounds(elements);
-        Element target = elem(what);
-        return productions.contains(target);
+    private boolean reactionProduces(Element e, ArrayList<Element> terms) {
+        return mReactor.getCompounds(terms).contains(e);
     }
 
     private Element elem(String id) {
         return mRegistry.get(id);
+    }
+
+    private ArrayList<Element> elements(String... terms) {
+        ArrayList<Element> r = new ArrayList<Element>(terms.length);
+        for (String it : terms) {
+            r.add(elem(it));
+        }
+        return r;
     }
 }
 ## vim: set ft=mako :

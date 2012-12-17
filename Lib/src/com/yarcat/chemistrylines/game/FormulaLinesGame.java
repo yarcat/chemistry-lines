@@ -89,9 +89,11 @@ public class FormulaLinesGame extends LinesGame {
     }
 
     public static FormulaLinesGame formulaShuffleGame(Field field) {
+        ArrayList<Element[]> formulas =
+            new ArrayList<Element[]>(KnownFormulas.formulaTerms.values());
         // @formatter:off
         return new FormulaLinesGame(field,
-            new FormulaTerminalGenerator(KnownFormulas.formulaTerms, PORTION_SIZE));
+            new FormulaTerminalGenerator((Element[][]) formulas.toArray(), PORTION_SIZE));
         // @formatter:on
     }
 
@@ -102,7 +104,7 @@ public class FormulaLinesGame extends LinesGame {
         DebugGenerator(ElementRegistry registry, String... items) {
             mElements = new ArrayList<Element>(items.length);
             for (String id : items) {
-                 mElements.add(registry.get(id));
+                mElements.add(registry.get(id));
             }
         }
 

@@ -7,6 +7,9 @@ Arguments:
 <% import registry_helper as R %>\
 package com.yarcat.chemistrylines.field;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.yarcat.chemistrylines.field.Element.Category;
 import com.yarcat.chemistrylines.field.Element.StateOfMatter;
 
@@ -14,11 +17,10 @@ import com.yarcat.chemistrylines.field.Element.StateOfMatter;
 public final class ${name} {
 
     public final static ElementRegistry contents;
-    public final static Element[][] formulaTerms;
+    public final static Map<Element, Element[]> formulaTerms;
     public final static WeightedArrayOfStrings terms;
 \
 <% keys = [] %> \
-<% n = 0 %> \
 % for key, group in R.split_formula_set(formulas):
     <% keys.append(key) %> \
 
@@ -46,8 +48,7 @@ public final class ${name} {
     % for f in group:
         % if f.is_final():
 <%            t = '"%s"' % '", "'.join(map(str, f.terms)) %>\
-        F(${n}, ${t});
-<%            n += 1 %>\
+        F("${f.prefix()}", ${t});
         % endif
     % endfor
     }
@@ -55,7 +56,7 @@ public final class ${name} {
 
     static {
         contents = new ElementRegistry();
-        formulaTerms = new Element[${n}][];
+        formulaTerms = new HashMap<Element, Element[]>();
         terms = new WeightedArrayOfStrings(${len(final_formula_stats)});
 
 % for term in R.collect_terms(formulas):
@@ -98,12 +99,12 @@ public final class ${name} {
     }
 
     /** Adds formula and its terminals */
-    private final static void F(int n, String... terms) {
+    private final static void F(String id, String... terms) {
         Element[] t = new Element[terms.length];
         for(int i = 0; i < terms.length; ++i) {
             t[i] = E(terms[i]);
         }
-        formulaTerms[n] = t;
+        formulaTerms.put(contents.get(id), t);
     }
 
     /** Registers production. */
