@@ -6,6 +6,7 @@ import com.yarcat.chemistrylines.game.DeferredFieldCleaner;
 import com.yarcat.chemistrylines.game.DeferredFormulaFieldCleaner;
 import com.yarcat.chemistrylines.game.FieldCleaner;
 import com.yarcat.chemistrylines.game.FormulaLinesGame;
+import com.yarcat.chemistrylines.game.FormulaShuffleFactory;
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.game.ImmediateFieldCleaner;
 
@@ -69,7 +70,7 @@ public abstract class GameFactory {
     public static class FormulaShuffleMode extends FormulaGameFactory {
         @Override
         protected GameLogic createInstance(Field field) {
-            return FormulaLinesGame.formulaShuffleGame(field);
+            return FormulaShuffleFactory.formulaShuffleGame(field);
         }
 
         @Override

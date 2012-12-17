@@ -1,7 +1,6 @@
 package com.yarcat.chemistrylines.game;
 
 import static com.yarcat.chemistrylines.algorithms.RandomCell.random;
-import static com.yarcat.chemistrylines.constants.PORTION_SIZE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,15 +84,6 @@ public class FormulaLinesGame extends LinesGame {
         // @formatter:off
         return new FormulaLinesGame(field,
             new RandomTerminalGenerator(KnownFormulas.contents, KnownFormulas.terms));
-        // @formatter:on
-    }
-
-    public static FormulaLinesGame formulaShuffleGame(Field field) {
-        ArrayList<Element[]> formulas =
-            new ArrayList<Element[]>(KnownFormulas.formulaTerms.values());
-        // @formatter:off
-        return new FormulaLinesGame(field,
-            new FormulaTerminalGenerator((Element[][]) formulas.toArray(), PORTION_SIZE));
         // @formatter:on
     }
 
