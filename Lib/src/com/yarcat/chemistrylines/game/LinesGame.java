@@ -20,7 +20,7 @@ public abstract class LinesGame implements GameLogic {
     private final int mNewPortionSize;
     private final CompoundScanner mScanner;
     private final Scorer mScorer;
-    private GameListener mChangeListener;
+    private GameListener mGameListener;
     private FieldCleaner mFieldCleaner;
     private GameLogger mGameLog;
 
@@ -93,7 +93,7 @@ public abstract class LinesGame implements GameLogic {
     }
 
     private void onFieldChange() {
-        mChangeListener.onFieldChange(this);
+        mGameListener.onFieldChange(this);
     }
 
     private void onElementsAdded(int[] addedCells) {
@@ -124,7 +124,7 @@ public abstract class LinesGame implements GameLogic {
         @Override
         public void foundCompound(CompoundReference ref) {
             mGameLog.compoundRemoved(mField, ref);
-            updateScore(ref);
+            mScorer.update(ref);
         }
     };
 
@@ -141,7 +141,7 @@ public abstract class LinesGame implements GameLogic {
 
     @Override
     public void setChangeListener(GameListener listener) {
-        mChangeListener = listener;
+        mGameListener = listener;
     }
 
     @Override
@@ -149,8 +149,10 @@ public abstract class LinesGame implements GameLogic {
         return mScorer;
     }
 
-    private void updateScore(CompoundReference ref) {
-        mScorer.update(ref);
-        mChangeListener.onScoreChange(this);
+    @Override
+    public void init() {
+        addItems();
+        mScorer.init();
+        mGameListener.onInit(this);
     }
 }

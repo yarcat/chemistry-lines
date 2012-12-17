@@ -49,7 +49,6 @@ class SwingUIFactory {
         SwingPreview mPreviewUI;
         PreviewButton[] mPreview;
         SwingChemistryLines mGameUI;
-        JTextArea mScoreUI;
 
         public SwingChemistryLines newInstance() {
             Field field = new RectField(mCols, mRows);
@@ -59,9 +58,7 @@ class SwingUIFactory {
             mGame = mGameFactory.newInstance(field);
             mFieldUI = new SwingField(mGame, mButtons);
             mPreviewUI = new SwingPreview(mGame, mPreview);
-            mScoreUI = new JTextArea();
-            mGameUI =
-                new SwingChemistryLines(mGame, mFieldUI, mPreviewUI, mScoreUI);
+            mGameUI = new SwingChemistryLines(mGame, mFieldUI, mPreviewUI);
             mGame.setChangeListener(mGameUI);
 
             JFrame f =
@@ -76,8 +73,7 @@ class SwingUIFactory {
             f.pack();
             f.setVisible(true);
 
-            mGame.addItems();
-            mGameUI.refresh();
+            mGame.init();
 
             return mGameUI;
         }
@@ -134,6 +130,7 @@ class SwingUIFactory {
         private Component createScorePane() {
             Panel p = new Panel();
             p.add(style.defaultColor(new JLabel("Score:")));
+            JTextArea mScoreUI = createScoreUI().textArea;
             p.add(mScoreUI);
             style.frame(mScoreUI);
             mScoreUI.setEditable(false);
@@ -142,6 +139,12 @@ class SwingUIFactory {
                 new Dimension(BUTTON_SIZE.width * 3, BUTTON_SIZE.height));
             // @formatter:on
             return p;
+        }
+
+        private SwingScore createScoreUI() {
+            SwingScore r = new SwingScore();
+            mGame.getScorer().setScoreListener(r);
+            return r;
         }
 
         protected Container createRightPane() {

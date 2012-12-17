@@ -28,8 +28,8 @@ public interface GameLogic {
         /** Called on change on the game field */
         public void onFieldChange(GameLogic game);
 
-        /** Called on change on the game field */
-        public void onScoreChange(GameLogic game);
+        /** Called once before game starts. */
+        public void onInit(GameLogic game);
     }
 
     /**
@@ -70,4 +70,6 @@ public interface GameLogic {
     public Scorer getScorer();
 
     public void setChangeListener(GameListener listener);
+
+    public void init();
 }
