@@ -121,4 +121,9 @@ class SwingChemistryLines implements GameListener, MouseListener, ScoreListener 
         mScoreUI.setText("");
         mScoreUI.append(scorer.get());
     }
+
+    @Override
+    public void onInit(GameLogic game) {
+        refresh();
+    }
 }

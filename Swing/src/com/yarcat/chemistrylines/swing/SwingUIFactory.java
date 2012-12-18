@@ -77,10 +77,7 @@ class SwingUIFactory {
             f.pack();
             f.setVisible(true);
 
-            mGame.addItems();
-            mGameUI.refresh();
-            // The score is not refreshed automatically before first move.
-            mGameUI.onScoreChange(mGame.getScorer());
+            mGame.init();
 
             return mGameUI;
         }

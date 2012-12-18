@@ -13,6 +13,8 @@ public interface Scorer {
 
     public void update(CompoundReference ref);
 
+    public void init();
+
     public interface ScoreListener {
         public void onScoreChange(Scorer scorer);
     }
@@ -31,6 +33,11 @@ public interface Scorer {
             if (mListener != null) {
                 mListener.onScoreChange(this);
             }
+        }
+
+        @Override
+        public void init() {
+            onScoreChange();
         }
     }
 
