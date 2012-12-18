@@ -3,31 +3,25 @@ package com.yarcat.chemistrylines.swing;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JTextArea;
-
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.game.GameLogic.GameListener;
 import com.yarcat.chemistrylines.game.GameLogic.InvalidMove;
-import com.yarcat.chemistrylines.game.Scorer;
-import com.yarcat.chemistrylines.game.Scorer.ScoreListener;
 import com.yarcat.chemistrylines.swing.SwingField.FieldButton;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
-class SwingChemistryLines implements GameListener, MouseListener, ScoreListener {
+class SwingChemistryLines implements GameListener, MouseListener {
 
     private final SwingField mFieldUI;
     private final GameLogic mGame;
-    private final JTextArea mScoreUI;
     private SwingPreview mPreviewUI;
     private DefferedCleanerUI mCleanerUI;
 
     public SwingChemistryLines(GameLogic game, SwingField fieldUI,
-            SwingPreview previewUI, JTextArea scoreUI) {
+            SwingPreview previewUI) {
         mFieldUI = fieldUI;
         mGame = game;
         mPreviewUI = previewUI;
         mCleanerUI = null;
-        mScoreUI = scoreUI;
     }
 
     void refresh() {
@@ -114,12 +108,6 @@ class SwingChemistryLines implements GameListener, MouseListener, ScoreListener 
     @Override
     public void onFieldChange(GameLogic game) {
         refresh();
-    }
-
-    @Override
-    public void onScoreChange(Scorer scorer) {
-        mScoreUI.setText("");
-        mScoreUI.append(scorer.get());
     }
 
     @Override
