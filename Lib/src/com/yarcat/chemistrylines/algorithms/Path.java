@@ -11,9 +11,7 @@ public class Path {
 
     /** Return distance between 2 cells on the field or -1 when unreachable */
     public static int distance(Field field, int origin, int fin) {
-        final Path path = new Path(field, origin);
-        path.evaluate();
-        return path.distanceTo(fin);
+        return prepare(field, origin).distanceTo(fin);
     }
 
     /** Check whether there is a path between 2 cells on the field */
@@ -23,48 +21,51 @@ public class Path {
 
     /** Return a path from the origin to the fin or null when unreachable */
     public static int[] path(Field field, int origin, int fin) {
-        final Path path = new Path(field, origin);
-        path.evaluate();
-        return path.pathTo(fin);
+        return prepare(field, origin).pathTo(fin);
     }
 
-    private final Field mField;
-    private final int mOrigin;
-    private final int[] mStep;
-    private final int[] mParents;
-
-    /** Create a Path algorithm for a field counting from the origin cell */
-    public Path(Field field, int origin) {
-        super();
-        mField = field;
-        mOrigin = origin;
-        mStep = new int[field.getLength()];
-        mParents = new int[field.getLength()];
-    }
-
-    /** Execute the algorithm */
-    public void evaluate() {
+    public static Path prepare(Field field, int origin) {
         final Queue<Integer> queue = new LinkedList<Integer>();
+        final int[] step = new int[field.getLength()];
+        final int[] parents = new int[field.getLength()];
+        final int[] reachableCount = new int[1];
 
-        mStep[mOrigin] = 1;
-        mParents[mOrigin] = -1;
-        queue.add(mOrigin);
+        reachableCount[0] = 1;
+        step[origin] = 1;
+        parents[origin] = -1;
+        queue.add(origin);
         do {
             final int cur = queue.poll();
-            final int nextStep = mStep[cur] + 1;
+            final int nextStep = step[cur] + 1;
 
-            mField.visitSiblings(cur, new CellVisitor() {
+            field.visitSiblings(cur, new CellVisitor() {
+                @Override
                 public void visit(int n, Field field) {
-                    if (mStep[n] == 0) {
+                    if (step[n] == 0) {
                         if (field.at(n).isEmpty()) {
                             queue.add(n);
                         }
-                        mStep[n] = nextStep;
-                        mParents[n] = cur;
+                        step[n] = nextStep;
+                        parents[n] = cur;
+                        ++reachableCount[0];
                     }
                 }
             });
         } while (!queue.isEmpty());
+        return new Path(origin, step, parents, reachableCount[0]);
+    }
+
+    private final int mOrigin;
+    private final int[] mStep;
+    private final int[] mParents;
+    public final int reachableCount;
+
+    private Path(int origin, int[] step, int[] parents, int reachableCount) {
+        super();
+        mOrigin = origin;
+        mStep = step;
+        mParents = parents;
+        this.reachableCount = reachableCount;
     }
 
     /** Return distance from the origin to a cell */
