@@ -36,14 +36,13 @@ abstract class ElementButton extends JLabel {
 
     public abstract Element getElement();
 
-    public void refresh() {
-        updateContent();
-        updateStyle();
+    void init() {
+        style.button(this);
+        refresh();
     }
 
-    void init() {
+    public void refresh() {
         updateContent();
-        style.button(this);
         updateStyle();
     }
 

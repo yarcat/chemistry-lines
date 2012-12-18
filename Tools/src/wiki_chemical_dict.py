@@ -165,11 +165,11 @@ def parse_cmdline():
     l = parser.add_mutually_exclusive_group()
     l.add_argument("--simple", dest="lexer",
                    action="store_const", const=F.Lexems.plain,
-                   help="Parse formula terminals as they are.")
+                   help="Let coefficients be separate terminals")
     l.add_argument("--compact", dest="lexer",
                    action="store_const", const=F.Lexems.compact,
-                   help="Parse formulas in a compact way, i.e."
-                   " an atom and its coefficients form one terminal")
+                   help="Put coefficients in one terminal"
+                   " with an atom or a bracket.")
 
     p = parser.add_mutually_exclusive_group()
     p.add_argument("--plain", dest="parser",

@@ -10,10 +10,8 @@ public class RectField extends Field.BaseField {
     /**
      * Create a field.
      *
-     * @param cols
-     *            Amount of columns.
-     * @param rows
-     *            Amount of rows.
+     * @param cols Amount of columns.
+     * @param rows Amount of rows.
      */
     public RectField(int cols, int rows) {
         mCols = cols;
@@ -55,7 +53,7 @@ public class RectField extends Field.BaseField {
     }
 
     private static final int[][] siblingShifts = new int[][] { { -1, 0 },
-            { 0, -1 }, { +1, 0 }, { 0, +1 } };
+        { 0, -1 }, { +1, 0 }, { 0, +1 } };
 
     @Override
     public void visitSiblings(int n, CellVisitor visitor) {
@@ -63,11 +61,34 @@ public class RectField extends Field.BaseField {
         int row = cellRow(n);
 
         for (int i = 0; i < siblingShifts.length; ++i) {
-            int m = cellNo(col + siblingShifts[i][0], row + siblingShifts[i][1]);
+            int m =
+                cellNo(col + siblingShifts[i][0], row + siblingShifts[i][1]);
             if (at(m) != null) {
                 visitor.visit(m, this);
             }
         }
+    }
+
+    @Override
+    public int[] getSiblings(int n) {
+        int col = cellCol(n);
+        int row = cellRow(n);
+
+        // @formatter:off
+        int c = (0 < col && col < mCols - 1 ? 2 : 1)
+              + (0 < row && row < mRows - 1 ? 2 : 1);
+        // @formatter:on
+
+        int[] r = new int[c];
+        int j = 0;
+        for (int i = 0; i < siblingShifts.length; ++i) {
+            int m=
+                cellNo(col + siblingShifts[i][0], row + siblingShifts[i][1]);
+            if (at(m) != null) {
+                r[j++] = m;
+            }
+        }
+        return r;
     }
 
     @Override
@@ -82,7 +103,7 @@ public class RectField extends Field.BaseField {
                 int row = cellRow(origin);
 
                 if (!cellExists(col + shift[0], row + shift[1])
-                        || at(cellNo(col + shift[0], row + shift[1])).isEmpty()) {
+                    || at(cellNo(col + shift[0], row + shift[1])).isEmpty()) {
                     continue;
                 }
 
@@ -101,7 +122,8 @@ public class RectField extends Field.BaseField {
                     final int m = cellNo(col, row);
                     final Cell cell = at(m);
 
-                    stop = cell == null || cell.isEmpty()
+                    stop =
+                        cell == null || cell.isEmpty()
                             || visitor.stopScan(this);
                     if (!stop) {
                         visitor.visit(m, this);

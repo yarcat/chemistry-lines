@@ -1,5 +1,7 @@
 package com.yarcat.chemistrylines.game;
 
+import java.util.ArrayList;
+
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 
@@ -35,10 +37,8 @@ public interface GameLogic {
     /**
      * Check whether a move from origin cell to fin is a valid one.
      *
-     * @param origin
-     *            Index of the origin cell.
-     * @param fin
-     *            Index of the final cell.
+     * @param origin Index of the origin cell.
+     * @param fin Index of the final cell.
      * @return True if this move is valid, false otherwise.
      */
     public boolean isMoveValid(int origin, int fin);
@@ -46,12 +46,9 @@ public interface GameLogic {
     /**
      * Make an actual move.
      *
-     * @param origin
-     *            Index of the origin cell.
-     * @param fin
-     *            Index of the final cell.
-     * @throws InvalidMove
-     *             If there is no valid move(s) from origin to fin.
+     * @param origin Index of the origin cell.
+     * @param fin Index of the final cell.
+     * @throws InvalidMove If there is no valid move(s) from origin to fin.
      */
     public void makeMove(int origin, int fin) throws InvalidMove;
 
@@ -64,10 +61,36 @@ public interface GameLogic {
     public void setGameLogger(GameLogger gameLog);
 
     public FieldCleaner getFieldCleaner();
+
     public void setFieldCleaner(FieldCleaner cleaner);
 
     public Field getField();
+
     public Scorer getScorer();
 
-    public void setChangeListener(GameListener listener);
+    public void addListener(GameListener listener);
+
+    public abstract class Base implements GameLogic {
+
+        private ArrayList<GameListener> mListeners = new ArrayList<GameListener>();
+
+        @Override
+        public void addListener(GameListener listener) {
+            if (!mListeners.contains(listener)) {
+                mListeners.add(listener);
+            }
+        }
+
+        protected void onFieldChange() {
+            for (GameListener l : mListeners) {
+                l.onFieldChange(this);
+            }
+        }
+
+        protected void onScoreChange() {
+            for (GameListener l : mListeners) {
+                l.onScoreChange(this);
+            }
+        }
+    }
 }

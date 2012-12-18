@@ -2,13 +2,17 @@ package com.yarcat.chemistrylines.swing;
 
 import java.awt.Color;
 
+import javax.swing.border.Border;
+
 import com.yarcat.chemistrylines.field.Cell;
 import com.yarcat.chemistrylines.field.Element;
+import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.game.GameLogic;
+import com.yarcat.chemistrylines.view.FieldHightlights;
+import com.yarcat.chemistrylines.view.FieldHightlights.Mark;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
-class SwingField {
-
+class SwingField implements FieldHightlights.Listener, GameLogic.GameListener {
     @SuppressWarnings("serial")
     class FieldButton extends ElementButton {
         public final int n;
@@ -17,39 +21,63 @@ class SwingField {
             n = index;
         }
 
+        private Cell cell() {
+            return at(n);
+        }
+
         @Override
         public Element getElement() {
-            return at(n).getElement();
+            return cell().getElement();
         }
 
         @Override
         boolean isEmpty() {
-            return at(n).isEmpty();
+            return cell().isEmpty();
+        }
+
+        private boolean markedAs(Mark m) {
+            return mFieldMarks.hasMark(n, m);
+        }
+
+        @Override
+        void updateStyle() {
+            super.updateStyle();
+            setBorder(getEdge());
         }
 
         @Override
         Color getBgColor() {
             Color bg;
-            if (mSel.hasSource() && mSel.getSource() == n) {
+            if (markedAs(Mark.SOURCE)) {
                 bg = Color.DARK_GRAY;
-            } else if (mSel.hasDestination() && mSel.getDestination() == n) {
+            } else if (markedAs(Mark.TARGET)) {
                 bg = Color.GRAY;
+            } else if (isEmpty() && markedAs(Mark.REACHABLE)) {
+                bg = style.REACHABLE_BG;
             } else {
                 bg = super.getBgColor();
             }
             return bg;
         }
 
+        private Border getEdge() {
+            return !isEmpty() && markedAs(Mark.REACHABLE)
+                ? style.REACHABLE_BORDER : style.DEFAULT_BORDER;
+        }
     }
 
     private final GameLogic mGame;
     private final FieldButton[] mButtons;
     private final SelectionInView mSel;
+    private final FieldHightlights mFieldMarks;
 
     public SwingField(GameLogic game, FieldButton[] buttons) {
         mGame = game;
         mButtons = buttons;
         mSel = new SelectionInView();
+        mFieldMarks = FieldHightlights.create(mGame.getField());
+        mFieldMarks.setListener(this);
+        mSel.setListener(mFieldMarks);
     }
 
     SelectionInView selection() {
@@ -62,8 +90,12 @@ class SwingField {
         }
     }
 
-    Cell at(int i) {
-        return mGame.getField().at(i);
+    Cell at(int n) {
+        return getField().at(n);
+    }
+
+    Field getField() {
+        return mGame.getField();
     }
 
     public FieldButton getButton(int n) {
@@ -76,5 +108,26 @@ class SwingField {
 
     FieldButton newButton(int n) {
         return new FieldButton(n);
+    }
+
+    @Override
+    public void onHighlightChange() {
+        refresh();
+    }
+
+    @Override
+    public void onFieldChange(GameLogic game) {
+        mFieldMarks.onFieldChange();
+        refresh();
+    }
+
+    @Override
+    public void onFinished() {
+        // Ignore GameLogic.GameListener.onFinished().
+    }
+
+    @Override
+    public void onScoreChange(GameLogic game) {
+        // Ignore GameLogic.GameListener.onScoreChange().
     }
 }

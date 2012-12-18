@@ -63,8 +63,8 @@ public class RectFieldView extends View implements FieldView {
     private void drawSelection(Canvas canvas) {
         if (mSelection.hasSource()) {
             drawSourceSelection(mSelection.getSource(), canvas);
-            if (mSelection.hasDestination()) {
-                drawDestinationSelection(mSelection.getDestination(), canvas);
+            if (mSelection.hasTarget()) {
+                drawDestinationSelection(mSelection.getTarget(), canvas);
             }
         }
     }
@@ -155,10 +155,10 @@ public class RectFieldView extends View implements FieldView {
     }
 
     public void apply() {
-        if (mSelection.hasDestination()) {
+        if (mSelection.hasTarget()) {
             try {
                 mLogic.makeMove(mSelection.getSource(),
-                        mSelection.getDestination());
+                        mSelection.getTarget());
             } catch (InvalidMove e) {
                 // TODO(yarcat): Notify the player.
             }

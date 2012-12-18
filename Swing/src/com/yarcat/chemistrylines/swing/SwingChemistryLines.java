@@ -23,13 +23,14 @@ class SwingChemistryLines implements MouseListener, GameListener {
             SwingPreview previewUI, JTextArea scoreUI) {
         mFieldUI = fieldUI;
         mGame = game;
+        mGame.addListener(mFieldUI);
         mPreviewUI = previewUI;
         mCleanerUI = null;
         mScoreUI = scoreUI;
     }
 
     void refresh() {
-        refreshField();
+        mFieldUI.refresh();
         mPreviewUI.refresh();
         if (mCleanerUI != null) {
             mCleanerUI.refresh();
@@ -42,10 +43,6 @@ class SwingChemistryLines implements MouseListener, GameListener {
         mScoreUI.append(mGame.getScorer().get());
     }
 
-    private void refreshField() {
-        mFieldUI.refresh();
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
     }
@@ -54,8 +51,11 @@ class SwingChemistryLines implements MouseListener, GameListener {
     public void mouseEntered(MouseEvent e) {
         if (selection().hasSource()) {
             FieldButton b = (FieldButton) e.getSource();
-            selection().select(b.n);
-            refreshField();
+            if (b.n == selection().getSource()) {
+                selection().clearTarget();
+            } else {
+                selection().select(b.n);
+            }
         }
     }
 
@@ -65,41 +65,39 @@ class SwingChemistryLines implements MouseListener, GameListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        FieldButton b = (FieldButton) e.getSource();
-        if (selection().hasSource() && selection().hasDestination()
-            && selection().getSource() == selection().getDestination()
-            && selection().getSource() == b.n) {
-            selection().clear();
-            refreshField();
+        final FieldButton b = (FieldButton) e.getSource();
+        if (selection().hasSource()) {
+            selection().select(b.n);
+            tryMakeMove();
         } else {
-            tryMakeMove(b.n);
+            selection().select(b.n);
         }
-    }
-
-    private void tryMakeMove(int id) {
-        // We need this because for the drag case mouseReleased is called for
-        // the source button, and we don't wanna overwrite the value.
-        if (!selection().hasDestination()) {
-            selection().select(id);
-        }
-        if (selection().hasDestination()
-            && selection().getSource() != selection().getDestination()) {
-            try {
-                mGame.makeMove(selection().getSource(), selection()
-                    .getDestination());
-                refresh();
-            } catch (InvalidMove e1) {
-            }
-            selection().clear();
-        }
-        refreshField();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (selection().hasSource()) {
-            FieldButton b = (FieldButton) e.getSource();
-            tryMakeMove(b.n);
+            // mouseReleased() gets the same button that was pressed.
+            tryMakeMove();
+        }
+    }
+
+    private void tryMakeMove() {
+        if (selection().hasTarget()) {
+            int s, t;
+            if (mGame.getField().at(selection().getSource()).isEmpty()) {
+                s = selection().getTarget();
+                t = selection().getSource();
+            } else {
+                s = selection().getSource();
+                t = selection().getTarget();
+            }
+            try {
+                mGame.makeMove(s, t);
+                refresh();
+            } catch (InvalidMove e1) {
+            }
+            selection().clear();
         }
     }
 

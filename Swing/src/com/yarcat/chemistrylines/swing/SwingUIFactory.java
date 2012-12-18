@@ -62,7 +62,7 @@ class SwingUIFactory {
             mScoreUI = new JTextArea();
             mGameUI =
                 new SwingChemistryLines(mGame, mFieldUI, mPreviewUI, mScoreUI);
-            mGame.setChangeListener(mGameUI);
+            mGame.addListener(mGameUI);
 
             JFrame f =
                 new JFrame("Chemistry Lines - " + mGameFactory.getModeName());

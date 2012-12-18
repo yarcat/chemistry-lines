@@ -14,10 +14,13 @@ public class ImmediateFieldCleaner extends FieldCleaner.Base {
     @Override
     public boolean process(List<CompoundReference> compounds) {
         for (CompoundReference ref : compounds) {
-            onCompoundRemove(ref);
+            beforeCompoundRemoved(ref);
         }
         for (CompoundReference ref : compounds) {
             mField.removeCompound(ref.getCells());
+        }
+        for (CompoundReference ref : compounds) {
+            afterCompoundRemoved(ref);
         }
         afterProcess();
         return !compounds.isEmpty();
