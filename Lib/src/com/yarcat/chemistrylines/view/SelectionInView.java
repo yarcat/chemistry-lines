@@ -36,11 +36,11 @@ public class SelectionInView {
     }
 
     private void selectTarget(int n) {
-        if (mListener != null && hasDestination()) {
+        if (mListener != null && hasTarget()) {
             mListener.onTargetCleared(mSelection[1]);
         }
         mSelection[1] = n;
-        if (mListener != null && hasDestination()) {
+        if (mListener != null && hasTarget()) {
             mListener.onNewTarget(n);
         }
     }
@@ -50,7 +50,7 @@ public class SelectionInView {
             if (hasSource()) {
                 mListener.onSourceCleared(mSelection[0]);
             }
-            if (hasDestination()) {
+            if (hasTarget()) {
                 mListener.onTargetCleared(mSelection[1]);
             }
         }
@@ -65,11 +65,11 @@ public class SelectionInView {
         return mSelection[0];
     }
 
-    public boolean hasDestination() {
+    public boolean hasTarget() {
         return mSelection[1] != -1;
     }
 
-    public int getDestination() {
+    public int getTarget() {
         return mSelection[1];
     }
 

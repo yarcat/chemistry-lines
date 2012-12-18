@@ -66,8 +66,8 @@ class SwingChemistryLines implements MouseListener, GameListener {
     @Override
     public void mousePressed(MouseEvent e) {
         FieldButton b = (FieldButton) e.getSource();
-        if (selection().hasSource() && selection().hasDestination()
-            && selection().getSource() == selection().getDestination()
+        if (selection().hasSource() && selection().hasTarget()
+            && selection().getSource() == selection().getTarget()
             && selection().getSource() == b.n) {
             selection().clear();
         } else {
@@ -79,14 +79,14 @@ class SwingChemistryLines implements MouseListener, GameListener {
     private void tryMakeMove(int id) {
         // We need this because for the drag case mouseReleased is called for
         // the source button, and we don't wanna overwrite the value.
-        if (!selection().hasDestination()) {
+        if (!selection().hasTarget()) {
             selection().select(id);
         }
-        if (selection().hasDestination()
-            && selection().getSource() != selection().getDestination()) {
+        if (selection().hasTarget()
+            && selection().getSource() != selection().getTarget()) {
             try {
                 mGame.makeMove(selection().getSource(), selection()
-                    .getDestination());
+                    .getTarget());
                 refresh();
             } catch (InvalidMove e1) {
             }
