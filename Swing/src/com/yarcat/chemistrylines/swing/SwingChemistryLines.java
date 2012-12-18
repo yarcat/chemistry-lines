@@ -70,10 +70,10 @@ class SwingChemistryLines implements MouseListener, GameListener {
             && selection().getSource() == selection().getDestination()
             && selection().getSource() == b.n) {
             selection().clear();
-            refreshField();
         } else {
             tryMakeMove(b.n);
         }
+        refreshField();
     }
 
     private void tryMakeMove(int id) {
@@ -92,7 +92,6 @@ class SwingChemistryLines implements MouseListener, GameListener {
             }
             selection().clear();
         }
-        refreshField();
     }
 
     @Override
