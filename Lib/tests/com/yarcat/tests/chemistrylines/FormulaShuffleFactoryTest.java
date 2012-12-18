@@ -1,6 +1,7 @@
 package com.yarcat.tests.chemistrylines;
 
-import static com.yarcat.chemistrylines.game.FormulaShuffleFactory.filterExceptions;
+import static com.yarcat.chemistrylines.game.FormulaShuffleFactory.filterByTerminals;
+import static com.yarcat.chemistrylines.game.FormulaShuffleFactory.filterByFormulas;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
@@ -29,14 +30,27 @@ public class FormulaShuffleFactoryTest {
     }
 
     @Test
-    public void test() {
-        assertEquals(4, filterExceptions(terms, exc()).size());
-        assertEquals(3, filterExceptions(terms, exc("AB")).size());
-        assertEquals(3, filterExceptions(terms, exc("ABC", "ABC")).size());
+    public void testFilterByFormulas() {
+        assertEquals(4, filterByFormulas(terms, null).size());
+        assertEquals(4, filterByFormulas(terms, exc()).size());
+        assertEquals(3, filterByFormulas(terms, exc("AB")).size());
+        assertEquals(3, filterByFormulas(terms, exc("ABC", "ABC")).size());
         // @formatter:off
         assertEquals(0,
-            filterExceptions(terms, exc("BC", "ABC", "AC", "AB")).size());
+            filterByFormulas(terms, exc("BC", "ABC", "AC", "AB")).size());
         // @formatter:on
+    }
+
+    @Test
+    public void testFilterByElements() {
+        assertEquals(4, filterByTerminals(terms, null).size());
+        assertEquals(4, filterByTerminals(terms, exc()).size());
+        assertEquals(1, filterByTerminals(terms, exc("A")).size());
+        assertEquals(1, filterByTerminals(terms, exc("B")).size());
+        assertEquals(1, filterByTerminals(terms, exc("C")).size());
+        assertEquals(0, filterByTerminals(terms, exc("A", "B")).size());
+        assertEquals(0, filterByTerminals(terms, exc("A", "C")).size());
+        assertEquals(0, filterByTerminals(terms, exc("B", "C")).size());
     }
 
     public Set<String> exc(String... idList) {

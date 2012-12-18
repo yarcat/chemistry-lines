@@ -8,3 +8,5 @@
 /build
 /Lib/src/com/yarcat/chemistrylines/field/KnownFormulas.java
 /Lib/tests/com/yarcat/tests/chemistrylines/KnownFormulasTest.java
+/Swing/element-exceptions.txt
+/Swing/formula-exceptions.txt

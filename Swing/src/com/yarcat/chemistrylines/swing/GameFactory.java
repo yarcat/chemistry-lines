@@ -18,8 +18,9 @@ public abstract class GameFactory {
 
     private Cleaner mCleaner = Cleaner.Immediate;
 
-    /** Returns new instance of the game initialized with the given field. */
-    protected abstract GameLogic createInstance(Field field);
+    /** Returns new instance of the game initialized with the given field.
+     * @throws Exception TODO*/
+    protected abstract GameLogic createInstance(Field field) throws Exception;
 
     /** Returns a string, describing current mode. */
     abstract String getModeName();
@@ -38,7 +39,7 @@ public abstract class GameFactory {
 
     public static class CompoundMode extends GameFactory {
         @Override
-        protected GameLogic createInstance(Field field) {
+        protected GameLogic createInstance(Field field) throws Exception {
             return new ChemistryLinesGame(field);
         }
 
@@ -57,7 +58,7 @@ public abstract class GameFactory {
 
     public static class FormulaRandomMode extends FormulaGameFactory {
         @Override
-        protected GameLogic createInstance(Field field) {
+        protected GameLogic createInstance(Field field) throws Exception {
             return FormulaLinesGame.randomTerminalGame(field);
         }
 
@@ -69,7 +70,7 @@ public abstract class GameFactory {
 
     public static class FormulaShuffleMode extends FormulaGameFactory {
         @Override
-        protected GameLogic createInstance(Field field) {
+        protected GameLogic createInstance(Field field) throws Exception {
             return FormulaShuffleFactory.formulaShuffleGame(field);
         }
 
@@ -81,7 +82,7 @@ public abstract class GameFactory {
 
     public static class FormulaDebugMode extends FormulaGameFactory {
         @Override
-        protected GameLogic createInstance(Field field) {
+        protected GameLogic createInstance(Field field) throws Exception {
             return FormulaLinesGame.formulaDebugGame(field);
         }
 
@@ -91,7 +92,7 @@ public abstract class GameFactory {
         }
     }
 
-    protected GameLogic newInstance(Field field) {
+    protected GameLogic newInstance(Field field) throws Exception {
         GameLogic game = createInstance(field);
         game.setFieldCleaner(createCleaner(field));
         return game;

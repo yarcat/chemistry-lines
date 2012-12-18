@@ -36,7 +36,7 @@ class SwingUIFactory {
         mRows = rows;
     }
 
-    public SwingChemistryLines newInstance() {
+    public SwingChemistryLines newInstance() throws Exception {
         return new Builder().newInstance();
     }
 
@@ -51,7 +51,7 @@ class SwingUIFactory {
         SwingChemistryLines mGameUI;
         JTextArea mScoreUI;
 
-        public SwingChemistryLines newInstance() {
+        public SwingChemistryLines newInstance() throws Exception {
             Field field = new RectField(mCols, mRows);
             mButtons = new FieldButton[field.getLength()];
             mPreview = new PreviewButton[PORTION_SIZE];

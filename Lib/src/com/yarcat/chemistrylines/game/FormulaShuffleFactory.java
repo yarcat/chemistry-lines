@@ -18,14 +18,30 @@ import com.yarcat.chemistrylines.field.KnownFormulas;
 
 public class FormulaShuffleFactory {
 
+    @SuppressWarnings("serial")
+    public static class NoFormulas extends Exception {
+        @Override
+        public String getMessage() {
+            return "All formulas were filtered out.\n"
+                + "There is nothing to play with.\n\nSorry :(";
+        }
+    }
+
+    private static final String TERMINAL_FILTER_FILE_NAME =
+        "element-exceptions.txt";
     private static final String FORMULA_FILTER_FILE_NAME =
         "formula-exceptions.txt";
 
-    public static FormulaLinesGame formulaShuffleGame(Field field) {
-        Set<String> exceptions = readExceptionSet(FORMULA_FILTER_FILE_NAME);
+    public static FormulaLinesGame formulaShuffleGame(Field field)
+            throws NoFormulas {
         Map<Element, Element[]> ft = KnownFormulas.formulaTerms;
         Map<Element, Element[]> filtered =
-            exceptions == null ? ft : filterExceptions(ft, exceptions);
+            filterByTerminals(
+                filterByFormulas(ft, readExceptionSet(FORMULA_FILTER_FILE_NAME)),
+                readExceptionSet(TERMINAL_FILTER_FILE_NAME));
+        if (filtered.isEmpty()) {
+            throw new NoFormulas();
+        }
         Element[][] formulas = valuesArray(filtered.values());
         // @formatter:off
         return new FormulaLinesGame(field,
@@ -42,15 +58,50 @@ public class FormulaShuffleFactory {
         return r;
     }
 
-    public static Map<Element, Element[]> filterExceptions(
+    public static Map<Element, Element[]> filterByFormulas(
             Map<Element, Element[]> formulaTerms, Set<String> exceptions) {
-        HashMap<Element, Element[]> r = new HashMap<Element, Element[]>();
-        for (Entry<Element, Element[]> it : formulaTerms.entrySet()) {
-            if (!exceptions.contains(it.getKey().getId())) {
-                r.put(it.getKey(), it.getValue());
+        Map<Element, Element[]> r;
+        if (exceptions == null) {
+            r = formulaTerms;
+        } else {
+            r = new HashMap<Element, Element[]>();
+            for (Entry<Element, Element[]> it : formulaTerms.entrySet()) {
+                if (!formulaMatchesException(it.getKey(), exceptions)) {
+                    r.put(it.getKey(), it.getValue());
+                }
             }
         }
         return r;
+    }
+
+    private static boolean formulaMatchesException(Element e,
+            Set<String> exceptions) {
+        return exceptions.contains(e.getId());
+    }
+
+    public static Map<Element, Element[]> filterByTerminals(
+            Map<Element, Element[]> formulaTerms, Set<String> exceptions) {
+        Map<Element, Element[]> r;
+        if (exceptions == null) {
+            r = formulaTerms;
+        } else {
+            r = new HashMap<Element, Element[]>();
+            for (Entry<Element, Element[]> it : formulaTerms.entrySet()) {
+                if (termsMatchException(it.getValue(), exceptions)) {
+                    r.put(it.getKey(), it.getValue());
+                }
+            }
+        }
+        return r;
+    }
+
+    private static boolean termsMatchException(Element[] terms,
+            Set<String> exceptions) {
+        int i = 0;
+        while (i < terms.length && !exceptions.contains(terms[i].getId())) {
+            ++i;
+        }
+        return i == terms.length;
     }
 
     private static Set<String> readExceptionSet(String fileName) {

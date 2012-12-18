@@ -1,5 +1,6 @@
 package com.yarcat.chemistrylines.swing;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class SwingChemistryLinesMain {
@@ -23,13 +24,21 @@ public class SwingChemistryLinesMain {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                newGame(f, COLS, ROWS);
+                try {
+                    newGame(f, COLS, ROWS);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(
+                        null, e.getMessage(),
+                        f.getModeName() + " Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                }
             }
         });
     }
 
     protected static SwingChemistryLines newGame(GameFactory factory, int cols,
-            int rows) {
+            int rows) throws Exception {
         SwingUIFactory f = new SwingUIFactory(factory, cols, rows);
         return f.newInstance();
     }
