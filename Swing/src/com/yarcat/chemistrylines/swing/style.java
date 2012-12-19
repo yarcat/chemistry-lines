@@ -19,8 +19,10 @@ public class style {
     private static final Color HIGHLIGHT_FG = Color.YELLOW;
 
     // @formatter:off
-    private final static Border BORDER =
+    final static Border DEFAULT_BORDER =
         BorderFactory.createLineBorder(new Color(0x55, 0x44, 0x33));
+    final static Border REACHABLE_BORDER =
+            BorderFactory.createLineBorder(new Color(0x20, 0x00, 0x30), 2);
     // @formatter:on
 
     static Component defaultColor(Component c) {
@@ -41,7 +43,7 @@ public class style {
 
     static void frame(JComponent c) {
         defaultColor(c);
-        c.setBorder(BORDER);
+        c.setBorder(DEFAULT_BORDER);
         c.setOpaque(true);
     }
 }

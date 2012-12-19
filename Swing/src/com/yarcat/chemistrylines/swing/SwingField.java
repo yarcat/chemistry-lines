@@ -2,6 +2,8 @@ package com.yarcat.chemistrylines.swing;
 
 import java.awt.Color;
 
+import javax.swing.border.Border;
+
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Cell;
 import com.yarcat.chemistrylines.field.Cell.Mark;
@@ -40,6 +42,12 @@ class SwingField {
         }
 
         @Override
+        void updateStyle() {
+            super.updateStyle();
+            setBorder(getEdge());
+        }
+
+        @Override
         Color getBgColor() {
             Color bg;
             if (marked(Mark.SelectedAsSource)) {
@@ -52,6 +60,11 @@ class SwingField {
                 bg = super.getBgColor();
             }
             return bg;
+        }
+
+        private Border getEdge() {
+            return !isEmpty() && marked(Mark.ReachableFromSource)
+                ? style.REACHABLE_BORDER : style.DEFAULT_BORDER;
         }
     }
 
