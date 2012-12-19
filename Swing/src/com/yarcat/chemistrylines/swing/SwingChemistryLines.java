@@ -54,7 +54,11 @@ class SwingChemistryLines implements MouseListener, GameListener {
     public void mouseEntered(MouseEvent e) {
         if (selection().hasSource()) {
             FieldButton b = (FieldButton) e.getSource();
-            selection().select(b.n);
+            if (b.n == selection().getSource()) {
+                selection().clearTarget();
+            } else {
+                selection().select(b.n);
+            }
             refreshField();
         }
     }

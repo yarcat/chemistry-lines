@@ -45,7 +45,7 @@ public class SelectionInView {
         }
     }
 
-    private void clearSource() {
+    public void clearSource() {
         if (hasSource()) {
             if (mListener != null) {
                 mListener.onSourceCleared(mSelection[0]);
@@ -54,7 +54,7 @@ public class SelectionInView {
         }
     }
 
-    private void clearTarget() {
+    public void clearTarget() {
         if (hasTarget()) {
             if (mListener != null) {
                 mListener.onTargetCleared(mSelection[1]);
