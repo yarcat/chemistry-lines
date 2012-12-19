@@ -15,7 +15,7 @@ public class SelectionInView {
     }
 
     private SelectionListener mListener;
-    private int[] mSelection = new int[] { -1, -1 };
+    private final int[] mSelection = new int[] { -1, -1 };
 
     public void select(int n) {
         if (hasSource()) {
