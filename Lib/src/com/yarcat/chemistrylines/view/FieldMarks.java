@@ -68,8 +68,7 @@ public class FieldMarks implements SelectionListener {
     }
 
     private void markCellsReachableFrom(int n) {
-        Path p = new Path(mField, n);
-        p.evaluate();
+        Path p = Path.prepare(mField, n);
         for (int i = 0; i < mField.getLength(); ++i) {
             if (p.isReachable(i)) {
                 setMark(i, Mark.ReachableFromSource);
