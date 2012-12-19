@@ -12,10 +12,11 @@ import javax.swing.border.Border;
 public class style {
     // public final static Color DEFAULT_BG = new Color(0x99, 0x88, 0x77);
     // public final static Color DEFAULT_FG = new Color(0, 0x33, 0);
-    public final static Color DEFAULT_BG = new Color(0x80, 0x70, 0x50);
-    public final static Color DEFAULT_FG = Color.WHITE;
-    private final static Color HIGHLIGHT_BG = new Color(0, 0, 71);
-    private final static Color HIGHLIGHT_FG = Color.YELLOW;
+    public static final Color DEFAULT_BG = new Color(0x80, 0x70, 0x50);
+    public static final Color DEFAULT_FG = Color.WHITE;
+    public static final Color REACHABLE_BG = new Color(0x70, 0x60, 0x45);;
+    private static final Color HIGHLIGHT_BG = new Color(0, 0, 71);
+    private static final Color HIGHLIGHT_FG = Color.YELLOW;
 
     // @formatter:off
     private final static Border BORDER =

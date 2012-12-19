@@ -2,6 +2,7 @@ package com.yarcat.chemistrylines.swing;
 
 import java.awt.Color;
 
+import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Cell;
 import com.yarcat.chemistrylines.field.Cell.Mark;
 import com.yarcat.chemistrylines.field.Element;
@@ -45,6 +46,8 @@ class SwingField {
                 bg = Color.DARK_GRAY;
             } else if (marked(Mark.SelectedAsDestination)) {
                 bg = Color.GRAY;
+            } else if (isEmpty() && marked(Mark.ReachableFromSource)) {
+                bg = style.REACHABLE_BG;
             } else {
                 bg = super.getBgColor();
             }
@@ -57,6 +60,7 @@ class SwingField {
         @Override
         public void onNewSource(int n) {
             at(n).setMark(Mark.SelectedAsSource);
+            markCellsReachableFrom(n);
         }
 
         @Override
@@ -67,11 +71,32 @@ class SwingField {
         @Override
         public void onSourceCleared(int n) {
             at(n).clearMark(Mark.SelectedAsSource);
+            clearCellsReachableFrom(n);
         }
 
         @Override
         public void onTargetCleared(int n) {
             at(n).clearMark(Mark.SelectedAsDestination);
+        }
+
+        private void markCellsReachableFrom(int n) {
+            Path p = new Path(getField(), n);
+            p.evaluate();
+            for (int i = 0; i < getLength(); ++i) {
+                if (p.isReachable(i)) {
+                    at(i).setMark(Mark.ReachableFromSource);
+                }
+            }
+        }
+
+        private void clearCellsReachableFrom(int n) {
+            for (int i = 0; i < getLength(); ++i) {
+                at(i).clearMark(Mark.ReachableFromSource);
+            }
+        }
+
+        private int getLength() {
+            return getField().getLength();
         }
     }
 
