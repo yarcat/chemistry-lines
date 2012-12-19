@@ -65,40 +65,42 @@ class SwingChemistryLines implements MouseListener, GameListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        FieldButton b = (FieldButton) e.getSource();
-        if (selection().hasSource() && selection().hasTarget()
-            && selection().getSource() == selection().getTarget()
-            && selection().getSource() == b.n) {
-            selection().clear();
+        final FieldButton b = (FieldButton) e.getSource();
+        if (selection().hasSource()) {
+            selection().select(b.n);
+            tryMakeMove();
         } else {
-            tryMakeMove(b.n);
+            selection().select(b.n);
         }
+        // TODO: refresh field via selection listener
         refreshField();
-    }
-
-    private void tryMakeMove(int id) {
-        // We need this because for the drag case mouseReleased is called for
-        // the source button, and we don't wanna overwrite the value.
-        if (!selection().hasTarget()) {
-            selection().select(id);
-        }
-        if (selection().hasTarget()
-            && selection().getSource() != selection().getTarget()) {
-            try {
-                mGame.makeMove(selection().getSource(), selection()
-                    .getTarget());
-                refresh();
-            } catch (InvalidMove e1) {
-            }
-            selection().clear();
-        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (selection().hasSource()) {
-            FieldButton b = (FieldButton) e.getSource();
-            tryMakeMove(b.n);
+            // mouseReleased() gets the same button that was pressed.
+            tryMakeMove();
+        }
+    }
+
+    private void tryMakeMove() {
+        if (selection().hasTarget()) {
+            int s, t;
+            if (mGame.getField().at(selection().getSource()).isEmpty()) {
+                s = selection().getTarget();
+                t = selection().getSource();
+            } else {
+                s = selection().getSource();
+                t = selection().getTarget();
+            }
+            try {
+                mGame.makeMove(s, t);
+                refresh();
+            } catch (InvalidMove e1) {
+            }
+            selection().clear();
+            refreshField();
         }
     }
 

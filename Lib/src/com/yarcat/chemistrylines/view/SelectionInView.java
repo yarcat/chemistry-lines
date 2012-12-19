@@ -1,5 +1,7 @@
 package com.yarcat.chemistrylines.view;
 
+import android.annotation.SuppressLint;
+
 public class SelectionInView {
     public interface SelectionListener {
 
@@ -17,7 +19,9 @@ public class SelectionInView {
 
     public void select(int n) {
         if (hasSource()) {
-            if (getSource() != n) {
+            if (getSource() == n) {
+                clear();
+            } else {
                 selectTarget(n);
             }
         } else {
@@ -26,9 +30,7 @@ public class SelectionInView {
     }
 
     private void selectSource(int n) {
-        if (mListener != null && hasSource()) {
-            mListener.onSourceCleared(mSelection[0]);
-        }
+        clearSource();
         mSelection[0] = n;
         if (mListener != null && hasSource()) {
             mListener.onNewSource(n);
@@ -36,12 +38,28 @@ public class SelectionInView {
     }
 
     private void selectTarget(int n) {
-        if (mListener != null && hasTarget()) {
-            mListener.onTargetCleared(mSelection[1]);
-        }
+        clearTarget();
         mSelection[1] = n;
         if (mListener != null && hasTarget()) {
             mListener.onNewTarget(n);
+        }
+    }
+
+    private void clearSource() {
+        if (hasSource()) {
+            if (mListener != null) {
+                mListener.onSourceCleared(mSelection[0]);
+            }
+            mSelection[0] = -1;
+        }
+    }
+
+    private void clearTarget() {
+        if (hasTarget()) {
+            if (mListener != null) {
+                mListener.onTargetCleared(mSelection[1]);
+            }
+            mSelection[1] = -1;
         }
     }
 
@@ -75,5 +93,12 @@ public class SelectionInView {
 
     public void setListener(SelectionListener l) {
         mListener = l;
+    }
+
+    @SuppressLint("DefaultLocale")
+    @Override
+    public String toString() {
+        return String
+            .format("Selection(%d,  %d)", mSelection[0], mSelection[1]);
     }
 }
