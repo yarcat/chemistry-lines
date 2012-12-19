@@ -19,6 +19,9 @@ public interface Field {
     /** Calls CellVisitor.visit() for the surrounding cells. */
     public void visitSiblings(int n, CellVisitor visitor);
 
+    /** Return set of sibling cells */
+    public int[] getSiblings(int n);
+
     /** Allows to scan sequence of cells */
     public interface SequenceVisitor {
         /** Called before processing a sequence */
