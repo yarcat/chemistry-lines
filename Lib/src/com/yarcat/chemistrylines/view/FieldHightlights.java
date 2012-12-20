@@ -7,7 +7,7 @@ import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.view.SelectionInView.SelectionListener;
 
-public class FieldMarks implements SelectionListener {
+public class FieldHightlights implements SelectionListener {
     // @formatter:off
     public enum Mark {
         SelectedAsSource,
@@ -19,18 +19,18 @@ public class FieldMarks implements SelectionListener {
     final ArrayList<EnumSet<Mark>> mMarks;
     final Field mField;
 
-    private FieldMarks(Field f, ArrayList<EnumSet<Mark>> m) {
+    private FieldHightlights(Field f, ArrayList<EnumSet<Mark>> m) {
         mField = f;
         mMarks = m;
     }
 
-    public static FieldMarks create(Field f) {
+    public static FieldHightlights create(Field f) {
         int s = f.getLength();
         final ArrayList<EnumSet<Mark>> m = new ArrayList<EnumSet<Mark>>(s);
         for (int i = 0; i < s; ++i) {
             m.add(EnumSet.noneOf(Mark.class));
         }
-        return new FieldMarks(f, m);
+        return new FieldHightlights(f, m);
     }
 
     public void setMark(int n, Mark m) {
@@ -69,11 +69,13 @@ public class FieldMarks implements SelectionListener {
 
     private void markCellsReachableFrom(int n) {
         Path p = Path.prepare(mField, n);
+        boolean markEmpties = p.reachableCount < mField.getLength() * 2 / 3;
         for (int i = 0; i < mField.getLength(); ++i) {
-            if (p.isReachable(i)) {
+            if (p.isReachable(i) && (!mField.at(i).isEmpty() || markEmpties)) {
                 setMark(i, Mark.ReachableFromSource);
             }
         }
+
     }
 
     private void clearCellsReachableFrom(int n) {

@@ -8,9 +8,9 @@ import com.yarcat.chemistrylines.field.Cell;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.game.GameLogic;
-import com.yarcat.chemistrylines.view.FieldMarks;
+import com.yarcat.chemistrylines.view.FieldHightlights;
 import com.yarcat.chemistrylines.view.SelectionInView;
-import com.yarcat.chemistrylines.view.FieldMarks.Mark;
+import com.yarcat.chemistrylines.view.FieldHightlights.Mark;
 
 class SwingField {
     @SuppressWarnings("serial")
@@ -69,13 +69,13 @@ class SwingField {
     private final GameLogic mGame;
     private final FieldButton[] mButtons;
     private final SelectionInView mSel;
-    private final FieldMarks mFieldMarks;
+    private final FieldHightlights mFieldMarks;
 
     public SwingField(GameLogic game, FieldButton[] buttons) {
         mGame = game;
         mButtons = buttons;
         mSel = new SelectionInView();
-        mFieldMarks = FieldMarks.create(mGame.getField());
+        mFieldMarks = FieldHightlights.create(mGame.getField());
         mSel.setListener(mFieldMarks);
     }
 
