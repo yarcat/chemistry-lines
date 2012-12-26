@@ -5,14 +5,14 @@ import java.util.EnumSet;
 
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Field;
-import com.yarcat.chemistrylines.view.SelectionInView.SelectionListener;
+import com.yarcat.chemistrylines.view.SelectionInView;
 
-public class FieldHightlights implements SelectionListener {
+public class FieldHightlights implements SelectionInView.Listener {
     // @formatter:off
     public enum Mark {
-        SelectedAsSource,
-        SelectedAsDestination,
-        ReachableFromSource,
+        SOURCE,
+        TARGET,
+        REACHABLE,
     }
     // @formatter:on
 
@@ -47,24 +47,24 @@ public class FieldHightlights implements SelectionListener {
 
     @Override
     public void onNewSource(int n) {
-        setMark(n, Mark.SelectedAsSource);
+        setMark(n, Mark.SOURCE);
         markCellsReachableFrom(n);
     }
 
     @Override
     public void onNewTarget(int n) {
-        setMark(n, Mark.SelectedAsDestination);
+        setMark(n, Mark.TARGET);
     }
 
     @Override
     public void onSourceCleared(int n) {
-        clearMark(n, Mark.SelectedAsSource);
+        clearMark(n, Mark.SOURCE);
         clearCellsReachableFrom(n);
     }
 
     @Override
     public void onTargetCleared(int n) {
-        clearMark(n, Mark.SelectedAsDestination);
+        clearMark(n, Mark.TARGET);
     }
 
     private void markCellsReachableFrom(int n) {
@@ -72,7 +72,7 @@ public class FieldHightlights implements SelectionListener {
         boolean markEmpties = p.reachableCount < mField.getLength() * 2 / 3;
         for (int i = 0; i < mField.getLength(); ++i) {
             if (p.isReachable(i) && (!mField.at(i).isEmpty() || markEmpties)) {
-                setMark(i, Mark.ReachableFromSource);
+                setMark(i, Mark.REACHABLE);
             }
         }
 
@@ -80,7 +80,7 @@ public class FieldHightlights implements SelectionListener {
 
     private void clearCellsReachableFrom(int n) {
         for (int i = 0; i < mField.getLength(); ++i) {
-            clearMark(i, Mark.ReachableFromSource);
+            clearMark(i, Mark.REACHABLE);
         }
     }
 }

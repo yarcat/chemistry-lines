@@ -3,19 +3,20 @@ package com.yarcat.chemistrylines.view;
 import android.annotation.SuppressLint;
 
 public class SelectionInView {
-    public interface SelectionListener {
+    public interface Listener {
 
         public void onNewSource(int n);
 
         public void onNewTarget(int n);
 
-        public void onSourceCleared(int i);
+        public void onSourceCleared(int n);
 
-        public void onTargetCleared(int i);
+        public void onTargetCleared(int n);
     }
 
-    private SelectionListener mListener;
-    private final int[] mSelection = new int[] { -1, -1 };
+    private Listener mListener;
+    private int mSource = -1;
+    private int mTarget = -1;
 
     public void select(int n) {
         if (hasSource()) {
@@ -31,7 +32,7 @@ public class SelectionInView {
 
     private void selectSource(int n) {
         clearSource();
-        mSelection[0] = n;
+        mSource = n;
         if (mListener != null && hasSource()) {
             mListener.onNewSource(n);
         }
@@ -39,7 +40,7 @@ public class SelectionInView {
 
     private void selectTarget(int n) {
         clearTarget();
-        mSelection[1] = n;
+        mTarget = n;
         if (mListener != null && hasTarget()) {
             mListener.onNewTarget(n);
         }
@@ -48,50 +49,43 @@ public class SelectionInView {
     public void clearSource() {
         if (hasSource()) {
             if (mListener != null) {
-                mListener.onSourceCleared(mSelection[0]);
+                mListener.onSourceCleared(mSource);
             }
-            mSelection[0] = -1;
+            mSource = -1;
         }
     }
 
     public void clearTarget() {
         if (hasTarget()) {
             if (mListener != null) {
-                mListener.onTargetCleared(mSelection[1]);
+                mListener.onTargetCleared(mTarget);
             }
-            mSelection[1] = -1;
+            mTarget = -1;
         }
     }
 
     public void clear() {
-        if (mListener != null) {
-            if (hasSource()) {
-                mListener.onSourceCleared(mSelection[0]);
-            }
-            if (hasTarget()) {
-                mListener.onTargetCleared(mSelection[1]);
-            }
-        }
-        mSelection[0] = mSelection[1] = -1;
+        clearSource();
+        clearTarget();
     }
 
     public boolean hasSource() {
-        return mSelection[0] != -1;
+        return mSource != -1;
     }
 
     public int getSource() {
-        return mSelection[0];
+        return mSource;
     }
 
     public boolean hasTarget() {
-        return mSelection[1] != -1;
+        return mTarget != -1;
     }
 
     public int getTarget() {
-        return mSelection[1];
+        return mTarget;
     }
 
-    public void setListener(SelectionListener l) {
+    public void setListener(Listener l) {
         mListener = l;
     }
 
@@ -99,6 +93,6 @@ public class SelectionInView {
     @Override
     public String toString() {
         return String
-            .format("Selection(%d,  %d)", mSelection[0], mSelection[1]);
+            .format("Selection(%d,  %d)", mSource, mTarget);
     }
 }

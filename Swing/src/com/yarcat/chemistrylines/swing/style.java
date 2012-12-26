@@ -22,7 +22,7 @@ public class style {
     final static Border DEFAULT_BORDER =
         BorderFactory.createLineBorder(new Color(0x55, 0x44, 0x33));
     final static Border REACHABLE_BORDER =
-            BorderFactory.createLineBorder(new Color(0x20, 0x00, 0x30), 2);
+        BorderFactory.createLineBorder(new Color(0x20, 0x00, 0x30), 2);
     // @formatter:on
 
     static Component defaultColor(Component c) {

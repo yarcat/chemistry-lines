@@ -35,7 +35,7 @@ class SwingField {
             return cell().isEmpty();
         }
 
-        private boolean marked(Mark m) {
+        private boolean markedAs(Mark m) {
             return mFieldMarks.hasMark(n, m);
         }
 
@@ -48,11 +48,11 @@ class SwingField {
         @Override
         Color getBgColor() {
             Color bg;
-            if (marked(Mark.SelectedAsSource)) {
+            if (markedAs(Mark.SOURCE)) {
                 bg = Color.DARK_GRAY;
-            } else if (marked(Mark.SelectedAsDestination)) {
+            } else if (markedAs(Mark.TARGET)) {
                 bg = Color.GRAY;
-            } else if (isEmpty() && marked(Mark.ReachableFromSource)) {
+            } else if (isEmpty() && markedAs(Mark.REACHABLE)) {
                 bg = style.REACHABLE_BG;
             } else {
                 bg = super.getBgColor();
@@ -61,7 +61,7 @@ class SwingField {
         }
 
         private Border getEdge() {
-            return !isEmpty() && marked(Mark.ReachableFromSource)
+            return !isEmpty() && markedAs(Mark.REACHABLE)
                 ? style.REACHABLE_BORDER : style.DEFAULT_BORDER;
         }
     }
@@ -89,8 +89,8 @@ class SwingField {
         }
     }
 
-    Cell at(int i) {
-        return getField().at(i);
+    Cell at(int n) {
+        return getField().at(n);
     }
 
     Field getField() {
