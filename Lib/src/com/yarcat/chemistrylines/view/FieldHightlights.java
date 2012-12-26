@@ -5,19 +5,24 @@ import java.util.EnumSet;
 
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Field;
-import com.yarcat.chemistrylines.view.SelectionInView.SelectionListener;
+import com.yarcat.chemistrylines.view.SelectionInView;
 
-public class FieldHightlights implements SelectionListener {
+public class FieldHightlights implements SelectionInView.Listener {
     // @formatter:off
     public enum Mark {
-        SelectedAsSource,
-        SelectedAsDestination,
-        ReachableFromSource,
+        SOURCE,
+        TARGET,
+        REACHABLE,
     }
     // @formatter:on
 
+    public interface Listener {
+        public void onHighlightChange();
+    }
+
     final ArrayList<EnumSet<Mark>> mMarks;
     final Field mField;
+    private Listener mListener;
 
     private FieldHightlights(Field f, ArrayList<EnumSet<Mark>> m) {
         mField = f;
@@ -33,11 +38,11 @@ public class FieldHightlights implements SelectionListener {
         return new FieldHightlights(f, m);
     }
 
-    public void setMark(int n, Mark m) {
+    private void setMark(int n, Mark m) {
         mMarks.get(n).add(m);
     }
 
-    public void clearMark(int n, Mark m) {
+    private void clearMark(int n, Mark m) {
         mMarks.get(n).remove(m);
     }
 
@@ -47,24 +52,28 @@ public class FieldHightlights implements SelectionListener {
 
     @Override
     public void onNewSource(int n) {
-        setMark(n, Mark.SelectedAsSource);
+        setMark(n, Mark.SOURCE);
         markCellsReachableFrom(n);
+        onChange();
     }
 
     @Override
     public void onNewTarget(int n) {
-        setMark(n, Mark.SelectedAsDestination);
+        setMark(n, Mark.TARGET);
+        onChange();
     }
 
     @Override
     public void onSourceCleared(int n) {
-        clearMark(n, Mark.SelectedAsSource);
+        clearMark(n, Mark.SOURCE);
         clearCellsReachableFrom(n);
+        onChange();
     }
 
     @Override
     public void onTargetCleared(int n) {
-        clearMark(n, Mark.SelectedAsDestination);
+        clearMark(n, Mark.TARGET);
+        onChange();
     }
 
     private void markCellsReachableFrom(int n) {
@@ -72,7 +81,7 @@ public class FieldHightlights implements SelectionListener {
         boolean markEmpties = p.reachableCount < mField.getLength() * 2 / 3;
         for (int i = 0; i < mField.getLength(); ++i) {
             if (p.isReachable(i) && (!mField.at(i).isEmpty() || markEmpties)) {
-                setMark(i, Mark.ReachableFromSource);
+                setMark(i, Mark.REACHABLE);
             }
         }
 
@@ -80,7 +89,17 @@ public class FieldHightlights implements SelectionListener {
 
     private void clearCellsReachableFrom(int n) {
         for (int i = 0; i < mField.getLength(); ++i) {
-            clearMark(i, Mark.ReachableFromSource);
+            clearMark(i, Mark.REACHABLE);
         }
+    }
+
+    private void onChange() {
+       if (mListener != null) {
+           mListener.onHighlightChange();
+       }
+    }
+
+    public void setListener(Listener l) {
+        mListener = l;
     }
 }
