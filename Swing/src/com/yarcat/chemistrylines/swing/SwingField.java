@@ -9,10 +9,10 @@ import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 import com.yarcat.chemistrylines.game.GameLogic;
 import com.yarcat.chemistrylines.view.FieldHightlights;
-import com.yarcat.chemistrylines.view.SelectionInView;
 import com.yarcat.chemistrylines.view.FieldHightlights.Mark;
+import com.yarcat.chemistrylines.view.SelectionInView;
 
-class SwingField {
+class SwingField implements FieldHightlights.Listener {
     @SuppressWarnings("serial")
     class FieldButton extends ElementButton {
         public final int n;
@@ -76,6 +76,7 @@ class SwingField {
         mButtons = buttons;
         mSel = new SelectionInView();
         mFieldMarks = FieldHightlights.create(mGame.getField());
+        mFieldMarks.setListener(this);
         mSel.setListener(mFieldMarks);
     }
 
@@ -107,5 +108,10 @@ class SwingField {
 
     FieldButton newButton(int n) {
         return new FieldButton(n);
+    }
+
+    @Override
+    public void onHighlightChange() {
+        refresh();
     }
 }

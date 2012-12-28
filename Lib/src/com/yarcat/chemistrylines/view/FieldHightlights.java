@@ -16,8 +16,13 @@ public class FieldHightlights implements SelectionInView.Listener {
     }
     // @formatter:on
 
+    public interface Listener {
+        public void onHighlightChange();
+    }
+
     final ArrayList<EnumSet<Mark>> mMarks;
     final Field mField;
+    private Listener mListener;
 
     private FieldHightlights(Field f, ArrayList<EnumSet<Mark>> m) {
         mField = f;
@@ -33,11 +38,11 @@ public class FieldHightlights implements SelectionInView.Listener {
         return new FieldHightlights(f, m);
     }
 
-    public void setMark(int n, Mark m) {
+    private void setMark(int n, Mark m) {
         mMarks.get(n).add(m);
     }
 
-    public void clearMark(int n, Mark m) {
+    private void clearMark(int n, Mark m) {
         mMarks.get(n).remove(m);
     }
 
@@ -49,22 +54,26 @@ public class FieldHightlights implements SelectionInView.Listener {
     public void onNewSource(int n) {
         setMark(n, Mark.SOURCE);
         markCellsReachableFrom(n);
+        onChange();
     }
 
     @Override
     public void onNewTarget(int n) {
         setMark(n, Mark.TARGET);
+        onChange();
     }
 
     @Override
     public void onSourceCleared(int n) {
         clearMark(n, Mark.SOURCE);
         clearCellsReachableFrom(n);
+        onChange();
     }
 
     @Override
     public void onTargetCleared(int n) {
         clearMark(n, Mark.TARGET);
+        onChange();
     }
 
     private void markCellsReachableFrom(int n) {
@@ -82,5 +91,15 @@ public class FieldHightlights implements SelectionInView.Listener {
         for (int i = 0; i < mField.getLength(); ++i) {
             clearMark(i, Mark.REACHABLE);
         }
+    }
+
+    private void onChange() {
+       if (mListener != null) {
+           mListener.onHighlightChange();
+       }
+    }
+
+    public void setListener(Listener l) {
+        mListener = l;
     }
 }

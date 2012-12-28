@@ -29,7 +29,7 @@ class SwingChemistryLines implements MouseListener, GameListener {
     }
 
     void refresh() {
-        refreshField();
+        mFieldUI.refresh();
         mPreviewUI.refresh();
         if (mCleanerUI != null) {
             mCleanerUI.refresh();
@@ -40,10 +40,6 @@ class SwingChemistryLines implements MouseListener, GameListener {
     private void refreshScore() {
         mScoreUI.setText("");
         mScoreUI.append(mGame.getScorer().get());
-    }
-
-    private void refreshField() {
-        mFieldUI.refresh();
     }
 
     @Override
@@ -59,7 +55,6 @@ class SwingChemistryLines implements MouseListener, GameListener {
             } else {
                 selection().select(b.n);
             }
-            refreshField();
         }
     }
 
@@ -76,8 +71,6 @@ class SwingChemistryLines implements MouseListener, GameListener {
         } else {
             selection().select(b.n);
         }
-        // TODO: refresh field via selection listener
-        refreshField();
     }
 
     @Override
@@ -104,7 +97,6 @@ class SwingChemistryLines implements MouseListener, GameListener {
             } catch (InvalidMove e1) {
             }
             selection().clear();
-            refreshField();
         }
     }
 
