@@ -11,7 +11,7 @@ import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 
-public abstract class LinesGame implements GameLogic {
+public abstract class LinesGame extends GameLogic.Base {
 
     private static final int RETRY_ADD_CLEANUP = 108;
 
@@ -20,7 +20,6 @@ public abstract class LinesGame implements GameLogic {
     private final int mNewPortionSize;
     private final CompoundScanner mScanner;
     private final Scorer mScorer;
-    private GameListener mChangeListener;
     private FieldCleaner mFieldCleaner;
     private GameLogger mGameLog;
 
@@ -92,10 +91,6 @@ public abstract class LinesGame implements GameLogic {
         onElementsAdded(addedCells);
     }
 
-    private void onFieldChange() {
-        mChangeListener.onFieldChange(this);
-    }
-
     private void onElementsAdded(int[] addedCells) {
         mGameLog.elementsAdded(mField, addedCells);
         onFieldChange();
@@ -137,11 +132,6 @@ public abstract class LinesGame implements GameLogic {
     @Override
     public Field getField() {
         return mField;
-    }
-
-    @Override
-    public void setChangeListener(GameListener listener) {
-        mChangeListener = listener;
     }
 
     @Override

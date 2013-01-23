@@ -69,5 +69,19 @@ public interface GameLogic {
     public Field getField();
     public Scorer getScorer();
 
-    public void setChangeListener(GameListener listener);
+    public void addListener(GameListener listener);
+
+    public abstract class Base implements GameLogic {
+
+        protected GameListener mChangeListener;
+
+        protected void onFieldChange() {
+            mChangeListener.onFieldChange(this);
+        }
+
+        @Override
+        public void addListener(GameListener listener) {
+            mChangeListener = listener;
+        }
+    }
 }
