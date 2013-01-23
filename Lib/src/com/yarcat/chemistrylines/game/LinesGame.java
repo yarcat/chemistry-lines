@@ -141,6 +141,6 @@ public abstract class LinesGame extends GameLogic.Base {
 
     private void updateScore(CompoundReference ref) {
         mScorer.update(ref);
-        mChangeListener.onScoreChange(this);
+        onScoreChange();
     }
 }
