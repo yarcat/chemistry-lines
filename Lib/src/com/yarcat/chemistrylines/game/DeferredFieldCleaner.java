@@ -27,6 +27,7 @@ public class DeferredFieldCleaner extends FieldCleaner.Base {
                 ++mMarks[n];
             }
         }
+        afterProcess();
         return false;
     }
 

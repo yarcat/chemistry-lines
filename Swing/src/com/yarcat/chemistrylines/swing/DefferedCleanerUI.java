@@ -9,8 +9,9 @@ import javax.swing.JLabel;
 
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.game.DeferredFieldCleaner;
+import com.yarcat.chemistrylines.game.FieldCleaner;
 
-public class DefferedCleanerUI implements MouseListener {
+public class DefferedCleanerUI implements MouseListener, FieldCleaner.ProcessListener {
 
     private static final Panel DUMB_PANEL = new Panel();
 
@@ -30,6 +31,7 @@ public class DefferedCleanerUI implements MouseListener {
     public DefferedCleanerUI(DeferredFieldCleaner cleaner, Container pane,
             SwingField fieldUI) {
         mCleaner = cleaner;
+        mCleaner.setProcessListener(this);
         mPane = pane;
         mFieldUI = fieldUI;
     }
@@ -90,5 +92,10 @@ public class DefferedCleanerUI implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void afterCleanerProcess() {
+        refresh();
     }
 }

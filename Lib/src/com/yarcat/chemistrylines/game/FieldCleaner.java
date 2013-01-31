@@ -8,13 +8,20 @@ import com.yarcat.chemistrylines.field.Field;
 
 public interface FieldCleaner {
 
-    public abstract void setRemoveListener(CompoundListener removeListener);
+    public void setRemoveListener(CompoundListener removeListener);
 
-    public abstract boolean process(List<CompoundReference> compounds);
+    public boolean process(List<CompoundReference> compounds);
+
+    public interface ProcessListener {
+        public void afterCleanerProcess();
+    }
+
+    public void setProcessListener(ProcessListener l);
 
     public abstract class Base implements FieldCleaner {
 
         private CompoundListener mRemoveListener;
+        private ProcessListener mProcessListener;
         protected final Field mField;
 
         protected Base(Field field) {
@@ -29,6 +36,17 @@ public interface FieldCleaner {
         protected void onCompoundRemove(CompoundReference ref) {
             if (mRemoveListener != null) {
                 mRemoveListener.foundCompound(ref);
+            }
+        }
+
+        @Override
+        public void setProcessListener(ProcessListener l) {
+            mProcessListener = l;
+        }
+
+        protected void afterProcess() {
+            if (mProcessListener != null) {
+                mProcessListener.afterCleanerProcess();
             }
         }
     }
