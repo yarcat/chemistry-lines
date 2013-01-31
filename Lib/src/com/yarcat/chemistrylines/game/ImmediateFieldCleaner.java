@@ -19,6 +19,7 @@ public class ImmediateFieldCleaner extends FieldCleaner.Base {
         for (CompoundReference ref : compounds) {
             mField.removeCompound(ref.getCells());
         }
+        afterProcess();
         return !compounds.isEmpty();
     }
 }
