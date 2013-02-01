@@ -37,9 +37,10 @@ public class DeferredFieldCleaner extends FieldCleaner.Base {
 
     public void remove(CompoundReference ref) {
         if (mContents.contains(ref)) {
-            onCompoundRemove(ref);
+            beforeCompoundRemoved(ref);
             removeCompound(ref.getCells());
             mContents.remove(ref);
+            afterCompoundRemoved(ref);
         }
     }
 

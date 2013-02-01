@@ -12,7 +12,7 @@ import com.yarcat.chemistrylines.view.FieldHightlights;
 import com.yarcat.chemistrylines.view.FieldHightlights.Mark;
 import com.yarcat.chemistrylines.view.SelectionInView;
 
-class SwingField implements FieldHightlights.Listener {
+class SwingField implements FieldHightlights.Listener, GameLogic.GameListener {
     @SuppressWarnings("serial")
     class FieldButton extends ElementButton {
         public final int n;
@@ -113,5 +113,21 @@ class SwingField implements FieldHightlights.Listener {
     @Override
     public void onHighlightChange() {
         refresh();
+    }
+
+    @Override
+    public void onFieldChange(GameLogic game) {
+        mFieldMarks.onFieldChange();
+        refresh();
+    }
+
+    @Override
+    public void onFinished() {
+        // Ignore GameLogic.GameListener.onFinished().
+    }
+
+    @Override
+    public void onScoreChange(GameLogic game) {
+        // Ignore GameLogic.GameListener.onScoreChange().
     }
 }

@@ -1,17 +1,17 @@
 package com.yarcat.chemistrylines.game;
 
-import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
 import static com.yarcat.chemistrylines.algorithms.RandomCell.countEmptyCells;
+import static com.yarcat.chemistrylines.algorithms.RandomCell.getRandomEmptyCell;
 import static com.yarcat.chemistrylines.constants.PORTION_SIZE;
 
-import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.algorithms.CompoundScanner;
 import com.yarcat.chemistrylines.algorithms.Path;
 import com.yarcat.chemistrylines.field.Element;
 import com.yarcat.chemistrylines.field.Field;
 
-public abstract class LinesGame extends GameLogic.Base {
+public abstract class LinesGame extends GameLogic.Base implements
+        FieldCleaner.RemoveListener {
 
     private static final int RETRY_ADD_CLEANUP = 108;
 
@@ -115,18 +115,10 @@ public abstract class LinesGame extends GameLogic.Base {
         return mFieldCleaner;
     }
 
-    private final CompoundListener mRemoveListener = new CompoundListener() {
-        @Override
-        public void foundCompound(CompoundReference ref) {
-            mGameLog.compoundRemoved(mField, ref);
-            updateScore(ref);
-        }
-    };
-
     @Override
     public void setFieldCleaner(FieldCleaner cleaner) {
         mFieldCleaner = cleaner;
-        mFieldCleaner.setRemoveListener(mRemoveListener);
+        mFieldCleaner.setRemoveListener(this);
     }
 
     @Override
@@ -142,5 +134,16 @@ public abstract class LinesGame extends GameLogic.Base {
     private void updateScore(CompoundReference ref) {
         mScorer.update(ref);
         onScoreChange();
+    }
+
+    @Override
+    public void afterCompoundRemoved(CompoundReference ref) {
+         updateScore(ref);
+         onFieldChange();
+    }
+
+    @Override
+    public void beforeCompoundRemoved(CompoundReference ref) {
+        mGameLog.compoundRemoved(mField, ref);
     }
 }

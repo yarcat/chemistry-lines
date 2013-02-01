@@ -23,6 +23,7 @@ class SwingChemistryLines implements MouseListener, GameListener {
             SwingPreview previewUI, JTextArea scoreUI) {
         mFieldUI = fieldUI;
         mGame = game;
+        mGame.addListener(mFieldUI);
         mPreviewUI = previewUI;
         mCleanerUI = null;
         mScoreUI = scoreUI;

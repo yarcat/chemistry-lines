@@ -23,10 +23,12 @@ public class FieldHightlights implements SelectionInView.Listener {
     final ArrayList<EnumSet<Mark>> mMarks;
     final Field mField;
     private Listener mListener;
+    private int mLastSource;
 
     private FieldHightlights(Field f, ArrayList<EnumSet<Mark>> m) {
         mField = f;
         mMarks = m;
+        mLastSource = -1;
     }
 
     public static FieldHightlights create(Field f) {
@@ -52,8 +54,9 @@ public class FieldHightlights implements SelectionInView.Listener {
 
     @Override
     public void onNewSource(int n) {
+        mLastSource = n;
         setMark(n, Mark.SOURCE);
-        markCellsReachableFrom(n);
+        markCellsReachableFrom(mLastSource);
         onChange();
     }
 
@@ -65,8 +68,9 @@ public class FieldHightlights implements SelectionInView.Listener {
 
     @Override
     public void onSourceCleared(int n) {
+        mLastSource = -1;
         clearMark(n, Mark.SOURCE);
-        clearCellsReachableFrom(n);
+        clearReachableFromSource();
         onChange();
     }
 
@@ -87,19 +91,26 @@ public class FieldHightlights implements SelectionInView.Listener {
 
     }
 
-    private void clearCellsReachableFrom(int n) {
+    private void clearReachableFromSource() {
         for (int i = 0; i < mField.getLength(); ++i) {
             clearMark(i, Mark.REACHABLE);
         }
     }
 
     private void onChange() {
-       if (mListener != null) {
-           mListener.onHighlightChange();
-       }
+        if (mListener != null) {
+            mListener.onHighlightChange();
+        }
     }
 
     public void setListener(Listener l) {
         mListener = l;
+    }
+
+    public void onFieldChange() {
+        if (mLastSource >= 0) {
+            clearReachableFromSource();
+            markCellsReachableFrom(mLastSource);
+        }
     }
 }

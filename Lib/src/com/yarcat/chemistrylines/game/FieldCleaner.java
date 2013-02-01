@@ -2,15 +2,20 @@ package com.yarcat.chemistrylines.game;
 
 import java.util.List;
 
-import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundListener;
 import com.yarcat.chemistrylines.algorithms.CompoundReporter.CompoundReference;
 import com.yarcat.chemistrylines.field.Field;
 
 public interface FieldCleaner {
 
-    public void setRemoveListener(CompoundListener removeListener);
-
     public boolean process(List<CompoundReference> compounds);
+
+    public interface RemoveListener {
+        public void afterCompoundRemoved(CompoundReference ref);
+
+        public void beforeCompoundRemoved(CompoundReference ref);
+    }
+
+    public void setRemoveListener(RemoveListener removeListener);
 
     public interface ProcessListener {
         public void afterCleanerProcess();
@@ -20,7 +25,7 @@ public interface FieldCleaner {
 
     public abstract class Base implements FieldCleaner {
 
-        private CompoundListener mRemoveListener;
+        private RemoveListener mRemoveListener;
         private ProcessListener mProcessListener;
         protected final Field mField;
 
@@ -29,13 +34,19 @@ public interface FieldCleaner {
         }
 
         @Override
-        public void setRemoveListener(CompoundListener removeListener) {
+        public void setRemoveListener(RemoveListener removeListener) {
             mRemoveListener = removeListener;
         }
 
-        protected void onCompoundRemove(CompoundReference ref) {
+        protected void afterCompoundRemoved(CompoundReference ref) {
             if (mRemoveListener != null) {
-                mRemoveListener.foundCompound(ref);
+                mRemoveListener.afterCompoundRemoved(ref);
+            }
+        }
+
+        protected void beforeCompoundRemoved(CompoundReference ref) {
+            if (mRemoveListener != null) {
+                mRemoveListener.beforeCompoundRemoved(ref);
             }
         }
 
